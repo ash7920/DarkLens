@@ -6,3 +6,4 @@ __pycache__/
 *.jpeg
 crawl_data.json
 page_data.json
+interaction_data.json
