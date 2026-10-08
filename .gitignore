@@ -7,3 +7,4 @@ __pycache__/
 crawl_data.json
 page_data.json
 interaction_data.json
+interaction_evidence.json
