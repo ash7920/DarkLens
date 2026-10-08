@@ -1,9 +1,15 @@
 from playwright.sync_api import sync_playwright # type: ignore
 
 from safe_interaction import is_safe_interaction
-from interaction_priority import get_interaction_priority
+from interaction_priority import get_interaction_priority, get_interaction_type
 from url_utils import clean_url
-
+from page_classifier import classify_page
+from evidence_collector import (
+    collect_page_state,
+    create_interaction_evidence,
+    compare_page_states
+)
+import json
 
 def main():
     url = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
@@ -56,23 +62,63 @@ def main():
             print("Text:", text)
             print("URL:", href)
 
-            before_url = page.url
-            before_title = page.title()
+            before = collect_page_state(
+                page,
+                "before_interaction.png"
+            )
+
+            before["page_type"] = classify_page(before["url"])
+
+            interaction = {
+                "text": text,
+                "url": href,
+                "priority": priority,
+                "safe": True,
+                "type": get_interaction_type(text, href),
+                "action": "click"
+            }
 
             link.click()
 
             page.wait_for_load_state("domcontentloaded")
 
-            after_url = page.url
-            after_title = page.title()
+            after = collect_page_state(
+                page,
+                "after_interaction.png"
+            )
 
-            print("\nAFTER INTERACTION:")
-            print("Before URL:", before_url)
-            print("After URL:", after_url)
-            print("Before Title:", before_title)
-            print("After Title:", after_title)
+            after["page_type"] = classify_page(after["url"])
 
-        browser.close()
+            evidence = create_interaction_evidence(
+            before,
+            after,
+            interaction
+            )
+
+            changes = compare_page_states(
+                before,
+                after
+            )
+
+            evidence["changes"] = changes
+
+            with open(
+                "interaction_evidence.json",
+                "w",
+                encoding="utf-8"
+            ) as file:
+                json.dump(
+                    evidence,
+                    file,
+                    indent=4,
+                    ensure_ascii=False
+                )
+
+    print("\nAFTER INTERACTION:")
+    print("Before URL:", before["url"])
+    print("After URL:", after["url"])
+    print("Before Title:", before["title"])
+    print("After Title:", after["title"])
 
 
 if __name__ == "__main__":

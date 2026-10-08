@@ -1,4 +1,5 @@
 from interaction_priority import get_interaction_priority
+from interaction_priority import get_interaction_priority, get_interaction_type
 
 
 test_cases = [
@@ -20,3 +21,30 @@ for text, url in test_cases:
         "|",
         url
     )
+print(
+    get_interaction_type(
+        "Sharp Objects",
+        "catalogue/sharp-objects_997/index.html"
+    )
+)
+
+print(
+    get_interaction_type(
+        "Next",
+        "catalogue/page-2.html"
+    )
+)
+
+print(
+    get_interaction_type(
+        "Mystery",
+        "catalogue/category/books/mystery_3/index.html"
+    )
+)
+
+print(
+    get_interaction_type(
+        "Home",
+        "index.html"
+    )
+)
