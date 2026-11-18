@@ -16,6 +16,7 @@ import multiprocessing as mp
 import time
 from pathlib import Path
 
+from .coverage import coverage
 from .crawler import CrawlConfig, crawl_site
 from .url_utils import domain_slug
 
@@ -36,7 +37,8 @@ def _worker(args):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--sites", default="config/sites_eu.csv")
+    ap.add_argument("--sites", nargs="+", default=["config/sites_eu.csv"],
+                    help="one or more site-list CSVs, e.g. config/sites_eu.csv config/sites_eu_extra.csv")
     ap.add_argument("--out", default="data/crawl")
     ap.add_argument("--workers", type=int, default=2)
     ap.add_argument("--limit", type=int, default=0, help="only the first N sites")
@@ -46,16 +48,30 @@ def main():
     ap.add_argument("--headed", action="store_true")
     ap.add_argument("--no-cart", action="store_true")
     ap.add_argument("--force", action="store_true", help="re-crawl sites that already have a summary")
+    ap.add_argument("--retry-failed", action="store_true",
+                    help="re-crawl only sites that were unreachable or captured a single page (never blocked ones)")
+    ap.add_argument("--nav-timeout", type=int, default=0, help="page-load timeout in seconds (default 30, 60 on retry)")
     a = ap.parse_args()
 
-    with open(a.sites, newline="", encoding="utf-8") as f:
-        rows = [r for r in csv.DictReader(f) if r.get("url") and not r["url"].startswith("#")]
+    rows, seen = [], set()
+    for path in a.sites:
+        with open(path, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                if r.get("url") and not r["url"].startswith("#") and domain_slug(r["url"]) not in seen:
+                    seen.add(domain_slug(r["url"]))
+                    rows.append(r)
     if a.limit:
         rows = rows[: a.limit]
-    todo = [r for r in rows if a.force or not (Path(a.out) / domain_slug(r["url"]) / "summary.json").exists()]
+    if a.retry_failed:
+        cov = coverage(a.out)["sites"]
+        todo = [r for r in rows if cov.get(domain_slug(r["url"]), {}).get("status") in ("unreachable", "empty")]
+    else:
+        todo = [r for r in rows if a.force or not (Path(a.out) / domain_slug(r["url"]) / "summary.json").exists()]
     print(f"{len(rows)} sites in list, {len(todo)} to crawl, {a.workers} workers")
 
-    cfg = CrawlConfig(max_pages=a.max_pages, max_depth=a.max_depth, delay_s=a.delay,
+    nav = a.nav_timeout or (60 if a.retry_failed else 30)
+    cfg = CrawlConfig(max_pages=a.max_pages, max_depth=a.max_depth, delay_s=a.delay, nav_timeout_ms=nav * 1000,
+                      settle_ms=4000 if a.retry_failed else 2500,
                       headless=not a.headed, allow_add_to_cart=not a.no_cart).__dict__
     t0 = time.time()
     jobs = [(r, a.out, cfg) for r in todo]
@@ -67,6 +83,7 @@ def main():
 
     ok = sum(1 for r in results if "fatal_error" not in r)
     print(f"\nFinished {ok}/{len(results)} sites in {time.time() - t0:.0f}s")
+    print("See which sites were crawlable:  python -m darklens.crawler.coverage")
 
 
 if __name__ == "__main__":

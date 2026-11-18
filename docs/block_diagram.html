@@ -21,11 +21,11 @@
 </style></head>
 <body><div class="wrap">
 <h1>DarkLens: auditing EU e-commerce websites for dark patterns</h1>
-<p class="sub">Crawl-and-verify LLM pipeline. Revised scope: ~100 EU sites crawled and human-validated; pipeline scales to the 500-site list unchanged.</p>
+<p class="sub">Crawl-and-verify LLM pipeline. Revised scope: crawlable EU retailers human-validated; bot-blocked sites reported as coverage. Same pipeline scales to 500 sites.</p>
 <div class="row">
   <div class="stage"><h2>1. Data sources</h2>
     <div class="card"><b>Existing labelled datasets</b>EC dataset (Yada 2022): 2,356 texts<br>Mathur 2019: 1,818 instances<br>AidUI/ContextDP: 501 screenshots</div>
-    <div class="card hl"><b>EU e-commerce websites</b>100 sites, 17 countries, 9 sectors (validated sample)<br>500-site list: same pipeline</div>
+    <div class="card hl"><b>EU e-commerce websites</b>136 retailers attempted; crawlable ones human-validated<br>bot-blocked sites reported, not counted</div>
     <div class="card"><b>Controlled test-bed</b>DarkMart (43 injected patterns) + FairMart clean twin</div>
   </div>
   <div class="stage"><h2>2. Crawling &amp; collection</h2>

@@ -28,6 +28,7 @@ from urllib.robotparser import RobotFileParser
 from playwright.sync_api import TimeoutError as PWTimeout
 from playwright.sync_api import sync_playwright
 
+from .coverage import block_reason
 from .evidence_collector import append_jsonl, collect_page_state, create_interaction_evidence, slim
 from .interaction_priority import get_interaction_priority, get_interaction_type
 from .page_classifier import classify_page
@@ -186,6 +187,16 @@ def crawl_site(start_url: str, out_root: str | Path = "data/crawl", cfg: CrawlCo
                 visited.add(page.url)
 
                 state = collect_page_state(page, states_dir, "initial", full_page=cfg.full_page_screenshots)
+                reason = block_reason(state["title"], state["text"])
+                if reason and stats["pages"] == 0:
+                    # The site answered with bot protection / maintenance: record it and stop.
+                    # DarkLens does not try to get around such pages.
+                    append_jsonl(pages_file, {**state, "page_type": "blocked", "depth": depth,
+                                              "site": domain_slug(start_url), **site_meta})
+                    stats["status"] = "unavailable" if reason.startswith("unavailable") else "blocked"
+                    stats["status_detail"] = reason
+                    print(f"  ! {reason}: not crawling this site further")
+                    break
                 page_type = classify_page(state["url"], state["title"], state["text"], state["buttons"])
                 record = {**state, "page_type": page_type, "depth": depth, "priority": -neg_prio,
                           "anchor_text": anchor, "site": domain_slug(start_url), **site_meta}
@@ -261,6 +272,7 @@ def crawl_site(start_url: str, out_root: str | Path = "data/crawl", cfg: CrawlCo
             pw.stop()
 
     stats["elapsed_s"] = round(time.time() - t0, 1)
+    stats.setdefault("status", "crawled" if stats["pages"] >= 2 else ("empty" if stats["pages"] == 1 else "unreachable"))
     stats["reached_cart"] = stats["page_types"].get("cart", 0) > 0
     stats["reached_checkout"] = stats["page_types"].get("checkout", 0) > 0
     (site_dir / "summary.json").write_text(json.dumps(stats, indent=2, ensure_ascii=False), encoding="utf-8")

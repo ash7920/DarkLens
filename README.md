@@ -65,7 +65,9 @@ API docs are at `/docs`.
 | 4 | RoBERTa baseline | Google Colab GPU, see the top of `scripts/train_roberta.py` | 10 min |
 | 5 | Screenshots, AidUI web (offline already done) | `python scripts/eval_screenshots.py --split web --engine llm --mode multistage` then `--mode single` | 20–40 min |
 | 6 | EU crawl, pilot | `python -m darklens.crawler.run_sites --limit 5 --headed` (watch it work) | 15 min |
-| 7 | EU crawl, full | `python -m darklens.crawler.run_sites --workers 3` (resumable; re-run if stopped) | 3–5 h |
+| 7 | EU crawl, full | `python -m darklens.crawler.run_sites --workers 2 --sites config/sites_eu.csv config/sites_eu_extra.csv` (resumable; re-run if stopped) | 2–3 h |
+| 7b | Coverage check | `python -m darklens.crawler.coverage` (which sites were crawlable / blocked) | 1 s |
+| 7c | Retry slow sites once | `python -m darklens.crawler.run_sites --retry-failed --headed --sites config/sites_eu.csv config/sites_eu_extra.csv` | 15 min |
 | 8 | Detection over the crawl | `python -m darklens.pipeline --engine llm` | 1–2 h |
 | 9 | Annotation sample | `python scripts/make_annotation_sample.py --states 150` | 1 min |
 | 10 | Two people label it independently | Web app → Annotate tab (keys 1–8, 0, S) | 1–2 h each |
@@ -76,9 +78,10 @@ API docs are at `/docs`.
 Every `[pending]` in the paper turns into a measured number at step 13. Never type numbers into the paper
 by hand.
 
-**Before the full crawl:** open `config/sites_eu.csv` and check that every site still loads. Replace dead
-ones with another retailer from the same country and sector. To scale to 500 sites, add rows; nothing else
-changes.
+**Bot protection:** many large retailers answer automated browsers with a challenge ("Just a moment…",
+"Access Denied", captcha). The crawler records these as *blocked*, stops after one page, and never tries to get
+around them; detection and prevalence use crawlable sites only, and the paper reports the coverage numbers.
+To scale up, add rows to a site-list CSV; nothing else changes.
 
 ## 4. What is in the repository
 

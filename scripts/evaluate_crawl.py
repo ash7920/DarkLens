@@ -79,7 +79,9 @@ def main():
     ap.add_argument("--adjudicator", default=None)
     a = ap.parse_args()
     preds = [json.loads(l) for l in open(ROOT / a.pred, encoding="utf-8")]
-    res = {"prevalence": prevalence(preds)}
+    from darklens.crawler.coverage import coverage
+    cov = coverage(ROOT / "data/crawl")
+    res = {"coverage": {k: v for k, v in cov.items() if k != "sites"}, "prevalence": prevalence(preds)}
 
     gold_path = ROOT / a.gold
     res["human_agreement"] = agreement(adjudicator=a.adjudicator)
@@ -109,6 +111,8 @@ def main():
             res["by_language"] = {l: binary_metrics(t, q, n_boot=0) for l, (t, q) in by_lang.items() if len(t) >= 20}
     (ROOT / "results").mkdir(exist_ok=True)
     (ROOT / "results/crawl_evaluation.json").write_text(json.dumps(res, indent=2, default=float, ensure_ascii=False))
+    c = res["coverage"]
+    print(f"coverage: {c['attempted']} attempted, {c['crawled']} crawlable, {c['blocked']} blocked by bot protection")
     pv = res["prevalence"]
     print(f"{pv['n_sites']} sites, {pv['share_sites_with_any_pattern']:.1%} with >=1 pattern")
     for c, v in sorted(pv["by_category"].items(), key=lambda x: -x[1]):

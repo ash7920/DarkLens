@@ -46,8 +46,9 @@ websites, reaches the product, cart, checkout and cancellation states where dark
 through a safe-interaction policy, represents every visible element together with its UI state, and
 classifies it with a cascade of a cheap lexical pre-filter and a large language model (LLM) that first
 infers and then verifies each finding. We evaluate on three public datasets, a controlled test-bed of 43
-injected patterns with a clean twin site, and a crawl of 100 EU retailers in 17 countries labelled by two
-annotators. A grouped cross-validated TF-IDF baseline already reaches F1~=~\CVlrF{} on binary text
+injected patterns with a clean twin site, and a crawl of \CrawlAttempted{} EU retailers, of which
+\CrawlOK{} could be crawled and \CrawlBlockedPct{} refused automated browsers; a stratified sample of the crawl was
+labelled by two annotators. A grouped cross-validated TF-IDF baseline already reaches F1~=~\CVlrF{} on binary text
 detection but only \CVlrMacro{} macro-F1 across categories, and it raises false alarms on neutral text
 such as ``In stock'' when the page context is missing. The LLM pipeline reaches \LLMtextMacro{} macro-F1
 on held-out text, \WebLLMF{} F1 on AidUI web screenshots, and F1~=~\CrawlF{} (Cohen's $\kappa$~=~\CrawlKappa{})
@@ -92,7 +93,8 @@ UI state (e.g.\ ``[checkbox, PRE-TICKED]''), filtered by a rule lexicon and TF-I
 by an LLM in an infer stage and re-checked in a verify stage adapted from DPDGPT~\cite{lin2026dpdgpt}.
 The same detector serves screenshots through OCR-anchored prompting, so every finding has a location.
 \item \textbf{A three-level evaluation}: public datasets (text and screenshots), a controlled test-bed with
-known ground truth and a clean twin, and a 100-site EU crawl with double human annotation.
+known ground truth and a clean twin, and an EU crawl with double human annotation, including a measurement of how
+many retailers block automated auditing at all.
 \item \textbf{An open tool}: a web interface that analyses an uploaded screenshot or a live URL and shows
 the category, evidence, confidence and the EU provision an auditor would examine.
 \end{itemize}
@@ -270,9 +272,13 @@ phone-only cancellation, and an asymmetric cookie banner with a pre-ticked conse
 \emph{FairMart} has the same structure and copy with every manipulative element removed. We crawl both and
 measure instance recall on DarkMart and false alarms on FairMart.
 
-\textbf{EU crawl.} 100 retailers from 17 member states and 9 sectors (electronics, fashion,
-marketplaces, general, beauty, home, books, grocery, sports, travel) are crawled with at most 15 pages and
-3 interactions per page.
+\textbf{EU crawl.} We attempted \CrawlAttempted{} retailers from EU member states across electronics,
+fashion, marketplaces, general merchandise, beauty, home, books, grocery, sports and travel, with at most 15
+pages and 3 interactions per page. A site counts as \emph{crawlable} if at least two pages loaded; a site whose
+first response is a bot-protection or maintenance page (Cloudflare challenge, ``Access Denied'', captcha) is
+recorded as \emph{blocked} and not crawled further. We do not attempt to circumvent such protection.
+\CrawlOK{} sites in \CrawlOKCountries{} countries were crawlable, and prevalence is computed over these only, so a
+block page is never counted as a site without dark patterns.
 
 \subsection{Ground truth and metrics}\label{sec:annot}
 We sample 150 crawled page states stratified by page type (at most four per site). Two annotators label
@@ -402,14 +408,19 @@ of the input. Encoding UI state is cheap and should be standard for detectors th
 \textbf{Reaching the pattern is half the problem.} Cookie layers, basket add-ons and cancellation flows only
 exist after interaction. A priority-guided crawler with an explicit safe-interaction policy gets there
 without placing orders, but subscription cancellation behind a log-in remains out of reach without test
-accounts.
+accounts. More fundamentally, \CrawlBlockedPct{} of the retailers we attempted---disproportionately the
+largest---answered an automated browser with bot protection. Independent auditing of the very platforms with
+the most users therefore depends on regulated data access, such as the vetted-researcher provisions of the
+DSA~\cite{dsa2022}, rather than on crawling alone, and prevalence estimates from crawls are biased toward smaller
+sites that do not deploy such protection.
 
 \textbf{Explanations support auditing.} Each finding carries a quote, a reason and a provision, which made
 annotation disagreements and model errors fast to review. Legal pointers are deliberately framed as a
 starting point: whether a given banner violates the DSA depends on context~\cite{ahuja2026dsa}.
 
 \textbf{Limitations.} Results depend on the LLM version, which we log; prompts were written in English for
-multilingual pages; the 100-site sample over-represents electronics retailers; OCR limits the offline
+multilingual pages; the site sample over-represents electronics retailers and, because of bot protection,
+under-represents the largest platforms; OCR limits the offline
 screenshot engine; and the test-bed was built by the authors. Two annotators from the project team are not
 domain experts, which we mitigate with written guidelines and adjudication.
 

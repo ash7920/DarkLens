@@ -37,7 +37,11 @@ def prefilter(segs: list[dict], detector: DarkPatternDetector, threshold: float 
 def run(crawl_dir: str | Path, out_path: str | Path, engine: str = "auto", mode: str = "multistage",
         use_prefilter: bool = True, prefilter_threshold: float = 0.15, max_states: int = 0) -> dict:
     det = DarkPatternDetector(engine=engine, mode=mode)
-    records = load_crawl(crawl_dir)
+    from .crawler.coverage import crawlable_sites
+    ok_sites = crawlable_sites(crawl_dir)
+    all_records = load_crawl(crawl_dir)
+    # blocked / unavailable sites are reported as coverage, never as "no dark patterns"
+    records = [r for r in all_records if r.get("site") in ok_sites]
     if max_states:
         records = records[:max_states]
     out_path = Path(out_path)
@@ -70,7 +74,9 @@ def run(crawl_dir: str | Path, out_path: str | Path, engine: str = "auto", mode:
                 stats["dark_segments"] += int(row["label"] != NOT_DARK)
                 fout.write(json.dumps(row, ensure_ascii=False) + "\n")
             stats["states"] += 1
-    summary = {**stats, "elapsed_s": round(time.time() - t0, 1), "detector": det.info(),
+    summary = {**stats, "sites_crawlable": len(ok_sites),
+               "states_skipped_not_crawlable": len(all_records) - len(records),
+               "elapsed_s": round(time.time() - t0, 1), "detector": det.info(),
                "prefilter": use_prefilter, "prefilter_threshold": prefilter_threshold,
                "llm_calls": det.llm.calls if det.llm else 0,
                "llm_usage": det.llm.usage if det.llm else None}

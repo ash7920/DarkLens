@@ -203,3 +203,25 @@ def test_locate_prefers_evidence_and_contiguous_lines():
     assert loc({"evidence": "zzz"}, [2, 3], lines, by_id, tile, 0) == [10, 40, 240, 15]
     # model box in Gemini order [ymin, xmin, ymax, xmax]
     assert loc({"evidence": "", "box_2d": [500, 100, 600, 400]}, [], lines, by_id, tile, 0) == [100, 400, 300, 80]
+
+
+# ------------------------------------------------------------ crawl coverage
+def test_block_detection_and_site_status(tmp_path):
+    from darklens.crawler.coverage import block_reason, coverage, site_status
+    assert block_reason("Just a moment...").startswith("bot protection")
+    assert block_reason("Access Denied").startswith("bot protection")
+    assert block_reason("FNAC DARTY - Maintenance").startswith("unavailable")
+    assert block_reason("Zalando | Mode online") is None
+    assert site_status({"pages": 1}, {"title": "Let's confirm you are human", "text": ""})[0] == "blocked"
+    assert site_status({"pages": 14}, {"title": "ABOUT YOU", "text": "x" * 5000})[0] == "crawled"
+    assert site_status({"pages": 0, "robots_blocked": 1}, None)[0] == "robots"
+    assert site_status({"pages": 0, "errors": ["timeout"]}, None)[0] == "unreachable"
+    assert site_status({"pages": 1}, {"title": "eobuwie.pl", "text": "x" * 5000})[0] == "empty"
+    # coverage over a fake crawl directory
+    for name, pages, title in [("ok_shop", 9, "Shop"), ("cf_shop", 1, "Just a moment...")]:
+        d = tmp_path / name
+        d.mkdir()
+        (d / "summary.json").write_text(json.dumps({"start_url": f"https://{name}/", "pages": pages}))
+        (d / "pages.jsonl").write_text(json.dumps({"title": title, "text": "", "site": name}) + "\n")
+    cov = coverage(tmp_path)
+    assert (cov["attempted"], cov["crawled"], cov["blocked"]) == (2, 1, 1)
