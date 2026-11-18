@@ -50,7 +50,8 @@ injected patterns with a clean twin site, and a crawl of \CrawlAttempted{} EU re
 \CrawlOK{} could be crawled and \CrawlBlockedPct{} refused automated browsers; a stratified sample of the crawl was
 labelled by two annotators. A grouped cross-validated TF-IDF baseline already reaches F1~=~\CVlrF{} on binary text
 detection but only \CVlrMacro{} macro-F1 across categories, and it raises false alarms on neutral text
-such as ``In stock'' when the page context is missing. The LLM pipeline reaches \LLMtextMacro{} macro-F1
+such as ``In stock'' when the page context is missing. On the test-bed the LLM pipeline finds \TbLLMFound{} of
+\TbN{} injected patterns with \TbLLMFP{} false alarms on the clean twin, against \TbOffFP{} for the lexical engine. It reaches \LLMtextMacro{} macro-F1
 on held-out text, \WebLLMF{} F1 on AidUI web screenshots, and F1~=~\CrawlF{} (Cohen's $\kappa$~=~\CrawlKappa{})
 against human ground truth on the live crawl, where \CrawlAny{} of sites show at least one pattern. We
 release the crawler, the test-bed, the annotation tool and a web interface that marks dark patterns on an
@@ -330,8 +331,11 @@ Model & P & R & F1 & Macro-F1 \\
 \subsection{Screenshot detection}
 Table~\ref{tab:screens} reports image-level results on AidUI web screenshots. The offline engine reads only
 text and therefore misses visual patterns (pre-selected options, attention distraction) and short or stylised
-copy that OCR damages; it reaches F1~=~\WebOffF{}. The vision LLM reaches \WebLLMF{}. AidUI's own
-instance-level scores (F1 0.65~\cite{mansur2023}) use a different unit and are not directly comparable.
+copy that OCR damages; it reaches F1~=~\WebOffF{} (precision \WebOffP{}, recall \WebOffR{}). Given only the
+image, the vision LLM already reaches F1~=~\WebVisF{} (precision \WebVisP{}, recall \WebVisR{}) and raises
+category macro-F1 from \WebOffMacro{} to \WebVisMacro{}. Adding the numbered OCR lines to the prompt, which is
+how DarkLens localises findings, gives F1~=~\WebLLMF{}. AidUI's own instance-level scores (F1
+0.65~\cite{mansur2023}) use a different unit and are not directly comparable.
 
 \begin{table}[t]
 \centering
@@ -356,7 +360,10 @@ boxes and the surcharged default variant, which text alone cannot), with \TbOffP
 predictions matching an injected instance. On FairMart it raises \TbOffFP{} false alarms, all from the TF-IDF
 model reading neutral words out of context: ``In stock'' (scarcity), ``Cancel membership''
 (difficult cancellation) and ``Save'' (pre-ticked add-on). These are exactly the context errors the LLM
-stage is meant to remove. The pre-filter sent \TbOffPrefilter{} fewer segments to the detector. Because we
+stage is meant to remove, and it does: with the LLM, DarkLens finds \TbLLMFound{} of the \TbN{} instances and
+raises \TbLLMFP{} false alarms on FairMart. Its single miss is the \texteuro4.95 ``service \& handling'' fee that
+appears only at checkout---a hidden cost that reads as an ordinary price line without knowing it was absent from
+the basket. The pre-filter sent \TbOffPrefilter{} fewer segments to the detector. Because we
 designed the test-bed while developing the rules, it validates function rather than measuring
 generalisation.
 
