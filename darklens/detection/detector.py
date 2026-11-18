@@ -145,7 +145,8 @@ class DarkPatternDetector:
         results: dict[int, dict] = {}
         for s in range(0, len(items), self.batch_size):
             chunk = items[s:s + self.batch_size]
-            r = self.llm.complete_json(SYSTEM, infer_segments_prompt(chunk, context, self.shots), images)
+            r = self.llm.complete_json(SYSTEM, infer_segments_prompt(chunk, context, self.shots), images,
+                                       max_tokens=max(4096, 110 * len(chunk)))
             rows = r.data.get("items", []) if isinstance(r.data, dict) else (r.data if isinstance(r.data, list) else [])
             for row in rows:
                 try:

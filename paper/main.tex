@@ -224,10 +224,13 @@ regression keep a segment if a rule fires, if $p(\text{dark}) \geq 0.15$, or if 
 drop-down or a choice pair. The threshold favours recall; everything else is labelled not dark without an
 LLM call.
 
-\textbf{Infer.} Remaining segments of a state are sent in page order, in batches of up to 40, with the
-page type, URL and language, the taxonomy definitions with counter-examples, and few-shot examples drawn
-only from the training split. The model returns, per segment, a label, a confidence, a verbatim evidence
-quote and a one-sentence explanation as JSON.
+\textbf{Infer.} Elements that repeat across a shop's pages---cookie banner, menu, footer, newsletter
+pop-up---are classified once per site and the answer is applied to every occurrence, so the LLM sees each
+distinct element exactly once (on the test-bed this removes 73\% of LLM inputs). Each element is tagged with the
+type of page it first appeared on and sent in order of first appearance, in batches of up to 80, together with
+the site's country and language, the taxonomy definitions with counter-examples, and few-shot examples drawn only
+from the training split. The model returns, per element, a label, a confidence, a verbatim evidence quote and a
+one-sentence explanation as JSON.
 
 \textbf{Verify.} Every positive goes to a second call that restates the relevant definitions and
 counter-examples and asks the model to keep or reject each candidate and to correct its category; this

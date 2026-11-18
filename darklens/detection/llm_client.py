@@ -150,8 +150,11 @@ class LLMClient:
                 last = exc
                 resp = getattr(exc, "response", None)
                 status = getattr(resp, "status_code", None)
-                if status in (400, 401, 403, 404) or attempt == retries - 1:
-                    break  # not retryable, or out of attempts
+                body = (getattr(resp, "text", "") or "").lower()
+                daily = status == 429 and ("perday" in body or "per day" in body or "daily" in body)
+                if status in (400, 401, 403, 404) or daily or attempt == retries - 1:
+                    self._daily = daily
+                    break  # not retryable (or daily quota gone), or out of attempts
                 wait = min(60, 5 * 2 ** attempt)
                 try:
                     wait = min(120, max(wait, int(resp.headers.get("Retry-After", 0))))
@@ -171,6 +174,9 @@ class LLMClient:
         if status == 503:
             return (f"The {name} is overloaded right now (503 from the provider). Wait a few minutes, "
                     f"or set DARKLENS_MODEL to a lighter model.")
+        if status == 429 and getattr(self, "_daily", False):
+            return (f"The API key's DAILY free-tier quota for the {name} is used up (429). It resets at midnight "
+                    f"Pacific time (about 1:30 PM India time). Re-run the same command then; finished calls are kept.")
         if status == 429:
             return f"The API key has hit its rate or free-tier limit for the {name} (429). Wait and retry."
         if status == 404:
