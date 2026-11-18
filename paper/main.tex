@@ -1,25 +1,15 @@
-% DarkLens — IEEE conference paper.
-% Compiles with IEEEtran (Overleaf: New Project > Upload, it has IEEEtran built in).
-% If IEEEtran.cls is not installed locally, a close two-column fallback is used.
+% DarkLens: IEEE conference paper (IEEEtran V1.8b, conference mode, as in IEEE's official template).
+% IEEEtran.cls / IEEEtran.bst are included in this folder, so it compiles locally and on Overleaf.
 % All numbers come from paper/generated/*.tex, written by scripts/make_paper_assets.py.
-\IfFileExists{IEEEtran.cls}{%
-  \documentclass[conference]{IEEEtran}\def\usingieee{1}%
-}{%
-  \documentclass[10pt,twocolumn,a4paper]{article}%
-  \usepackage[margin=0.7in,columnsep=0.25in]{geometry}%
-  \usepackage{mathptmx}%
-  \newcommand{\IEEEauthorblockN}[1]{##1\\}%
-  \newcommand{\IEEEauthorblockA}[1]{##1}%
-  \newenvironment{IEEEkeywords}{\par\noindent\textbf{\textit{Index Terms}---}\itshape}{\par}%
-}
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
 \usepackage{cite}
-\usepackage{amsmath}
+\usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
 \usepackage{booktabs}
-\usepackage{multirow}
-\usepackage[table]{xcolor}
 \usepackage{url}
-\usepackage[hidelinks]{hyperref}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \newcommand{\pend}{\textcolor{red}{[pending]}}
@@ -31,16 +21,29 @@
 \title{DarkLens: Auditing EU E-Commerce Websites for Dark Patterns with a Crawl-and-Verify LLM Pipeline}
 
 \author{%
-\begin{tabular}{@{}l@{\hspace{1.2em}}l@{}}
-Ashka Jain     & \texttt{ashkaj79@gmail.com} \\
-Aarya Singh    & \texttt{aaryadsingh8115@gmail.com} \\
-Devanshi Shah  & \texttt{askfordevanshi@gmail.com} \\
-Dhruv Patel    & \textcolor{red}{[email]} \\
-\end{tabular}\\[6pt]
-\textit{Department of Computer Engineering}\\
+\IEEEauthorblockN{Ashka Jain}
+\IEEEauthorblockA{\textit{Dept. of Computer Engineering}\\
 \textit{Dwarkadas J. Sanghvi College of Engineering}\\
-Mumbai, India\\[6pt]
-Guide: Dr.\ Kranti Ghag
+Mumbai, India\\
+ashkaj79@gmail.com}
+\and
+\IEEEauthorblockN{Aarya Singh}
+\IEEEauthorblockA{\textit{Dept. of Computer Engineering}\\
+\textit{Dwarkadas J. Sanghvi College of Engineering}\\
+Mumbai, India\\
+aaryadsingh8115@gmail.com}
+\and
+\IEEEauthorblockN{Devanshi Shah}
+\IEEEauthorblockA{\textit{Dept. of Computer Engineering}\\
+\textit{Dwarkadas J. Sanghvi College of Engineering}\\
+Mumbai, India\\
+askfordevanshi@gmail.com}
+\and
+\IEEEauthorblockN{Dhruv Patel}
+\IEEEauthorblockA{\textit{Dept. of Computer Engineering}\\
+\textit{Dwarkadas J. Sanghvi College of Engineering}\\
+Mumbai, India\\
+\textcolor{red}{[email]}}
 }
 
 \maketitle
@@ -147,7 +150,7 @@ Fig.~\ref{fig:arch} shows the six stages.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{generated/fig_architecture.png}
+\includegraphics[width=\textwidth]{generated/fig_architecture.pdf}
 \caption{DarkLens architecture. Public datasets and a controlled test-bed calibrate and benchmark the
 detector; the crawler collects live EU pages; human annotation provides ground truth for evaluation.}
 \label{fig:arch}
@@ -354,6 +357,7 @@ how DarkLens localises findings, gives F1~=~\WebLLMF{}. AidUI's own instance-lev
 Macro-F1: per category over AidUI's labelled classes.}
 \label{tab:screens}
 \footnotesize
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lcccc}
 \toprule
 Engine & P & R & F1 & Macro-F1 \\
@@ -384,9 +388,10 @@ generalisation.
 (distinct page/text pairs).}
 \label{tab:testbed}
 \footnotesize
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lccc}
 \toprule
-Engine & Recall & Precision & FairMart FPs \\
+Engine & Recall & Precision & Clean-shop FPs \\
 \midrule
 \inputtab{generated/tab_testbed.tex}
 \bottomrule
@@ -452,7 +457,11 @@ state-aware segments, can audit live EU shops with measured reliability against 
 pipeline runs unchanged on the full 500-site list; next steps are test accounts for cancellation flows,
 evaluation on ContextRico-DP~\cite{lin2026dpdgpt}, and per-language analysis across more EU languages.
 
-\IfFileExists{IEEEtran.bst}{\bibliographystyle{IEEEtran}}{\bibliographystyle{unsrt}}
+\section*{Acknowledgment}
+The authors thank Dr.\ Kranti Ghag, Department of Computer Engineering, Dwarkadas J.\ Sanghvi College of
+Engineering, for her guidance throughout this project.
+
+\bibliographystyle{IEEEtran}
 \bibliography{refs}
 
 \end{document}

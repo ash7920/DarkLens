@@ -165,10 +165,10 @@ macros["TbLLMPrec"] = pc(g(tb_llm, "darkshop_prediction_precision"))
 macros["TbLLMFound"] = str(round(g(tb_llm, "instance_recall") * g(tb_llm, "ground_truth_instances"))) if tb_llm else P
 macros["TbOffFound"] = str(round(g(tb_off, "instance_recall") * g(tb_off, "ground_truth_instances"))) if tb_off else P
 (GEN / "tab_screens.tex").write_text("\n".join([
-    srow("OCR + rules + TF-IDF (offline)", web_off),
-    srow("Vision LLM only, detect + verify", web_llm_vis),
-    *([srow("OCR + vision LLM, single pass", web_llm_s)] if web_llm_s else []),
-    srow("OCR + vision LLM, detect + verify", web_llm_m),
+    srow("Offline (OCR + rules)", web_off),
+    srow("Vision LLM, verify", web_llm_vis),
+    *([srow("OCR + LLM, single pass", web_llm_s)] if web_llm_s else []),
+    srow("OCR + LLM, verify", web_llm_m),
 ]) + "\n")
 
 # ------------------------------------------------------------ Table: testbed
@@ -177,7 +177,7 @@ def trow(name, d):
             f"{g(d, 'fairshop_false_positive_unique') if d else P} \\\\")
 
 
-(GEN / "tab_testbed.tex").write_text("\n".join([trow("Offline (rules + TF-IDF + UI state)", tb_off),
+(GEN / "tab_testbed.tex").write_text("\n".join([trow("Offline engine", tb_off),
                                                 trow("LLM, detect + verify", tb_llm)]) + "\n")
 
 # -------------------------------------------------------- Table: prevalence

@@ -171,6 +171,9 @@ with sync_playwright() as p:
     pg.goto(out_html.as_uri())
     pg.wait_for_timeout(300)
     pg.locator(".canvas").screenshot(path=str(ROOT / "docs/block_diagram.png"))
+    # vector PDF for the paper (IEEE prefers vector graphics with embedded fonts)
+    pg.pdf(path=str(ROOT / "paper/generated/fig_architecture.pdf"), width="1600px", height="640px",
+           print_background=True, page_ranges="1")
     b.close()
 (ROOT / "paper/generated/fig_architecture.png").write_bytes((ROOT / "docs/block_diagram.png").read_bytes())
 print("wrote docs/block_diagram.png and paper/generated/fig_architecture.png")
