@@ -95,8 +95,7 @@ def analyze(file: UploadFile = File(...), engine: str = Form("auto"), mode: str 
         det = get_detector(engine, mode)
         res = det.analyze_screenshot(data)
     except LLMError as exc:
-        raise HTTPException(502, f"The language model could not be reached: {exc}. "
-                                 f"Switch the engine to Offline or check the API key.")
+        raise HTTPException(502, f"{exc} You can also switch the engine to Offline.")
     from darklens.detection.ocr import load_image, to_png_bytes
     return _save(res, to_png_bytes(load_image(data), max_side=4000), f"upload:{file.filename}")
 

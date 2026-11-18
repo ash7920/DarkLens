@@ -93,13 +93,14 @@ OCR LINES
 Task: find every dark pattern instance in the screenshot.
 - Use the OCR line ids to point at the text that carries each pattern (one or more lines).
 - Also report patterns that are only VISUAL (pre-ticked boxes, a huge 'Accept' next to a tiny
-  grey 'reject', a countdown graphic) — give its approximate box as [x_min, y_min, x_max, y_max]
-  in 0–1000 coordinates relative to the image width/height.
+  grey 'reject', a countdown graphic) — give its box as "box_2d": [y_min, x_min, y_max, x_max]
+  in 0–1000 coordinates relative to the image height/width (y first).
+- "evidence" must be the exact text as it appears in the OCR lines when the pattern is textual.
 - Do not report ordinary prices, navigation, product names or neutral information.
 
 Return JSON:
 {{"page_kind": "<product|cart|checkout|cookie_banner|popup|subscription|homepage|other>",
-  "detections": [{{"label": "<taxonomy key>", "line_ids": [<int>...], "box": [x0,y0,x1,y1] or null,
+  "detections": [{{"label": "<taxonomy key>", "line_ids": [<int>...], "box_2d": [y_min, x_min, y_max, x_max] or null,
      "evidence": "<exact quote or visual description>", "confidence": <0-1>,
      "explanation": "<one sentence>"}}]}}
 Return "detections": [] if the screenshot contains no dark pattern."""

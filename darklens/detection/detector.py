@@ -271,19 +271,7 @@ class DarkPatternDetector:
                 sx = str(x).strip().lstrip("Ll")
                 if sx.isdigit():
                     ids.append(int(sx))
-            box = None
-            boxes = [by_id[j]["bbox"] for j in ids if j in by_id]
-            if boxes:
-                x0 = min(b[0] for b in boxes); yy0 = min(b[1] for b in boxes)
-                x1 = max(b[0] + b[2] for b in boxes); y1 = max(b[1] + b[3] for b in boxes)
-                box = [x0, yy0, x1 - x0, y1 - yy0]
-            elif isinstance(d.get("box"), list) and len(d["box"]) == 4:
-                bx = [_clip(v, 0, 1000) / 1000 for v in d["box"]]
-                box = [int(bx[0] * tile.width), int(bx[1] * tile.height) + y0,
-                       int((bx[2] - bx[0]) * tile.width), int((bx[3] - bx[1]) * tile.height)]
-            if box is None:
-                local = find_text_box(lines, d.get("evidence", ""))
-                box = local
+            box = self._locate(d, ids, lines, by_id, tile, y0)
             dets.append({"cid": i, "label": lab, "stage1_label": lab, "confidence": _clip(d.get("confidence", 0.5)),
                          "evidence": str(d.get("evidence", ""))[:300],
                          "explanation": str(d.get("explanation", ""))[:400],
@@ -304,6 +292,40 @@ class DarkPatternDetector:
                     kept.append(d)
             dets = kept
         return [self._decorate(d) for d in dets]
+
+    @staticmethod
+    def _locate(d: dict, ids: list[int], lines: list[dict], by_id: dict, tile: Image.Image, y0: int):
+        """Pixel box [x, y, w, h] for one LLM finding, most reliable source first:
+        1. the OCR line(s) whose text matches the evidence quote,
+        2. the cited OCR line ids (only lines adjacent to the first one, so one finding
+           never stretches over unrelated text),
+        3. the model's own box, read as [y_min, x_min, y_max, x_max] in 0-1000
+           (Gemini's native order; the prompt asks every provider for it)."""
+        quote = str(d.get("evidence", ""))
+        box = find_text_box(lines, quote, min_ratio=0.6)
+        if box:
+            return box
+        cited = [by_id[j] for j in ids if j in by_id]
+        if cited:
+            cited.sort(key=lambda l: l["bbox"][1])
+            group = [cited[0]]
+            for l in cited[1:]:  # keep a vertically contiguous run of lines
+                prev = group[-1]["bbox"]
+                if l["bbox"][1] - (prev[1] + prev[3]) <= max(12, prev[3] * 1.2):
+                    group.append(l)
+                else:
+                    break
+            x0 = min(l["bbox"][0] for l in group); yy0 = min(l["bbox"][1] for l in group)
+            x1 = max(l["bbox"][0] + l["bbox"][2] for l in group)
+            y1 = max(l["bbox"][1] + l["bbox"][3] for l in group)
+            return [x0, yy0, x1 - x0, y1 - yy0]
+        raw = d.get("box_2d", d.get("box"))
+        if isinstance(raw, list) and len(raw) == 4:
+            ymin, xmin, ymax, xmax = [_clip(v, 0, 1000) / 1000 for v in raw]
+            if ymax > ymin and xmax > xmin:
+                return [round(xmin * tile.width), round(ymin * tile.height) + y0,
+                        max(4, round((xmax - xmin) * tile.width)), max(4, round((ymax - ymin) * tile.height))]
+        return None
 
     @staticmethod
     def _dedupe(dets: list[dict]) -> list[dict]:

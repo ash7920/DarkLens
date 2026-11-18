@@ -27,7 +27,7 @@ from pathlib import Path
 import requests
 
 DEFAULT_MODELS = {
-    "gemini": "gemini-2.5-flash",
+    "gemini": "gemini-3.5-flash-lite",
     "openai": "gpt-4.1-mini",
     "anthropic": "claude-haiku-5-5",
     "ollama": "qwen2.5vl:7b",
@@ -147,7 +147,22 @@ class LLMClient:
                 if status in (400, 401, 403, 404):
                     break  # not retryable
                 time.sleep(wait)
-        raise LLMError(f"{self.provider} call failed: {last}")
+        raise LLMError(self._explain(last))
+
+    def _explain(self, exc) -> str:
+        """Turn a provider error into a sentence a user can act on."""
+        status = getattr(getattr(exc, "response", None), "status_code", None)
+        name = f"{self.provider} model '{self.model}'"
+        if status == 503:
+            return (f"The {name} is overloaded right now (503 from the provider). Wait a few minutes, "
+                    f"or set DARKLENS_MODEL to a lighter model.")
+        if status == 429:
+            return f"The API key has hit its rate or free-tier limit for the {name} (429). Wait and retry."
+        if status == 404:
+            return f"The {name} is not available to this API key (404). Pick another with DARKLENS_MODEL."
+        if status in (400, 401, 403):
+            return f"The provider rejected the request for the {name} ({status}): check the API key. {str(exc)[:200]}"
+        return f"The {name} could not be reached: {str(exc)[:300]}"
 
     # -------------------------------------------------------------- providers
     def _post(self, url, headers, body):

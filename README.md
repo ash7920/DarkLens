@@ -38,7 +38,7 @@ python -m pytest -q                 # 28 tests should pass
 | Anthropic | console.anthropic.com | `$env:DARKLENS_PROVIDER="anthropic"; $env:ANTHROPIC_API_KEY="..."` |
 | Local model (no key) | install Ollama, `ollama pull qwen2.5vl:7b` | `$env:DARKLENS_PROVIDER="ollama"; $env:OLLAMA_HOST="http://localhost:11434"` |
 
-Optionally set `DARKLENS_MODEL` to choose a specific model. **Use the same model for every experiment** and
+The Gemini default is `gemini-3.5-flash-lite`. Set `DARKLENS_MODEL` to choose another model (list the ones your key can use with the command in `docs/gemini_models.md`). **Use the same model for every experiment** and
 write its exact name in the paper. Without a key everything still runs, using the offline engine
 (rules + TF-IDF + OCR).
 

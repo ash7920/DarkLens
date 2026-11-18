@@ -133,7 +133,7 @@ class FakeLLM:
             return json.dumps({"page_kind": "product", "detections": [
                 {"label": "Scarcity", "line_ids": ["L1"], "evidence": "Only 2 left", "confidence": 0.9,
                  "explanation": "stock pressure"},
-                {"label": "preselection", "line_ids": [], "box": [100, 100, 300, 200],
+                {"label": "preselection", "line_ids": [], "box_2d": [100, 100, 200, 300],
                  "evidence": "pre-ticked insurance box", "confidence": 0.8, "explanation": "visual"}]}), 10, 10
         return "```json\n" + json.dumps({"items": [
             {"id": 1, "label": "scarcity", "confidence": 0.95, "evidence": "Only 2 left", "explanation": "x"},
@@ -185,4 +185,21 @@ def test_llm_screenshot(llm_detector):
     labels = sorted(d["label"] for d in res["detections"])
     assert labels == ["preselection", "scarcity"]
     vis = next(d for d in res["detections"] if d["label"] == "preselection")
-    assert vis["box"] == [80, 50, 160, 50]  # 0-1000 coords mapped to pixels
+    assert vis["box"] == [80, 50, 160, 50]  # [ymin,xmin,ymax,xmax] in 0-1000 mapped to pixel [x,y,w,h]
+
+
+def test_locate_prefers_evidence_and_contiguous_lines():
+    from PIL import Image
+    from darklens.detection.detector import DarkPatternDetector
+    lines = [{"id": 1, "text": "EUR 89.00", "bbox": [10, 10, 80, 20]},
+             {"id": 2, "text": "Only 2 left in stock - order soon!", "bbox": [10, 40, 240, 15]},
+             {"id": 3, "text": "No thanks, I prefer paying full price", "bbox": [400, 600, 170, 12]}]
+    by_id = {l["id"]: l for l in lines}
+    tile = Image.new("RGB", (1000, 800))
+    loc = DarkPatternDetector._locate
+    # evidence quote wins over the cited ids (which would include the price line)
+    assert loc({"evidence": "Only 2 left in stock"}, [1, 2], lines, by_id, tile, 0) == [10, 40, 240, 15]
+    # no matching quote: cited ids, but a far-away line is not merged in
+    assert loc({"evidence": "zzz"}, [2, 3], lines, by_id, tile, 0) == [10, 40, 240, 15]
+    # model box in Gemini order [ymin, xmin, ymax, xmax]
+    assert loc({"evidence": "", "box_2d": [500, 100, 600, 400]}, [], lines, by_id, tile, 0) == [100, 400, 300, 80]
