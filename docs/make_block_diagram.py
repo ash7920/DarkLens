@@ -57,12 +57,21 @@ def box(x, y, w, h, inner, cls="panel"):
     return f'<div class="{cls}" style="left:{x}px;top:{y}px;width:{w}px;height:{h}px">{inner}</div>'
 
 
+import json  # noqa: E402
+
+_cov = ROOT / "results/crawl_coverage.json"
+if _cov.exists():
+    _c = json.loads(_cov.read_text())
+    SITES_TEXT = f"{_c['attempted']} attempted<br>{_c['crawled']} crawled &amp; analysed"
+else:
+    SITES_TEXT = "EU retailers<br>crawlable ones analysed"
+
 parts = []
 # 1. data sources
 parts.append(box(10, 92, 160, 190, f'{badge("db", "#7b4fc9")}<h3>Existing Dark<br>Pattern Datasets</h3>'
                  '<p>EC, Mathur, AidUI<br>+ DarkMart test-bed</p>', "panel center"))
 parts.append(box(10, 318, 160, 176, f'{badge("web", "#2f80d1")}<h3>EU E-commerce<br>Websites</h3>'
-                 '<p>136 attempted<br>crawlable ones analysed</p>', "panel center"))
+                 '<p>' + SITES_TEXT + '</p>', "panel center"))
 # 2. crawler
 parts.append(box(188, 226, 132, 236, f'{badge("crawl", "#1f8a7a")}<h3>Playwright<br>Web Crawler</h3>'
                  '<p>Priority navigation<br>Safe interaction<br>Rate-limited</p>', "panel center"))

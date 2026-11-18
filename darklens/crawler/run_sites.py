@@ -24,7 +24,7 @@ from .url_utils import domain_slug
 def _worker(args):
     row, out, cfg_dict = args
     cfg = CrawlConfig(**cfg_dict)
-    meta = {k: row.get(k, "") for k in ("name", "country", "sector", "language") if row.get(k)}
+    meta = {k: row.get(k, "") for k in ("name", "country", "sector", "language", "retried") if row.get(k)}
     try:
         return crawl_site(row["url"], out, cfg, site_meta=meta)
     except Exception as exc:  # one broken site must not stop the batch
@@ -64,7 +64,8 @@ def main():
         rows = rows[: a.limit]
     if a.retry_failed:
         cov = coverage(a.out)["sites"]
-        todo = [r for r in rows if cov.get(domain_slug(r["url"]), {}).get("status") in ("unreachable", "empty")]
+        todo = [r for r in rows if cov.get(domain_slug(r["url"]), {}).get("status") in ("unreachable", "empty")
+                and not cov[domain_slug(r["url"])].get("retried")]
     else:
         todo = [r for r in rows if a.force or not (Path(a.out) / domain_slug(r["url"]) / "summary.json").exists()]
     print(f"{len(rows)} sites in list, {len(todo)} to crawl, {a.workers} workers")
@@ -74,7 +75,7 @@ def main():
                       settle_ms=4000 if a.retry_failed else 2500,
                       headless=not a.headed, allow_add_to_cart=not a.no_cart).__dict__
     t0 = time.time()
-    jobs = [(r, a.out, cfg) for r in todo]
+    jobs = [(dict(r, retried="yes") if a.retry_failed else r, a.out, cfg) for r in todo]
     if a.workers <= 1:
         results = [_worker(j) for j in jobs]
     else:

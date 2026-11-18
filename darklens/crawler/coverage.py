@@ -85,7 +85,10 @@ def coverage(crawl_dir: str | Path = "data/crawl") -> dict:
         status, detail = site_status(summary, first_page_of(s.parent))
         sites[s.parent.name] = {"url": summary.get("start_url", ""), "status": status, "detail": detail,
                                 "pages": summary.get("pages", 0), "reached_cart": summary.get("reached_cart", False),
-                                "country": summary.get("country", ""), "sector": summary.get("sector", "")}
+                                "country": summary.get("country", ""), "sector": summary.get("sector", ""),
+                                # retry runs are marked, or recognisable by their 60 s page timeout
+                                "retried": bool(summary.get("retried")) or
+                                (summary.get("config") or {}).get("nav_timeout_ms", 0) >= 60000}
     counts = Counter(v["status"] for v in sites.values())
     crawled = [v for v in sites.values() if v["status"] == "crawled"]
     out = {
@@ -123,8 +126,11 @@ def main():
           f"{cov['crawled_pages']} pages, {cov['crawled_countries']} countries) | blocked {cov['blocked']} | "
           f"unavailable {cov['unavailable']} | robots {cov['robots']} | unreachable {cov['unreachable']} | "
           f"empty {cov['empty']}")
-    if cov["unreachable"] or cov["empty"]:
-        print("Retry the unreachable/empty ones with:  python -m darklens.crawler.run_sites --retry-failed --headed")
+    not_retried = [v for v in cov["sites"].values() if v["status"] in ("unreachable", "empty") and not v["retried"]]
+    if not_retried:
+        print(f"{len(not_retried)} unreachable/empty site(s) not retried yet. Retry once with:")
+        print("  python -m darklens.crawler.run_sites --retry-failed --headed --sites config/sites_eu.csv "
+              "config/sites_eu_extra.csv config/sites_eu_extra2.csv")
     out = Path(a.crawl) / "_coverage.json"
     out.write_text(json.dumps(cov, indent=2, ensure_ascii=False), encoding="utf-8")
     Path("results").mkdir(exist_ok=True)
