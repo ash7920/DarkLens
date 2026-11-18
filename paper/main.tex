@@ -220,9 +220,10 @@ $\geq 1.6\times$---the visual signature of interface interference.
 
 \subsection{Cascade detection: pre-filter, infer, verify}
 \textbf{Pre-filter.} A rule lexicon (regular expressions per class in six languages) and a TF-IDF logistic
-regression keep a segment if a rule fires, if $p(\text{dark}) \geq 0.15$, or if it is a pre-ticked control, a
-drop-down or a choice pair. The threshold favours recall; everything else is labelled not dark without an
-LLM call.
+regression keep a segment if a rule fires, if $p(\text{dark}) \geq 0.2$, or if it is a pre-ticked control, a
+drop-down or a choice pair. On the EC held-out split this threshold keeps 98.3\% of dark items while forwarding
+8.9\% of non-dark ones (0.15 would keep 98.7\% but forward 14.5\%); everything else is labelled not dark without
+an LLM call, and the annotated crawl sample measures what the pre-filter misses in practice.
 
 \textbf{Infer.} Elements that repeat across a shop's pages---cookie banner, menu, footer, newsletter
 pop-up---are classified once per site and the answer is applied to every occurrence, so the LLM sees each
