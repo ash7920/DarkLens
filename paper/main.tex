@@ -12,6 +12,14 @@
 \usepackage{url}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+% New row of author blocks (from IEEE's conference template on Overleaf)
+\makeatletter
+\newcommand{\linebreakand}{%
+  \end{@IEEEauthorhalign}
+  \hfill\mbox{}\par
+  \mbox{}\hfill\begin{@IEEEauthorhalign}
+}
+\makeatother
 \newcommand{\pend}{\textcolor{red}{[pending]}}
 \makeatletter\newcommand{\inputtab}[1]{\@@input #1 }\makeatother
 \input{generated/macros.tex}
@@ -51,6 +59,14 @@ askfordevanshi@gmail.com}
 \textit{Dwarkadas J. Sanghvi}\\
 \textit{College of Engineering}\\
 Mumbai, India\\
+\textcolor{red}{[email]}}
+\linebreakand
+\IEEEauthorblockN{Dr.\ Kranti Ghag}
+\IEEEauthorblockA{\textcolor{red}{\textit{[Dept. of Computer}}\\
+\textcolor{red}{\textit{Engineering]}}\\
+\textcolor{red}{\textit{[Dwarkadas J. Sanghvi}}\\
+\textcolor{red}{\textit{College of Engineering]}}\\
+\textcolor{red}{[Mumbai, India]}\\
 \textcolor{red}{[email]}}
 }
 
@@ -464,10 +480,6 @@ DarkLens shows that a crawl-and-verify pipeline, which reaches interaction-depen
 state-aware segments, can audit live EU shops with measured reliability against human labels. The same
 pipeline runs unchanged on the full 500-site list; next steps are test accounts for cancellation flows,
 evaluation on ContextRico-DP~\cite{lin2026dpdgpt}, and per-language analysis across more EU languages.
-
-\section*{Acknowledgment}
-The authors thank Dr.\ Kranti Ghag, Department of Computer Engineering, Dwarkadas J.\ Sanghvi College of
-Engineering, for her guidance throughout this project.
 
 \bibliographystyle{IEEEtran}
 \bibliography{refs}
