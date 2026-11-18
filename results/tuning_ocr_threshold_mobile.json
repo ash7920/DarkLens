@@ -1,0 +1,31 @@
+{
+  "split": "mobile",
+  "purpose": "threshold tuning for the OCR+classifier offline engine (web split kept untouched as test set)",
+  "results": {
+    "0.5": {
+      "binary_f1": 0.398,
+      "precision": 0.418,
+      "recall": 0.38,
+      "category_macro_f1": 0.113
+    },
+    "0.7": {
+      "binary_f1": 0.312,
+      "precision": 0.417,
+      "recall": 0.25,
+      "category_macro_f1": 0.103
+    },
+    "0.85": {
+      "binary_f1": 0.183,
+      "precision": 0.387,
+      "recall": 0.12,
+      "category_macro_f1": 0.046
+    },
+    "0.95": {
+      "binary_f1": 0.103,
+      "precision": 0.353,
+      "recall": 0.06,
+      "category_macro_f1": 0.038
+    }
+  },
+  "chosen": 0.5
+}

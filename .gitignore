@@ -1,10 +1,20 @@
 venv/
+playwrightvenv/
+.venv/
 __pycache__/
 *.pyc
-*.png
-*.jpg
-*.jpeg
-crawl_data.json
-page_data.json
-interaction_data.json
-interaction_evidence.json
+.env
+# generated data (large, re-creatable)
+data/crawl/
+data/testbed_crawl/
+data/external/
+data/llm_cache/
+data/uploads/
+data/predictions/
+# keep: data/splits/, data/annotation/ (ground truth!)
+paper/*.aux
+paper/*.log
+paper/*.blg
+paper/*.out
+paper/*.fls
+paper/*.fdb_latexmk

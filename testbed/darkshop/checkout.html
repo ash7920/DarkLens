@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Checkout | DarkMart</title>
+<link rel="stylesheet" href="../shop.css"></head><body>
+<header><a class="logo" href="index.html">DarkMart</a><a href="category-sale.html">Sale</a>
+<a href="account.html">My account</a><a href="cart.html">Basket</a></header>
+<main><h1>Checkout</h1><p><b>Create an account to continue.</b> Guest checkout is not available.</p>
+<table><tr><td>Subtotal</td><td>€89.00</td></tr><tr><td>Service &amp; handling fee</td><td>€4.95</td></tr>
+<tr><td>Total</td><td>€93.95</td></tr></table>
+<label><input type="checkbox" checked> Yes, send me offers and share my details with partners</label>
+<p><button class="btn" disabled>Place order</button></p></main>
+<div class="banner" id="cookie-banner" role="dialog">
+  <div style="flex:1">We use cookies to give you the best experience. By continuing you agree to our use of cookies.</div>
+  <a href="#" class="muted" id="cookie-settings-link" onclick="document.getElementById('cookie-layer').style.display='flex';return false;">settings</a>
+  <button class="btn" style="font-size:20px;padding:16px 48px" onclick="this.closest('.banner').remove()">ACCEPT ALL</button>
+</div>
+<div class="modal-bg" id="cookie-layer" role="dialog"><div class="modal">
+  <h3>Cookie preferences</h3>
+  <label><input type="checkbox" checked disabled> Necessary</label><br>
+  <label><input type="checkbox" checked> Personalised advertising</label><br>
+  <label><input type="checkbox" checked> Share data with partners</label><br><br>
+  <button class="btn" onclick="this.closest('.modal-bg').remove()">Save</button>
+</div></div></body></html>

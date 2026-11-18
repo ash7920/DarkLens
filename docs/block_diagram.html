@@ -1,0 +1,63 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  body { margin: 0; background: #fff; font-family: "Helvetica Neue", Arial, sans-serif; color: #1d2b24; }
+  .wrap { width: 1690px; padding: 28px 30px 22px; }
+  h1 { font-size: 26px; margin: 0 0 4px; font-weight: 700; }
+  .sub { color: #4b5d54; font-size: 15px; margin: 0 0 22px; }
+  .row { display: grid; grid-template-columns: 250px 250px 250px 270px 330px 230px; gap: 22px; align-items: stretch; }
+  .stage { background: #eef6f1; border: 2px solid #9fcbb2; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .stage h2 { font-size: 17px; margin: 0 0 2px; text-align: center; }
+  .card { background: #fff; border: 1.5px solid #b9dcc8; border-radius: 8px; padding: 9px 11px; font-size: 13.5px; line-height: 1.35; }
+  .card b { display: block; font-size: 14px; margin-bottom: 2px; }
+  .card.hl { border-color: #2f8f5b; box-shadow: inset 4px 0 0 #2f8f5b; }
+  .stage:not(:last-child)::after { content: ""; position: absolute; right: -20px; top: 50%; border: 9px solid transparent; border-left: 12px solid #2f8f5b; transform: translateY(-50%); }
+  .tax { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tax span { font-size: 11.5px; padding: 2px 7px; border-radius: 10px; color: #fff; }
+  .flow { display: grid; grid-template-columns: 250px 250px 250px 270px 330px 230px; gap: 22px; margin-top: 16px; }
+  .flow div { background: #bfe0cc; text-align: center; font-weight: 700; padding: 9px 4px; font-size: 15px; clip-path: polygon(0 0, 94% 0, 100% 50%, 94% 100%, 0 100%, 6% 50%); }
+  .arrow-down { text-align: center; color: #2f8f5b; font-size: 18px; line-height: 1; margin: -4px 0; }
+  .note { margin-top: 12px; color: #4b5d54; font-size: 13px; }
+</style></head>
+<body><div class="wrap">
+<h1>DarkLens: auditing EU e-commerce websites for dark patterns</h1>
+<p class="sub">Crawl-and-verify LLM pipeline. Revised scope: ~100 EU sites crawled and human-validated; pipeline scales to the 500-site list unchanged.</p>
+<div class="row">
+  <div class="stage"><h2>1. Data sources</h2>
+    <div class="card"><b>Existing labelled datasets</b>EC dataset (Yada 2022): 2,356 texts<br>Mathur 2019: 1,818 instances<br>AidUI/ContextDP: 501 screenshots</div>
+    <div class="card hl"><b>EU e-commerce websites</b>100 sites, 17 countries, 9 sectors (validated sample)<br>500-site list: same pipeline</div>
+    <div class="card"><b>Controlled test-bed</b>DarkMart (43 injected patterns) + FairMart clean twin</div>
+  </div>
+  <div class="stage"><h2>2. Crawling &amp; collection</h2>
+    <div class="card hl"><b>Playwright crawler</b>Priority-guided BFS (checkout &gt; cart &gt; product &gt; category); multilingual page classifier</div>
+    <div class="card"><b>Safe interaction</b>Opens cookie layers, pop-ups, expanders, add-to-cart. Never pays, orders or signs up</div>
+    <div class="card"><b>Per page state</b>HTML · visible text · UI elements (bbox, size, colour, checkbox state) · screenshot + metadata</div>
+  </div>
+  <div class="stage"><h2>3. Preprocessing</h2>
+    <div class="card"><b>HTML/text cleaning</b>Unicode normalisation, de-duplication, boilerplate filter</div>
+    <div class="card hl"><b>UI segment extraction</b>Each text / button / checkbox becomes a segment with its UI state: "[checkbox, PRE-TICKED]"</div>
+    <div class="card"><b>Visual cues</b>Choice-prominence asymmetry (big "Accept" vs tiny "reject")</div>
+    <div class="card"><b>Unified dataset</b>One schema for public data + crawl</div>
+  </div>
+  <div class="stage"><h2>4. Detection</h2>
+    <div class="card"><b>Candidate pre-filter</b>Rule lexicon + TF-IDF classifier (cuts LLM calls)</div>
+    <div class="card hl"><b>LLM: infer → verify</b>Infer category for each segment, then a verification pass rejects false positives (after DPDGPT)</div>
+    <div class="card"><b>Outputs</b>Category · evidence quote · confidence · explanation · location</div>
+    <div class="tax">
+      <span style="background:#E4572E">Urgency</span><span style="background:#F3A712">Scarcity</span><span style="background:#D81E5B">Confirmshaming</span><span style="background:#00A6A6">Pre-ticked add-ons</span><span style="background:#3D5A80">Difficult cancellation</span><span style="background:#6C5CE7">Social proof</span><span style="background:#8D6A9F">Interface interference</span><span style="background:#5C946E">Forced action</span>
+    </div>
+  </div>
+  <div class="stage"><h2>5. Evaluation</h2>
+    <div class="card"><b>Human ground truth</b>2 annotators label a stratified sample blind; 3rd adjudicates</div>
+    <div class="card hl"><b>Metrics</b>Precision · recall · F1 (binary + per category) · Cohen's κ (LLM vs human, human vs human)</div>
+    <div class="card"><b>Comparisons</b>Rules vs TF-IDF vs RoBERTa vs LLM · single-pass vs verify · test-bed · AidUI screenshots</div>
+
+  </div>
+  <div class="stage"><h2>6. Findings &amp; tool</h2>
+    <div class="card"><b>Prevalence</b>By category, page type, country, sector (lower bound)</div>
+    <div class="card"><b>Error analysis</b>FP/FN with the model's own explanation</div>
+    <div class="card hl"><b>DarkLens web app</b>Upload a screenshot or URL → verdict, marked locations, EU legal pointers</div>
+  </div>
+</div>
+<div class="flow"><div>1. Data sources</div><div>2. Crawl &amp; collect</div><div>3. Preprocess</div><div>4. LLM detection</div><div>5. Evaluation</div><div>6. Findings</div></div>
+</div></body></html>

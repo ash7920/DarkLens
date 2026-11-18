@@ -1,0 +1,142 @@
+\begin{thebibliography}{10}
+
+\bibitem{brignull2010}
+Harry Brignull.
+\newblock Deceptive patterns (formerly dark patterns).
+\newblock \url{https://www.deceptive.design}, 2010.
+
+\bibitem{gray2018}
+Colin~M. Gray, Yubo Kou, Bryan Battles, Joseph Hoggatt, and Austin~L. Toombs.
+\newblock The dark (patterns) side of {UX} design.
+\newblock In {\em Proceedings of the 2018 CHI Conference on Human Factors in
+  Computing Systems}, pages 1--14. ACM, 2018.
+
+\bibitem{mathur2019}
+Arunesh Mathur, Gunes Acar, Michael~J. Friedman, Eli Lucherini, Jonathan Mayer,
+  Marshini Chetty, and Arvind Narayanan.
+\newblock Dark patterns at scale: Findings from a crawl of 11{K} shopping
+  websites.
+\newblock {\em Proceedings of the ACM on Human-Computer Interaction},
+  3(CSCW):1--32, 2019.
+
+\bibitem{nouwens2020}
+Midas Nouwens, Ilaria Liccardi, Michael Veale, David Karger, and Lalana Kagal.
+\newblock Dark patterns after the {GDPR}: Scraping consent pop-ups and
+  demonstrating their influence.
+\newblock In {\em Proceedings of the 2020 CHI Conference on Human Factors in
+  Computing Systems}, pages 1--13. ACM, 2020.
+
+\bibitem{dsa2022}
+Regulation ({EU}) 2022/2065 of the {E}uropean {P}arliament and of the {C}ouncil
+  on a single market for digital services ({D}igital {S}ervices {A}ct).
+\newblock Official Journal of the European Union, L 277, 2022.
+
+\bibitem{ucpd2005}
+Directive 2005/29/{EC} concerning unfair business-to-consumer commercial
+  practices in the internal market ({U}nfair {C}ommercial {P}ractices
+  {D}irective).
+\newblock Official Journal of the European Union, L 149, 2005.
+
+\bibitem{crd2011}
+Directive 2011/83/{EU} on consumer rights ({C}onsumer {R}ights {D}irective).
+\newblock Official Journal of the European Union, L 304, 2011.
+
+\bibitem{yada2022}
+Yuki Yada, Jiaying Feng, Tsuneo Matsumoto, Nao Fukushima, Fuyuko Kido, and
+  Hayato Yamana.
+\newblock Dark patterns in e-commerce: A dataset and its baseline evaluations.
+\newblock In {\em 2022 IEEE International Conference on Big Data (Big Data)},
+  2022.
+\newblock arXiv:2211.06543.
+
+\bibitem{lin2026dpdgpt}
+Fengwei Lin, Liming Nie, Lei Xue, Xiaoxi Zhang, and Kelei Zhang.
+\newblock {DPDGPT}: Using multimodal large language models for automated
+  detection of dark patterns.
+\newblock {\em Information and Software Technology}, 190:107936, 2026.
+
+\bibitem{nwokeji2026}
+Joshua~C. Nwokeji, M.~Nkwo, T.~Ikwunne, and Meiyeer Yeerbo.
+\newblock {UX} experts vs. {AI}: Exploring the performance of large language
+  models and humans on detecting dark patterns.
+\newblock {\em AI and Ethics}, 2026.
+
+\bibitem{digeronimo2020}
+Linda Di~Geronimo, Larissa Braz, Enrico Fregnan, Fabio Palomba, and Alberto
+  Bacchelli.
+\newblock {UI} dark patterns and where to find them: A study on mobile
+  applications and user perception.
+\newblock In {\em Proceedings of the 2020 CHI Conference on Human Factors in
+  Computing Systems}, pages 1--14. ACM, 2020.
+
+\bibitem{yada2024}
+Yuki Yada et~al.
+\newblock Why is the user interface a dark pattern? {E}xplainable
+  auto-detection and its analysis, 2024.
+\newblock arXiv:2401.04119.
+
+\bibitem{mansur2023}
+S.~M.~Hasan Mansur, Sabiha Salma, Damilola Awofisayo, and Kevin Moran.
+\newblock {AidUI}: Toward automated recognition of dark patterns in user
+  interfaces.
+\newblock In {\em Proceedings of the 45th IEEE/ACM International Conference on
+  Software Engineering (ICSE)}, 2023.
+
+\bibitem{kran2025darkbench}
+Esben Kran, Jord Nguyen, Akash Kundu, Sami Jawhar, Jinsuk Park, and
+  Mateusz~Maria Jurewicz.
+\newblock {DarkBench}: Benchmarking dark patterns in large language models.
+\newblock In {\em The Thirteenth International Conference on Learning
+  Representations (ICLR)}, 2025.
+\newblock arXiv:2503.10728.
+
+\bibitem{ersoy2026}
+Devin Ersoy, Brandon Lee, Ananth Shreekumar, Arjun Arunasalam, Muhammad
+  Ibrahim, Antonio Bianchi, and Z.~Berkay Celik.
+\newblock Investigating the impact of dark patterns on {LLM}-based web agents.
+\newblock In {\em IEEE Symposium on Security and Privacy (S\&P)}, 2026.
+\newblock arXiv:2510.18113.
+
+\bibitem{tang2025gui}
+Jingyu Tang, Chaoran Chen, Jiawen Li, Zhiping Zhang, Bingcan Guo, Ibrahim
+  Khalilov, Simret~Araya Gebreegziabher, Bingsheng Yao, Dakuo Wang, Yanfang Ye,
+  Tianshi Li, Ziang Xiao, Yaxing Yao, and Toby Jia-Jun Li.
+\newblock Dark patterns meet {GUI} agents: {LLM} agent susceptibility to
+  manipulative interfaces and the role of human oversight, 2025.
+\newblock arXiv:2509.10723.
+
+\bibitem{ahuja2026dsa}
+Sanju Ahuja, Johanna Gunawan, Nataliia Bielova, and Cristiana~Teixeira Santos.
+\newblock Dark patterns and the {EU} digital services act: Mapping autonomy
+  violations and design factors.
+\newblock In {\em Proceedings of the 2026 CHI Conference on Human Factors in
+  Computing Systems}. ACM, 2026.
+
+\bibitem{smith2007tesseract}
+Ray Smith.
+\newblock An overview of the {T}esseract {OCR} engine.
+\newblock In {\em Ninth International Conference on Document Analysis and
+  Recognition (ICDAR)}, pages 629--633, 2007.
+
+\bibitem{liu2019roberta}
+Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer
+  Levy, Mike Lewis, Luke Zettlemoyer, and Veselin Stoyanov.
+\newblock {RoBERTa}: A robustly optimized {BERT} pretraining approach.
+\newblock {\em arXiv preprint arXiv:1907.11692}, 2019.
+
+\bibitem{cohen1960}
+Jacob Cohen.
+\newblock A coefficient of agreement for nominal scales.
+\newblock {\em Educational and Psychological Measurement}, 20(1):37--46, 1960.
+
+\bibitem{fleiss1971}
+Joseph~L. Fleiss.
+\newblock Measuring nominal scale agreement among many raters.
+\newblock {\em Psychological Bulletin}, 76(5):378--382, 1971.
+
+\bibitem{landis1977}
+J.~Richard Landis and Gary~G. Koch.
+\newblock The measurement of observer agreement for categorical data.
+\newblock {\em Biometrics}, 33(1):159--174, 1977.
+
+\end{thebibliography}

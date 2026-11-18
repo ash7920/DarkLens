@@ -1,0 +1,19 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Membership | FairMart</title>
+<link rel="stylesheet" href="../shop.css"></head><body>
+<header><a class="logo" href="index.html">FairMart</a><a href="category-sale.html">Sale</a>
+<a href="account.html">My account</a><a href="cart.html">Basket</a></header>
+<main><h1>Cancel membership</h1><p>Your membership will end at the close of the current billing period.</p>
+<button class="btn secondary">Cancel membership</button> <button class="btn secondary">Keep membership</button></main>
+<div class="banner" id="cookie-banner" role="dialog">
+  <div style="flex:1">We use cookies. Necessary cookies are always on; you can choose the rest.</div>
+  <button class="btn secondary" onclick="this.closest('.banner').remove()">Reject all</button>
+  <button class="btn secondary" onclick="document.getElementById('cookie-layer').style.display='flex'">Cookie settings</button>
+  <button class="btn secondary" onclick="this.closest('.banner').remove()">Accept all</button>
+</div>
+<div class="modal-bg" id="cookie-layer" role="dialog"><div class="modal">
+  <h3>Cookie preferences</h3>
+  <label><input type="checkbox" checked disabled> Necessary</label><br>
+  <label><input type="checkbox"> Personalised advertising</label><br>
+  <label><input type="checkbox"> Share data with partners</label><br><br>
+  <button class="btn secondary" onclick="this.closest('.modal-bg').remove()">Save</button>
+</div></div></body></html>

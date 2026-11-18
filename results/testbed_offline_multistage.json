@@ -1,0 +1,88 @@
+{
+  "engine": "offline",
+  "mode": "multistage",
+  "detector": {
+    "engine": "offline",
+    "mode": "rules+tfidf",
+    "provider": null,
+    "model": "tfidf_lr + rules",
+    "ocr": true
+  },
+  "ground_truth_instances": 43,
+  "crawl_coverage": {
+    "darkshop": {
+      "homepage": 1,
+      "cart": 1,
+      "checkout": 1,
+      "product": 6,
+      "category": 1,
+      "account": 1,
+      "subscription": 1
+    },
+    "fairshop": {
+      "homepage": 1,
+      "cart": 1,
+      "checkout": 1,
+      "product": 6,
+      "category": 1,
+      "account": 1,
+      "subscription": 1
+    },
+    "gt_instances_on_crawled_pages": 43
+  },
+  "instance_recall": 1.0,
+  "instance_recall_reachable": 1.0,
+  "darkshop_dark_predictions": 165,
+  "darkshop_prediction_precision": 0.8484848484848485,
+  "fairshop_false_positives": 9,
+  "fairshop_false_positive_unique": 9,
+  "fairshop_fp_examples": [
+    "obstruction: Cancel membership",
+    "preselection: Save",
+    "scarcity: In stock"
+  ],
+  "per_category": {
+    "urgency": {
+      "total": 4,
+      "found": 4,
+      "reachable": 4
+    },
+    "interface_interference": {
+      "total": 2,
+      "found": 2,
+      "reachable": 2
+    },
+    "preselection": {
+      "total": 12,
+      "found": 12,
+      "reachable": 12
+    },
+    "scarcity": {
+      "total": 4,
+      "found": 4,
+      "reachable": 4
+    },
+    "social_proof": {
+      "total": 12,
+      "found": 12,
+      "reachable": 12
+    },
+    "confirmshaming": {
+      "total": 7,
+      "found": 7,
+      "reachable": 7
+    },
+    "forced_action": {
+      "total": 1,
+      "found": 1,
+      "reachable": 1
+    },
+    "obstruction": {
+      "total": 1,
+      "found": 1,
+      "reachable": 1
+    }
+  },
+  "missed": [],
+  "prefilter_reduction": 0.456
+}
