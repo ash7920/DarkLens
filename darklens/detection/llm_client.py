@@ -19,7 +19,9 @@ import base64
 import hashlib
 import json
 import os
+import random
 import re
+import sys
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -116,7 +118,11 @@ class LLMClient:
 
     # ------------------------------------------------------------------ public
     def complete_json(self, system: str, user: str, images: list[bytes] | None = None,
-                      max_tokens: int = 4096, retries: int = 4) -> LLMResponse:
+                      max_tokens: int = 4096, retries: int | None = None) -> LLMResponse:
+        """Retries transient errors (503 overloaded, 429 rate limit, 5xx, network) with backoff
+        5, 10, 20, 40, 60, 60... s (or the provider's Retry-After). Default 8 attempts (~4 min of
+        waiting), so long experiment runs ride out short overloads; set DARKLENS_RETRIES to change."""
+        retries = retries or int(os.getenv("DARKLENS_RETRIES", "8"))
         images = images or []
         key = hashlib.sha256(json.dumps([self.provider, self.model, system, user, self.temperature]).encode()
                              + b"".join(hashlib.sha256(i).digest() for i in images)).hexdigest()
@@ -142,10 +148,19 @@ class LLMClient:
                 return LLMResponse(text, data, self.provider, self.model, lat, False, itok, otok)
             except (requests.RequestException, LLMError) as exc:
                 last = exc
-                wait = 2 ** attempt * 3
-                status = getattr(getattr(exc, "response", None), "status_code", None)
-                if status in (400, 401, 403, 404):
-                    break  # not retryable
+                resp = getattr(exc, "response", None)
+                status = getattr(resp, "status_code", None)
+                if status in (400, 401, 403, 404) or attempt == retries - 1:
+                    break  # not retryable, or out of attempts
+                wait = min(60, 5 * 2 ** attempt)
+                try:
+                    wait = min(120, max(wait, int(resp.headers.get("Retry-After", 0))))
+                except (AttributeError, TypeError, ValueError):
+                    pass
+                wait += random.uniform(0, 2)
+                reason = {503: "overloaded", 429: "rate limit"}.get(status, f"error {status or type(exc).__name__}")
+                print(f"  ! {self.provider} {self.model}: {reason}, retrying in {wait:.0f}s "
+                      f"(attempt {attempt + 2}/{retries})", file=sys.stderr, flush=True)
                 time.sleep(wait)
         raise LLMError(self._explain(last))
 

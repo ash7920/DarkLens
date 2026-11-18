@@ -32,6 +32,8 @@ from pydantic import BaseModel
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 os.chdir(ROOT)  # models/, data/ and results/ are resolved relative to the repo root
+# Interactive use: give up after ~1 minute of provider overload instead of the batch default (~4 min).
+os.environ.setdefault("DARKLENS_RETRIES", "4")
 
 from darklens.detection.detector import DarkPatternDetector  # noqa: E402
 from darklens.detection.llm_client import LLMError, available_providers  # noqa: E402
