@@ -325,7 +325,10 @@ binary F1~=~\CVlrF{} under grouped cross-validation, matching the 0.960 Yada et 
 on a random split~\cite{yada2022}. The harder question is \emph{which} pattern: macro-F1 across classes is
 \CVlrMacro{} (SVM \CVsvmMacro{}), and Fig.~\ref{fig:percat} shows the drop on rare classes---pre-ticked
 add-ons, difficult cancellation and interface interference---whose wording overlaps with ordinary checkout
-copy. The LLM pipeline reaches \LLMtextMacro{} macro-F1; verification changes binary precision from
+copy. On the held-out split, fine-tuned RoBERTa-base reaches binary F1~=~\RobF{} and macro-F1~=~\RobMacro{}, essentially
+level with TF-IDF (\HeldLRMacro{}): fine-tuning a language model on a few thousand snippets does not separate the
+rare classes better than lexical features. The LLM pipeline, with no task-specific training, reaches the highest
+macro-F1 (\LLMtextMacro{}) at a slightly lower binary F1 (\LLMtextF{}); verification raises binary precision from
 \LLMstageOneP{} to \LLMtextP{}.
 
 \begin{table}[t]
