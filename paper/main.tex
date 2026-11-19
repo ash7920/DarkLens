@@ -12,14 +12,6 @@
 \usepackage{url}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-% New row of author blocks (from IEEE's conference template on Overleaf)
-\makeatletter
-\newcommand{\linebreakand}{%
-  \end{@IEEEauthorhalign}
-  \hfill\mbox{}\par
-  \mbox{}\hfill\begin{@IEEEauthorhalign}
-}
-\makeatother
 \newcommand{\pend}{\textcolor{red}{[pending]}}
 \makeatletter\newcommand{\inputtab}[1]{\@@input #1 }\makeatother
 \input{generated/macros.tex}
@@ -60,14 +52,7 @@ askfordevanshi@gmail.com}
 \textit{College of Engineering}\\
 Mumbai, India\\
 \textcolor{red}{[email]}}
-\linebreakand
-\IEEEauthorblockN{Dr.\ Kranti Ghag}
-\IEEEauthorblockA{\textit{Dept. of Computer}\\
-\textit{Engineering}\\
-\textit{Dwarkadas J. Sanghvi}\\
-\textit{College of Engineering}\\
-Mumbai, India\\
-\textcolor{red}{[email]}}}
+}
 
 \maketitle
 
