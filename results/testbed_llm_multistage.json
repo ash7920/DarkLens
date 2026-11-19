@@ -6,7 +6,7 @@
     "mode": "multistage",
     "provider": "gemini",
     "model": "gemini-3.5-flash-lite",
-    "ocr": false
+    "ocr": true
   },
   "ground_truth_instances": 43,
   "crawl_coverage": {
@@ -30,13 +30,15 @@
     },
     "gt_instances_on_crawled_pages": 43
   },
-  "instance_recall": 0.9767441860465116,
-  "instance_recall_reachable": 0.9767441860465116,
-  "darkshop_dark_predictions": 173,
-  "darkshop_prediction_precision": 0.8439306358381503,
-  "fairshop_false_positives": 0,
-  "fairshop_false_positive_unique": 0,
-  "fairshop_fp_examples": [],
+  "instance_recall": 0.9534883720930233,
+  "instance_recall_reachable": 0.9534883720930233,
+  "darkshop_dark_predictions": 184,
+  "darkshop_prediction_precision": 0.8532608695652174,
+  "fairshop_false_positives": 1,
+  "fairshop_false_positive_unique": 1,
+  "fairshop_fp_examples": [
+    "obstruction: Keep membership"
+  ],
   "per_category": {
     "urgency": {
       "total": 4,
@@ -45,7 +47,7 @@
     },
     "interface_interference": {
       "total": 2,
-      "found": 2,
+      "found": 1,
       "reachable": 2
     },
     "preselection": {
@@ -80,7 +82,8 @@
     }
   },
   "missed": [
-    "checkout | preselection | Service & handling fee €4.95 (only shown at checkout)"
+    "checkout | preselection | Service & handling fee €4.95 (only shown at checkout)",
+    "subscription-cancel | interface_interference | Keep my benefits (large) vs decline (small grey link)"
   ],
-  "prefilter_reduction": 0.456
+  "prefilter_reduction": 0.459
 }
