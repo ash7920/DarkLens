@@ -17,6 +17,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from .detection.detector import DarkPatternDetector
+from .detection.llm_client import LLMError
 from .preprocessing.lexicon import rule_label
 from .preprocessing.segments import load_crawl, page_segments
 from .taxonomy import NOT_DARK
@@ -68,6 +69,9 @@ def run(crawl_dir: str | Path, out_path: str | Path, engine: str = "auto", mode:
     stats = defaultdict(int)
     t0 = time.time()
     fout = None if dry_run else open(out_path, "w", encoding="utf-8")
+    failed_sites: list[str] = []
+    completed_sites = 0
+    stopped_reason = None
     try:
         for n_site, (site, recs) in enumerate(by_site.items(), 1):
             per_state, unique = [], {}
@@ -96,8 +100,20 @@ def run(crawl_dir: str | Path, out_path: str | Path, engine: str = "auto", mode:
             first = recs[0]
             ctx = {"site": site, "country": first.get("country"), "language": first.get("language"),
                    "input": "distinct elements from all crawled pages of this shop, in order of first appearance"}
-            preds = {p["id"]: p for p in det.classify_segments(items, ctx)} if items else {}
+            try:
+                preds = {p["id"]: p for p in det.classify_segments(items, ctx)} if items else {}
+            except LLMError as exc:
+                # One shop failing (long overload, network drop) must not stop the whole run.
+                # Its rows are left out, so it is never counted as "no dark patterns";
+                # re-running the same command retries it, reusing every saved answer.
+                failed_sites.append(site)
+                print(f"[{n_site}/{len(by_site)}] {site}: FAILED, will need a re-run ({exc})", flush=True)
+                if "DAILY" in str(exc):
+                    stopped_reason = str(exc)
+                    break
+                continue
             n_dark = sum(1 for p in preds.values() if p["label"] != NOT_DARK)
+            completed_sites += 1
             print(f"[{n_site}/{len(by_site)}] {site}: {len(items)} distinct elements, {n_dark} flagged", flush=True)
             for rec, segs, keep in per_state:
                 for s, k in zip(segs, keep):
@@ -120,9 +136,15 @@ def run(crawl_dir: str | Path, out_path: str | Path, engine: str = "auto", mode:
                "elapsed_s": round(time.time() - t0, 1), "detector": det.info(), "batch_size": batch_size,
                "prefilter": use_prefilter, "prefilter_threshold": prefilter_threshold,
                "llm_calls": det.llm.calls if det.llm else 0,
-               "llm_usage": det.llm.usage if det.llm else None, "dry_run": dry_run}
+               "llm_usage": det.llm.usage if det.llm else None, "dry_run": dry_run,
+               "sites_completed": completed_sites,
+               "failed_sites": failed_sites, "stopped_reason": stopped_reason}
     summary["prefilter_reduction"] = round(1 - stats["sent_to_detector"] / max(1, stats["segments"]), 3)
     summary["dedup_reduction"] = round(1 - stats["unique_sent"] / max(1, stats["sent_to_detector"]), 3)
+    if failed_sites and not dry_run:
+        print(f"\n{len(failed_sites)} shop(s) not finished"
+              f"{' (daily quota used up: ' + stopped_reason + ')' if stopped_reason else ''}. "
+              f"Re-run the same command later; finished shops are reused instantly.", flush=True)
     if dry_run:
         summary["note"] = (f"needs about {stats['infer_calls']} detection calls plus verification calls for "
                            f"flagged elements (typically a further 30-60%); already-answered calls are free")
