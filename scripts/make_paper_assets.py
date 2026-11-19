@@ -145,8 +145,8 @@ rows = [
     brow("Rule lexicon", g(H, "rules_binary"), g(H, "rules_multiclass")),
     brow("TF-IDF + LR", g(H, "tfidf_lr_binary"), g(H, "tfidf_lr_multiclass")),
     brow("RoBERTa-base", rob_b, rob_m),
-    brow("LLM, single pass", g(llm_single, "binary"), g(llm_single, "multiclass")),
-    brow("LLM, infer only$^\\dagger$", g(llm_multi, "stage1_only", "binary"), g(llm_multi, "stage1_only", "multiclass")),
+    brow("LLM, infer only$^\\dagger$", g(llm_single, "binary") or g(llm_multi, "stage1_only", "binary"),
+         g(llm_single, "multiclass") or g(llm_multi, "stage1_only", "multiclass")),
     brow("LLM, infer + verify", g(llm_multi, "binary"), g(llm_multi, "multiclass")),
 ]
 (GEN / "tab_text.tex").write_text("\n".join(rows) + "\n")

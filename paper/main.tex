@@ -84,7 +84,7 @@ injected patterns with a clean twin site, and a crawl of \CrawlAttempted{} EU re
 labelled by two annotators. A grouped cross-validated TF-IDF baseline already reaches F1~=~\CVlrF{} on binary text
 detection but only \CVlrMacro{} macro-F1 across categories, and it raises false alarms on neutral text
 such as ``In stock'' when the page context is missing. On the test-bed the LLM pipeline finds \TbLLMFound{} of
-\TbN{} injected patterns with \TbLLMFP{} false alarms on the clean twin, against \TbOffFP{} for the lexical engine. It reaches \LLMtextMacro{} macro-F1
+\TbN{} injected patterns and raises \TbLLMFP{} false alarm on the clean twin, against \TbOffFP{} for the lexical engine. It reaches \LLMtextMacro{} macro-F1
 on held-out text, \WebLLMF{} F1 on AidUI web screenshots, and F1~=~\CrawlF{} (Cohen's $\kappa$~=~\CrawlKappa{})
 against human ground truth on the live crawl, where \CrawlAny{} of sites show at least one pattern. We
 release the crawler, the test-bed, the annotation tool and a web interface that marks dark patterns on an
@@ -346,7 +346,7 @@ copy. The LLM pipeline reaches \LLMtextMacro{} macro-F1; verification changes bi
 \begin{table}[t]
 \centering
 \caption{Text detection on the EC dataset. P/R/F1: binary (dark vs.\ not). Macro-F1: over dark classes.
-$^\dagger$Stage-1 output of the same run.}
+$^\dagger$Single pass: the infer stage alone, without verification.}
 \label{tab:text}
 \footnotesize
 \begin{tabular}{lcccc}
@@ -398,10 +398,14 @@ boxes and the surcharged default variant, which text alone cannot), with \TbOffP
 predictions matching an injected instance. On FairMart it raises \TbOffFP{} false alarms, all from the TF-IDF
 model reading neutral words out of context: ``In stock'' (scarcity), ``Cancel membership''
 (difficult cancellation) and ``Save'' (pre-ticked add-on). These are exactly the context errors the LLM
-stage is meant to remove, and it does: with the LLM, DarkLens finds \TbLLMFound{} of the \TbN{} instances and
-raises \TbLLMFP{} false alarms on FairMart. Its single miss is the \texteuro4.95 ``service \& handling'' fee that
-appears only at checkout---a hidden cost that reads as an ordinary price line without knowing it was absent from
-the basket. The pre-filter sent \TbOffPrefilter{} fewer segments to the detector. Because we
+stage is meant to remove, and it largely does: with the LLM, DarkLens finds \TbLLMFound{} of the \TbN{} instances
+and raises \TbLLMFP{} false alarm on FairMart, reading the neutral ``Keep membership'' button on its cancellation page as
+difficult cancellation. Its two misses are the \texteuro4.95 ``service \& handling'' fee that appears only at
+checkout---a hidden cost that reads as an ordinary price line unless one knows it was absent from the basket---and
+DarkMart's oversized ``Keep my benefits'' button, a visual asymmetry the text pipeline can only describe in words.
+Presenting elements page by page instead of once per site found 42 of 43 instances with no false alarm, but needed
+about ten times as many LLM calls; we use per-site de-duplication because it makes a 100-site crawl feasible on a
+free API tier. The pre-filter sent \TbOffPrefilter{} fewer segments to the detector. Because we
 designed the test-bed while developing the rules, it validates function rather than measuring
 generalisation.
 
