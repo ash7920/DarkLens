@@ -133,6 +133,7 @@ class LLMClient:
                                c.get("input_tokens"), c.get("output_tokens"))
 
         last = None
+        bad_answers = 0
         for attempt in range(retries):
             try:
                 t0 = time.time()
@@ -152,7 +153,11 @@ class LLMClient:
                 status = getattr(resp, "status_code", None)
                 body = (getattr(resp, "text", "") or "").lower()
                 daily = status == 429 and ("perday" in body or "per day" in body or "daily" in body)
-                if status in (400, 401, 403, 404) or daily or attempt == retries - 1:
+                # An unusable answer (empty, cut off, not JSON) usually repeats for the same request:
+                # retry once, then give up instead of burning all the overload retries.
+                if resp is None and isinstance(exc, LLMError):
+                    bad_answers += 1
+                if status in (400, 401, 403, 404) or daily or bad_answers >= 2 or attempt == retries - 1:
                     self._daily = daily
                     break  # not retryable (or daily quota gone), or out of attempts
                 wait = min(60, 5 * 2 ** attempt)
@@ -171,6 +176,8 @@ class LLMClient:
         """Turn a provider error into a sentence a user can act on."""
         status = getattr(getattr(exc, "response", None), "status_code", None)
         name = f"{self.provider} model '{self.model}'"
+        if status is None and isinstance(exc, LLMError):
+            return f"The {name} returned an unusable answer: {exc}"
         if status == 503:
             return (f"The {name} is overloaded right now (503 from the provider). Wait a few minutes, "
                     f"or set DARKLENS_MODEL to a lighter model.")
@@ -206,10 +213,16 @@ class LLMClient:
         }
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
         d = self._post(url, {"x-goog-api-key": key, "Content-Type": "application/json"}, body)
+        cand = (d.get("candidates") or [{}])[0]
+        finish = cand.get("finishReason", "")
         try:
-            text = "".join(p.get("text", "") for p in d["candidates"][0]["content"]["parts"])
-        except (KeyError, IndexError):
-            raise LLMError(f"Gemini returned no content: {json.dumps(d)[:300]}")
+            text = "".join(p.get("text", "") for p in cand["content"]["parts"])
+        except (KeyError, IndexError, TypeError):
+            block = (d.get("promptFeedback") or {}).get("blockReason", "")
+            raise LLMError(f"Gemini returned no content (finishReason={finish or '-'}"
+                           f"{', blocked: ' + block if block else ''})")
+        if finish == "MAX_TOKENS":
+            raise LLMError("Gemini's answer was cut off at the maximum length (finishReason=MAX_TOKENS)")
         u = d.get("usageMetadata", {})
         return text, u.get("promptTokenCount"), u.get("candidatesTokenCount")
 

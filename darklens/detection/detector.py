@@ -260,7 +260,8 @@ class DarkPatternDetector:
     def _llm_tile(self, tile: Image.Image, y0: int, lines: list[dict], context) -> list[dict]:
         png = to_png_bytes(tile)
         by_id = {l["id"]: l for l in lines}
-        r = self.llm.complete_json(SYSTEM, infer_screenshot_prompt(lines[:250], self.shots, context), [png])
+        r = self.llm.complete_json(SYSTEM, infer_screenshot_prompt(lines[:250], self.shots, context), [png],
+                                   max_tokens=8192)
         raw = r.data.get("detections", []) if isinstance(r.data, dict) else []
         dets = []
         for i, d in enumerate(raw):

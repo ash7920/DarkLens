@@ -24,6 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from darklens.detection.detector import DarkPatternDetector  # noqa: E402
+from darklens.detection.llm_client import LLMError  # noqa: E402
 from darklens.evaluation.metrics import multilabel_image_metrics  # noqa: E402
 from darklens.preprocessing.datasets import load_aidui  # noqa: E402
 
@@ -46,10 +47,19 @@ def main():
     sweep = [float(x) for x in a.sweep.split(",") if x]
     det = DarkPatternDetector(engine=a.engine, mode=a.mode, ocr_threshold=min(sweep) if sweep else a.ocr_threshold)
     raw = []
-    preds, gold, rows = [], [], []
+    preds, gold, rows, failed = [], [], [], []
     t0 = time.time()
     for i, r in enumerate(df.itertuples(), 1):
-        res = det.analyze_screenshot(Path(r.image_path).read_bytes())
+        try:
+            res = det.analyze_screenshot(Path(r.image_path).read_bytes())
+        except LLMError as exc:
+            # one unusable answer must not stop the benchmark; the image is reported, not scored
+            failed.append({"item_id": r.item_id, "error": str(exc)[:200]})
+            print(f"  ! {r.item_id}: skipped ({exc})", flush=True)
+            if "DAILY" in str(exc):
+                print("Daily quota used up: re-run the same command after the reset.", flush=True)
+                return
+            continue
         raw.append(res["detections"])
         p = {d["label"] for d in res["detections"]}
         preds.append(p)
@@ -68,7 +78,8 @@ def main():
         return
     m = multilabel_image_metrics(gold, preds, AIDUI_CATS)
     # categories outside AidUI's label set cannot be scored per category; they still count for binary
-    m.update({"split": a.split, "n_images": len(df), "engine": det.info(), "mode": a.mode,
+    m.update({"split": a.split, "n_images": len(gold), "n_failed": len(failed), "failed": failed,
+              "engine": det.info(), "mode": a.mode,
               "seconds_per_image": round((time.time() - t0) / max(1, len(df)), 2),
               "llm_calls": det.llm.calls if det.llm else 0,
               "llm_usage": det.llm.usage if det.llm else None})
