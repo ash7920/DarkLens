@@ -238,7 +238,14 @@ async function nextItem() {
   const showEn = en && en.toLowerCase() !== (annItem.text || "").trim().toLowerCase();
   $("#aEn").hidden = !showEn;
   $("#aEn").textContent = showEn ? `In English: ${en}` : "";
+  const lang = (annItem.language || "").toLowerCase();
+  const tr = $("#aTr");
+  tr.hidden = !!showEn || lang === "en";
+  if (!tr.hidden) tr.href = `https://translate.google.com/?sl=auto&tl=en&op=translate&text=${encodeURIComponent(annItem.text || "")}`;
   $("#aMeta").textContent = annItem.url || "";
+  const live = $("#liveLink");
+  live.hidden = !/^https?:\/\//.test(annItem.url || "");
+  if (!live.hidden) live.href = annItem.url;
   const crop = $("#crop");
   crop.innerHTML = ""; crop.className = "crop";
   const link = $("#fullLink");
@@ -258,7 +265,7 @@ async function nextItem() {
         crop.textContent = ""; crop.classList.remove("loading"); crop.appendChild(img);
         if (!shown) {
           const n = document.createElement("p"); n.className = "crop-note";
-          n.textContent = "This item can't be pointed out in the screenshot (it is hidden, inside a closed menu, or further down than the screenshot reaches). Judge it from the text; the picture just shows which page it was on.";
+          n.textContent = "This item can't be seen in the screenshot (it was hidden, still loading, or further down than the screenshot reaches). Judge it from the text, or tap “Open the live page” to look at the real shop. The picture only shows which page it was on.";
           crop.appendChild(n);
         }
       };

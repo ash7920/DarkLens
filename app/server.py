@@ -280,9 +280,10 @@ def _png(img, max_w: int, headers: dict | None = None) -> Response:
     return Response(buf.getvalue(), media_type="image/png", headers=h)
 
 
-def _item_box(item, W: int, H: int):
+def _item_box(item, img):
     """The item's box clipped to the screenshot, or None when the item cannot be seen in it
     (hidden element, closed menu, or below the point where the screenshot ends)."""
+    W, H = img.size
     b = item.get("bbox")
     if not b or len(b) != 4:
         return None
@@ -294,7 +295,17 @@ def _item_box(item, W: int, H: int):
         return None
     if (x1 - x0) * (y1 - y0) < 0.3 * w * h:  # mostly outside the picture
         return None
+    if _blank(img, (max(0, x0 - 60), max(0, y0 - 60), min(W, x1 + 60), min(H, y1 + 60))):
+        return None
     return x0, y0, x1, y1
+
+
+def _blank(img, region) -> bool:
+    """True when the screenshot is empty around the item (content that had not loaded when the
+    picture was taken, or a page too long for the browser to draw): an outline there means nothing."""
+    from PIL import ImageStat
+    stat = ImageStat.Stat(img.crop(region).convert("L"))
+    return stat.stddev[0] < 4.0
 
 
 def _outline(img, box, color, width):
@@ -316,7 +327,7 @@ def annotate_crop(segment_id: str, narrow: int = 0):
     item = _sample_item(segment_id)
     img = _screenshot_for(item)
     W, H = img.size
-    box = _item_box(item, W, H)
+    box = _item_box(item, img)
     if box is None:  # cannot point at it: show the top of the page and say so
         return _png(img.crop((0, 0, W, min(H, 900))), 1100, {"X-Item-Shown": "0"})
     x0, y0, x1, y1 = box
@@ -342,7 +353,7 @@ def annotate_full(segment_id: str):
     """The whole page screenshot with the item outlined (opened in a new tab)."""
     item = _sample_item(segment_id)
     img = _screenshot_for(item)
-    box = _item_box(item, *img.size)
+    box = _item_box(item, img)
     if box:
         img = _outline(img, box, (220, 30, 30), max(6, round(img.width / 200)))
     return _png(img, 1400)
