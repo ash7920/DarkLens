@@ -245,11 +245,28 @@ async function nextItem() {
   if (annItem.screenshot) {
     const sid = encodeURIComponent(annItem.segment_id);
     crop.classList.add("loading"); crop.textContent = "Loading the page around this item...";
-    const img = new Image();
-    img.alt = "The part of the web page around this item, outlined";
-    img.onload = () => { crop.textContent = ""; crop.classList.remove("loading"); crop.appendChild(img); };
-    img.onerror = () => { crop.classList.remove("loading"); crop.classList.add("none"); crop.textContent = "Screenshot not available for this item"; };
-    img.src = `/api/annotate/crop?segment_id=${sid}`;
+    const narrow = window.innerWidth < 760 ? 1 : 0;
+    const want = annItem.segment_id;
+    fetch(`/api/annotate/crop?segment_id=${sid}&narrow=${narrow}`).then(async (r) => {
+      if (!r.ok) throw new Error(r.status);
+      const shown = r.headers.get("X-Item-Shown") !== "0";
+      const url = URL.createObjectURL(await r.blob());
+      if (!annItem || annItem.segment_id !== want) return;  // moved on meanwhile
+      const img = new Image();
+      img.alt = shown ? "The part of the web page around this item, outlined" : "The top of the web page this item came from";
+      img.onload = () => {
+        crop.textContent = ""; crop.classList.remove("loading"); crop.appendChild(img);
+        if (!shown) {
+          const n = document.createElement("p"); n.className = "crop-note";
+          n.textContent = "This item can't be pointed out in the screenshot (it is hidden, inside a closed menu, or further down than the screenshot reaches). Judge it from the text; the picture just shows which page it was on.";
+          crop.appendChild(n);
+        }
+      };
+      img.src = url;
+    }).catch(() => {
+      if (!annItem || annItem.segment_id !== want) return;
+      crop.classList.remove("loading"); crop.classList.add("none"); crop.textContent = "Screenshot not available for this item";
+    });
     link.href = `/api/annotate/full?segment_id=${sid}`; link.hidden = false;
   } else {
     crop.classList.add("none"); crop.textContent = "No screenshot for this item"; link.hidden = true;

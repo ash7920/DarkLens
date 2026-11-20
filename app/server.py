@@ -269,51 +269,82 @@ def _screenshot_for(item: dict):
     return Image.open(p).convert("RGB")
 
 
-def _png(img, max_w: int) -> Response:
+def _png(img, max_w: int, headers: dict | None = None) -> Response:
     import io
     if img.width > max_w:
         img = img.resize((max_w, int(img.height * max_w / img.width)))
     buf = io.BytesIO()
     img.save(buf, format="PNG", optimize=True)
-    return Response(buf.getvalue(), media_type="image/png", headers={"Cache-Control": "max-age=86400"})
+    h = {"Cache-Control": "max-age=3600", "Access-Control-Expose-Headers": "X-Item-Shown"}
+    h.update(headers or {})
+    return Response(buf.getvalue(), media_type="image/png", headers=h)
+
+
+def _item_box(item, W: int, H: int):
+    """The item's box clipped to the screenshot, or None when the item cannot be seen in it
+    (hidden element, closed menu, or below the point where the screenshot ends)."""
+    b = item.get("bbox")
+    if not b or len(b) != 4:
+        return None
+    x, y, w, h = [int(v) for v in b]
+    if w < 2 or h < 2:
+        return None
+    x0, y0, x1, y1 = max(0, x), max(0, y), min(W, x + w), min(H, y + h)
+    if x1 - x0 < 2 or y1 - y0 < 2:
+        return None
+    if (x1 - x0) * (y1 - y0) < 0.3 * w * h:  # mostly outside the picture
+        return None
+    return x0, y0, x1, y1
+
+
+def _outline(img, box, color, width):
+    """Dim everything except the item and draw a thick frame round it."""
+    from PIL import Image as _I, ImageDraw
+    x0, y0, x1, y1 = box
+    shade = _I.new("RGBA", img.size, (15, 20, 25, 95))
+    ImageDraw.Draw(shade).rectangle((x0, y0, x1, y1), fill=(0, 0, 0, 0))
+    out = _I.alpha_composite(img.convert("RGBA"), shade).convert("RGB")
+    pad = width + 2
+    ImageDraw.Draw(out).rectangle((x0 - pad, y0 - pad, x1 + pad, y1 + pad), outline=color, width=width)
+    return out
 
 
 @app.get("/api/annotate/crop")
-def annotate_crop(segment_id: str):
+def annotate_crop(segment_id: str, narrow: int = 0):
     """The part of the page around the item, with the item outlined: cut out here so it looks the
-    same on any screen and loads fast over a slow link."""
-    from PIL import ImageDraw
+    same on any screen and loads fast over a slow link. narrow=1 gives a tighter cut for phones."""
     item = _sample_item(segment_id)
     img = _screenshot_for(item)
     W, H = img.size
-    bbox = item.get("bbox")
-    if not bbox or len(bbox) != 4 or bbox[2] <= 0 or bbox[3] <= 0:
-        return _png(img.crop((0, 0, W, min(H, 900))), 1100)
-    x, y, w, h = [int(v) for v in bbox]
-    x0, y0 = max(0, x - 380), max(0, y - 260)
-    x1, y1 = min(W, x + w + 380), min(H, y + h + 260)
-    if x1 - x0 < 900:  # keep enough page around the item to understand it
-        grow = (900 - (x1 - x0)) // 2
-        x0, x1 = max(0, x0 - grow), min(W, x1 + grow)
-    if y1 - y0 < 480:
-        grow = (480 - (y1 - y0)) // 2
-        y0, y1 = max(0, y0 - grow), min(H, y1 + grow)
-    crop = img.crop((x0, y0, x1, y1))
-    d = ImageDraw.Draw(crop)
-    d.rectangle((x - x0 - 4, y - y0 - 4, x - x0 + w + 4, y - y0 + h + 4), outline=(13, 107, 107), width=4)
-    return _png(crop, 1200)
+    box = _item_box(item, W, H)
+    if box is None:  # cannot point at it: show the top of the page and say so
+        return _png(img.crop((0, 0, W, min(H, 900))), 1100, {"X-Item-Shown": "0"})
+    x0, y0, x1, y1 = box
+    if y1 - y0 > 1100:  # very tall item: keep its top part
+        y1 = y0 + 1100
+    mx, my, minw, minh = (140, 200, 560, 420) if narrow else (380, 260, 900, 480)
+    cx0, cy0 = max(0, x0 - mx), max(0, y0 - my)
+    cx1, cy1 = min(W, x1 + mx), min(H, y1 + my)
+    if cx1 - cx0 < minw:
+        g = (minw - (cx1 - cx0)) // 2
+        cx0, cx1 = max(0, cx0 - g), min(W, cx1 + g)
+    if cy1 - cy0 < minh:
+        g = (minh - (cy1 - cy0)) // 2
+        cy0, cy1 = max(0, cy0 - g), min(H, cy1 + g)
+    crop = img.crop((cx0, cy0, cx1, cy1))
+    lw = max(4, round((cx1 - cx0) / 110))  # stays visible after the picture is shrunk to fit
+    crop = _outline(crop, (x0 - cx0, y0 - cy0, x1 - cx0, y1 - cy0), (13, 140, 140), lw)
+    return _png(crop, 900 if narrow else 1200, {"X-Item-Shown": "1"})
 
 
 @app.get("/api/annotate/full")
 def annotate_full(segment_id: str):
     """The whole page screenshot with the item outlined (opened in a new tab)."""
-    from PIL import ImageDraw
     item = _sample_item(segment_id)
     img = _screenshot_for(item)
-    bbox = item.get("bbox")
-    if bbox and len(bbox) == 4:
-        x, y, w, h = [int(v) for v in bbox]
-        ImageDraw.Draw(img).rectangle((x - 6, y - 6, x + w + 6, y + h + 6), outline=(220, 30, 30), width=6)
+    box = _item_box(item, *img.size)
+    if box:
+        img = _outline(img, box, (220, 30, 30), max(6, round(img.width / 200)))
     return _png(img, 1400)
 
 

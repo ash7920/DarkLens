@@ -145,6 +145,8 @@ button, input, select { font: inherit; color: inherit; }
 .crop-wrap { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 .crop { min-height: 220px; border-radius: var(--radius-s); background: var(--paper); border: 1px solid var(--rule);
   overflow: hidden; display: grid; place-items: center; }
+.crop-note { margin: 0; padding: 10px 12px; font-size: .85rem; color: var(--ink, #1b232b); background: #fff6d6;
+  border-top: 1px solid var(--rule); width: 100%; box-sizing: border-box; }
 .crop img { display: block; width: 100%; height: auto; }
 .crop.none, .crop.loading { color: var(--slate); font-size: .9rem; padding: 20px; text-align: center; }
 .full-link { font-size: .875rem; align-self: flex-start; }
