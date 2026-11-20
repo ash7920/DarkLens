@@ -211,6 +211,12 @@ class LLMClient:
             "generationConfig": {"temperature": self.temperature, "maxOutputTokens": max_tokens,
                                  "responseMimeType": "application/json"},
         }
+        if self.model.startswith("gemma"):
+            # Gemma (open-weight, served by the same API with its own capacity) takes neither a
+            # system instruction nor JSON mode: put the instructions in the message instead.
+            parts[0]["text"] = f"{system}\n\n{user}"
+            body.pop("system_instruction")
+            body["generationConfig"].pop("responseMimeType")
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{self.model}:generateContent"
         d = self._post(url, {"x-goog-api-key": key, "Content-Type": "application/json"}, body)
         cand = (d.get("candidates") or [{}])[0]

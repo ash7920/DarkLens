@@ -31,7 +31,8 @@ def needs_translation(item: dict) -> bool:
     return not item.get("text_en")
 
 
-FALLBACK_MODELS = ["gemini-3.5-flash-lite", "gemini-flash-lite-latest", "gemini-2.0-flash", "gemini-flash-latest"]
+FALLBACK_MODELS = ["gemini-3.5-flash-lite", "gemini-flash-lite-latest", "gemini-2.0-flash", "gemini-flash-latest",
+                   "gemma-3-27b-it", "gemma-3-12b-it"]
 
 
 def _models() -> list[str]:
