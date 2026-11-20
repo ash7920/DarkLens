@@ -118,6 +118,13 @@ macros["CrawlOK"] = str(g(cov, "crawled") or P)
 macros["CrawlBlocked"] = str(g(cov, "blocked") or P)
 macros["CrawlBlockedPct"] = pc(g(cov, "blocked") / g(cov, "attempted")) if g(cov, "attempted") else P
 macros["CrawlOKCountries"] = str(g(cov, "crawled_countries") or P)
+macros["CrawlAnyN"] = str(g(pv, "sites_with_any_pattern")) if pv else P
+macros["CrawlMeanCats"] = f(g(pv, "mean_categories_per_site"), 1)
+for _pt, _name in (("checkout", "Checkout"), ("cart", "Cart"), ("product", "Product"), ("homepage", "Home")):
+    macros[f"PT{_name}"] = pc(g(pv, "by_page_type", _pt, "any"))
+    macros[f"PT{_name}N"] = str(g(pv, "by_page_type", _pt, "n") or P)
+macros["WebLLMN"] = str(g(web_llm_m, "n_images") or P)
+macros["WebLLMFailed"] = str(g(web_llm_m, "n_failed") if web_llm_m else P)
 macros["CrawlSites"] = str(g(pv, "n_sites") or P)
 macros["CrawlStates"] = str(g(pv, "n_states") or P)
 macros["CrawlAny"] = pc(g(pv, "share_sites_with_any_pattern"))

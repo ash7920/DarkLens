@@ -358,8 +358,10 @@ Table~\ref{tab:screens} reports image-level results on AidUI web screenshots. Th
 text and therefore misses visual patterns (pre-selected options, attention distraction) and short or stylised
 copy that OCR damages; it reaches F1~=~\WebOffF{} (precision \WebOffP{}, recall \WebOffR{}). Given only the
 image, the vision LLM already reaches F1~=~\WebVisF{} (precision \WebVisP{}, recall \WebVisR{}) and raises
-category macro-F1 from \WebOffMacro{} to \WebVisMacro{}. Adding the numbered OCR lines to the prompt, which is
-how DarkLens localises findings, gives F1~=~\WebLLMF{}. AidUI's own instance-level scores (F1
+category macro-F1 from \WebOffMacro{} to \WebVisMacro{}. Adding the numbered OCR lines to the prompt does not improve
+detection further: on the \WebLLMN{} images scored (\WebLLMFailed{} skipped because the model's answer was
+unusable) it gives F1~=~\WebLLMF{} and macro-F1~=~\WebLLMMacro{}, within noise of the image-only run. Its value is
+localisation: every finding is tied to exact text lines, which the interface uses to place its boxes. AidUI's own instance-level scores (F1
 0.65~\cite{mansur2023}) use a different unit and are not directly comparable.
 
 \begin{table}[t]
@@ -416,8 +418,14 @@ Engine & Recall & Precision & Clean-shop FPs \\
 \subsection{EU crawl: reliability and prevalence}
 Annotators agreed with Cohen's $\kappa$~=~\HumanKappa{} on category labels. Against the adjudicated
 labels (\CrawlNGold{} segments), DarkLens achieves precision \CrawlP{}, recall \CrawlR{} and F1 \CrawlF{}
-(Cohen's $\kappa$~=~\CrawlKappa{}). Across \CrawlSites{} sites and \CrawlStates{} page states, \CrawlAny{}
-of sites show at least one pattern; Table~\ref{tab:prev} breaks this down by class. Because LLMs
+(Cohen's $\kappa$~=~\CrawlKappa{}). Across \CrawlSites{} sites and \CrawlStates{} page states, \CrawlAnyN{}
+sites (\CrawlAny{}) show at least one pattern, \CrawlMeanCats{} classes per site on average; Table~\ref{tab:prev}
+breaks this down by class. Interface interference dominates, mostly cookie banners whose ``accept'' option is far
+more prominent than the alternative, in line with Nouwens et al.~\cite{nouwens2020}; pre-ticked add-ons and
+sneaking follow. Patterns concentrate where money changes hands: \PTCheckout{} of checkout states
+(n~=~\PTCheckoutN{}) carry at least one, against \PTProduct{} of product pages. No confirmshaming or difficult
+cancellation was found, which reflects the crawl rather than the market: cancellation flows sit behind log-ins,
+and newsletter pop-ups with shaming opt-outs often appear only after longer visits or on exit intent. Because LLMs
 under-recall relative to people~\cite{nwokeji2026} and the crawler cannot reach log-in-gated flows, these
 are lower bounds.
 
