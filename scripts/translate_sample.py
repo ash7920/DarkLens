@@ -3,7 +3,10 @@ Add an English translation to every annotation item, so labellers who do not rea
 shop's language can still judge it.  Both labellers see the same translation (plus the
 original text), which keeps their labels comparable.
 
-    python scripts/translate_sample.py          # needs the Gemini key set; ~15 calls for ~1000 items
+    python scripts/translate_sample.py            # needs the Gemini key set
+    python scripts/translate_sample.py --batch 10 # even smaller requests when servers are very busy
+
+When a model is overloaded it moves on to the next one (DARKLENS_MODELS=a,b,c to choose them).
 
 Safe to re-run: items that already have a translation are skipped, and every answer is cached.
 """
@@ -28,23 +31,62 @@ def needs_translation(item: dict) -> bool:
     return not item.get("text_en")
 
 
-def main(batch: int = 60):
+FALLBACK_MODELS = ["gemini-3.5-flash-lite", "gemini-flash-lite-latest", "gemini-2.0-flash", "gemini-flash-latest"]
+
+
+def _models() -> list[str]:
+    """Models to rotate through when one is overloaded: DARKLENS_MODELS (comma-separated) if set,
+    else DARKLENS_MODEL first and the usual fallbacks after it."""
+    import os
+    if os.getenv("DARKLENS_MODELS"):
+        return [m.strip() for m in os.environ["DARKLENS_MODELS"].split(",") if m.strip()]
+    first = os.getenv("DARKLENS_MODEL")
+    return ([first] if first else []) + [m for m in FALLBACK_MODELS if m != first]
+
+
+def main():
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--batch", type=int, default=20, help="snippets per request (smaller gets through busy servers)")
+    ap.add_argument("--retries", type=int, default=4, help="attempts per model before trying the next model")
+    args = ap.parse_args()
+
     items = [json.loads(l) for l in open(SAMPLE, encoding="utf-8")]
     todo = [it for it in items if needs_translation(it)]
-    print(f"{len(items)} items, {len(todo)} to translate")
-    llm = LLMClient()
+    print(f"{len(items)} items, {len(todo)} to translate, {args.batch} per request")
+    clients, dead = {}, set()
+    for m in _models():
+        try:
+            clients[m] = LLMClient(model=m, timeout=300)
+        except LLMError as exc:
+            print(f"  ! {exc}")
+            return
     by_id = {it["segment_id"]: it for it in items}
-    for s in range(0, len(todo), batch):
-        chunk = todo[s:s + batch]
+    n_batches = (len(todo) + args.batch - 1) // args.batch
+    for b, s in enumerate(range(0, len(todo), args.batch), 1):
+        chunk = todo[s:s + args.batch]
         listing = "\n".join(f"{i + 1}. {it['text'][:400]}" for i, it in enumerate(chunk))
         prompt = (f"Translate each numbered snippet into English.\n\n{listing}\n\n"
                   'Return JSON: {"items": [{"id": <number>, "en": "<English text>"}]} with every id exactly once.')
-        try:
-            r = llm.complete_json(SYSTEM, prompt, max_tokens=8192)
-        except LLMError as exc:
-            print(f"  ! batch {s // batch + 1} failed: {exc}. Re-run later to finish.")
-            if "DAILY" in str(exc):
+        r = None
+        for m, llm in clients.items():
+            if m in dead:
+                continue
+            try:
+                r = llm.complete_json(SYSTEM, prompt, max_tokens=4096, retries=args.retries)
                 break
+            except LLMError as exc:
+                msg = str(exc)
+                if "DAILY" in msg or "404" in msg or "not found" in msg.lower():
+                    dead.add(m)  # used up for today, or not available for this key
+                    print(f"  ! {m}: not usable now ({msg[:90]}...); dropping it")
+                else:
+                    print(f"  ! {m}: still busy, trying the next model")
+        if r is None:
+            if len(dead) == len(clients):
+                print("  ! every model is used up for today; stopping")
+                break
+            print(f"  batch {b}/{n_batches}: all models busy, skipped (re-run later)")
             continue
         got = 0
         for row in (r.data.get("items", []) if isinstance(r.data, dict) else []):
@@ -56,7 +98,7 @@ def main(batch: int = 60):
             if en:
                 by_id[it["segment_id"]]["text_en"] = en
                 got += 1
-        print(f"  batch {s // batch + 1}: {got}/{len(chunk)} translated")
+        print(f"  batch {b}/{n_batches}: {got}/{len(chunk)} translated ({r.model})")
         # write after every batch so nothing is lost if it stops
         with open(SAMPLE, "w", encoding="utf-8") as f:
             for it in items:
