@@ -241,20 +241,19 @@ async function nextItem() {
   $("#aMeta").textContent = annItem.url || "";
   const crop = $("#crop");
   crop.innerHTML = ""; crop.className = "crop";
-  if (annItem.screenshot_url && annItem.bbox) {
-    const [x, y, w, h] = annItem.bbox, scale = 0.6;
-    const cw = crop.clientWidth || 600, ch = 300;
-    const ox = Math.max(0, x * scale - cw / 2 + (w * scale) / 2), oy = Math.max(0, y * scale - ch / 2 + (h * scale) / 2);
-    crop.style.height = `${ch}px`;
-    crop.style.backgroundImage = `url("${annItem.screenshot_url}")`;
-    const probe = new Image();
-    probe.onload = () => { crop.style.backgroundSize = `${probe.naturalWidth * scale}px auto`; };
-    probe.src = annItem.screenshot_url;
-    crop.style.backgroundPosition = `-${ox}px -${oy}px`;
-    const m = document.createElement("div"); m.className = "mark";
-    Object.assign(m.style, { left: `${x * scale - ox - 4}px`, top: `${y * scale - oy - 4}px`, width: `${w * scale + 8}px`, height: `${h * scale + 8}px` });
-    crop.appendChild(m);
-  } else { crop.classList.add("none"); crop.style.backgroundImage = ""; crop.textContent = "No screenshot for this item"; }
+  const link = $("#fullLink");
+  if (annItem.screenshot) {
+    const sid = encodeURIComponent(annItem.segment_id);
+    crop.classList.add("loading"); crop.textContent = "Loading the page around this item...";
+    const img = new Image();
+    img.alt = "The part of the web page around this item, outlined";
+    img.onload = () => { crop.textContent = ""; crop.classList.remove("loading"); crop.appendChild(img); };
+    img.onerror = () => { crop.classList.remove("loading"); crop.classList.add("none"); crop.textContent = "Screenshot not available for this item"; };
+    img.src = `/api/annotate/crop?segment_id=${sid}`;
+    link.href = `/api/annotate/full?segment_id=${sid}`; link.hidden = false;
+  } else {
+    crop.classList.add("none"); crop.textContent = "No screenshot for this item"; link.hidden = true;
+  }
 }
 async function saveLabel(label) {
   if (!annItem) return;

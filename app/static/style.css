@@ -142,10 +142,12 @@ button, input, select { font: inherit; color: inherit; }
 .prog-text { color: var(--slate); font-size: .875rem; }
 .annot-item { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 24px; background: var(--sheet);
   border: 1px solid var(--rule); border-radius: var(--radius-m); padding: 20px; }
-.crop { min-height: 260px; border-radius: var(--radius-s); background-color: var(--paper); background-repeat: no-repeat;
-  position: relative; border: 1px solid var(--rule); }
-.crop .mark { position: absolute; border: 2.5px solid var(--teal); border-radius: 3px; }
-.crop.none { display: grid; place-items: center; color: var(--slate); }
+.crop-wrap { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.crop { min-height: 220px; border-radius: var(--radius-s); background: var(--paper); border: 1px solid var(--rule);
+  overflow: hidden; display: grid; place-items: center; }
+.crop img { display: block; width: 100%; height: auto; }
+.crop.none, .crop.loading { color: var(--slate); font-size: .9rem; padding: 20px; text-align: center; }
+.full-link { font-size: .875rem; align-self: flex-start; }
 .annot-ui { color: var(--slate); font-size: .85rem; margin: 0; }
 .annot-text blockquote { font-size: 1.25rem; font-weight: 600; margin: 8px 0 10px; }
 .annot-en { font-size: 1.05rem; margin: -2px 0 12px; padding: 8px 10px; background: var(--paper); border-left: 3px solid var(--teal);

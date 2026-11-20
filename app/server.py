@@ -25,7 +25,7 @@ import time
 from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -251,6 +251,70 @@ def annotate(body: LabelIn):
         raise HTTPException(400, "Enter your name before labelling")
     annotation.save_label(body.annotator, body.segment_id, body.label, body.note)
     return {"ok": True}
+
+
+def _sample_item(segment_id: str) -> dict:
+    for it in annotation.load_sample():
+        if it["segment_id"] == segment_id:
+            return it
+    raise HTTPException(404, "Item not found")
+
+
+def _screenshot_for(item: dict):
+    from PIL import Image
+    raw = (item.get("screenshot") or "").replace("\\", "/")
+    p = (ROOT / raw).resolve() if raw else None
+    if not p or not str(p).startswith(str((ROOT / "data").resolve())) or not p.is_file():
+        raise HTTPException(404, "No screenshot for this item")
+    return Image.open(p).convert("RGB")
+
+
+def _png(img, max_w: int) -> Response:
+    import io
+    if img.width > max_w:
+        img = img.resize((max_w, int(img.height * max_w / img.width)))
+    buf = io.BytesIO()
+    img.save(buf, format="PNG", optimize=True)
+    return Response(buf.getvalue(), media_type="image/png", headers={"Cache-Control": "max-age=86400"})
+
+
+@app.get("/api/annotate/crop")
+def annotate_crop(segment_id: str):
+    """The part of the page around the item, with the item outlined: cut out here so it looks the
+    same on any screen and loads fast over a slow link."""
+    from PIL import ImageDraw
+    item = _sample_item(segment_id)
+    img = _screenshot_for(item)
+    W, H = img.size
+    bbox = item.get("bbox")
+    if not bbox or len(bbox) != 4 or bbox[2] <= 0 or bbox[3] <= 0:
+        return _png(img.crop((0, 0, W, min(H, 900))), 1100)
+    x, y, w, h = [int(v) for v in bbox]
+    x0, y0 = max(0, x - 380), max(0, y - 260)
+    x1, y1 = min(W, x + w + 380), min(H, y + h + 260)
+    if x1 - x0 < 900:  # keep enough page around the item to understand it
+        grow = (900 - (x1 - x0)) // 2
+        x0, x1 = max(0, x0 - grow), min(W, x1 + grow)
+    if y1 - y0 < 480:
+        grow = (480 - (y1 - y0)) // 2
+        y0, y1 = max(0, y0 - grow), min(H, y1 + grow)
+    crop = img.crop((x0, y0, x1, y1))
+    d = ImageDraw.Draw(crop)
+    d.rectangle((x - x0 - 4, y - y0 - 4, x - x0 + w + 4, y - y0 + h + 4), outline=(13, 107, 107), width=4)
+    return _png(crop, 1200)
+
+
+@app.get("/api/annotate/full")
+def annotate_full(segment_id: str):
+    """The whole page screenshot with the item outlined (opened in a new tab)."""
+    from PIL import ImageDraw
+    item = _sample_item(segment_id)
+    img = _screenshot_for(item)
+    bbox = item.get("bbox")
+    if bbox and len(bbox) == 4:
+        x, y, w, h = [int(v) for v in bbox]
+        ImageDraw.Draw(img).rectangle((x - 6, y - 6, x + w + 6, y + h + 6), outline=(220, 30, 30), width=6)
+    return _png(img, 1400)
 
 
 @app.get("/api/annotate/agreement")
