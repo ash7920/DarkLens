@@ -148,6 +148,8 @@ button, input, select { font: inherit; color: inherit; }
 .crop.none { display: grid; place-items: center; color: var(--slate); }
 .annot-ui { color: var(--slate); font-size: .85rem; margin: 0; }
 .annot-text blockquote { font-size: 1.25rem; font-weight: 600; margin: 8px 0 10px; }
+.annot-en { font-size: 1.05rem; margin: -2px 0 12px; padding: 8px 10px; background: var(--paper); border-left: 3px solid var(--teal);
+  border-radius: var(--radius-s); }
 .annot-meta { font-size: .8rem; color: var(--slate); word-break: break-all; }
 .label-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0 12px; }
 .label-grid button { text-align: left; border: 1px solid var(--rule); background: var(--paper); padding: 9px 10px;

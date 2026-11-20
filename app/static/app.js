@@ -234,6 +234,10 @@ async function nextItem() {
   $("#progText").textContent = `${r.labelled} of ${r.total} labelled`;
   $("#aUi").textContent = `${annItem.kind} on a ${annItem.page_type || "unknown"} page ${annItem.ui || ""}`;
   $("#aText").textContent = annItem.text;
+  const en = (annItem.text_en || "").trim();
+  const showEn = en && en.toLowerCase() !== (annItem.text || "").trim().toLowerCase();
+  $("#aEn").hidden = !showEn;
+  $("#aEn").textContent = showEn ? `In English: ${en}` : "";
   $("#aMeta").textContent = annItem.url || "";
   const crop = $("#crop");
   crop.innerHTML = ""; crop.className = "crop";
