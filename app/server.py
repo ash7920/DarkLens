@@ -63,7 +63,7 @@ def _save(result: dict, image_bytes: bytes, source: str) -> dict:
     img_path.write_bytes(image_bytes)
     result.update({"id": f"{h}_{int(time.time())}", "image_url": f"/api/file?path=data/uploads/{h}.png",
                    "source": source, "created": time.strftime("%Y-%m-%d %H:%M")})
-    (UPLOADS / f"{result['id']}.json").write_text(json.dumps(result, ensure_ascii=False))
+    (UPLOADS / f"{result['id']}.json").write_text(json.dumps(result, ensure_ascii=False), encoding="utf-8")
     return result
 
 
@@ -177,7 +177,7 @@ def history(limit: int = 12):
     files = sorted(UPLOADS.glob("*_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:limit]
     out = []
     for f in files:
-        r = json.loads(f.read_text())
+        r = json.loads(f.read_text(encoding="utf-8"))
         out.append({"id": r["id"], "verdict": r["verdict"], "is_dark": r["is_dark"], "image_url": r["image_url"],
                     "source": r.get("source"), "created": r.get("created"),
                     "categories": [c["name"] for c in r.get("categories", [])]})
@@ -189,7 +189,7 @@ def history_item(rid: str):
     f = UPLOADS / f"{Path(rid).name}.json"
     if not f.exists():
         raise HTTPException(404, "Analysis not found")
-    return json.loads(f.read_text())
+    return json.loads(f.read_text(encoding="utf-8"))
 
 
 @app.get("/api/file")
@@ -208,7 +208,7 @@ def results():
     out = {}
     for f in sorted((ROOT / "results").glob("*.json")):
         try:
-            out[f.stem] = json.loads(f.read_text())
+            out[f.stem] = json.loads(f.read_text(encoding="utf-8"))
         except Exception:
             continue
     return out

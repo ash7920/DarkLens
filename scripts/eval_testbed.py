@@ -65,12 +65,12 @@ def main():
                 crawl_site(f"http://localhost:{PORT}/{shop}/index.html", cdir, cfg)
             pred_path = ROOT / f"data/testbed_crawl/{shop}_{a.engine}_{a.mode}.jsonl"
             out[shop] = {"pipeline": run(cdir, pred_path, engine=a.engine, mode=a.mode)}
-            out[shop]["crawl"] = json.loads(next(cdir.glob("*/summary.json")).read_text())["page_types"]
+            out[shop]["crawl"] = json.loads(next(cdir.glob("*/summary.json")).read_text(encoding="utf-8"))["page_types"]
             out[shop]["preds"] = [json.loads(l) for l in open(pred_path, encoding="utf-8")]
     finally:
         server.terminate()
 
-    gt = json.loads((ROOT / "testbed/ground_truth.json").read_text())
+    gt = json.loads((ROOT / "testbed/ground_truth.json").read_text(encoding="utf-8"))
     dark_preds = [p for p in out["darkshop"]["preds"] if p["label"] != "not_dark"]
     crawled_pages = {page_key(p["url"]) for p in out["darkshop"]["preds"]}
     per_cat: dict = {}
@@ -108,7 +108,7 @@ def main():
         "prefilter_reduction": out["darkshop"]["pipeline"]["prefilter_reduction"],
     }
     Path(ROOT / "results").mkdir(exist_ok=True)
-    (ROOT / f"results/testbed_{a.engine}_{a.mode}.json").write_text(json.dumps(res, indent=2, ensure_ascii=False))
+    (ROOT / f"results/testbed_{a.engine}_{a.mode}.json").write_text(json.dumps(res, indent=2, ensure_ascii=False), encoding="utf-8")
     print(json.dumps({k: v for k, v in res.items() if k not in ("missed", "fairshop_fp_examples")}, indent=2))
     print("missed:", *res["missed"], sep="\n  ")
     print("fairshop FPs:", *res["fairshop_fp_examples"], sep="\n  ")

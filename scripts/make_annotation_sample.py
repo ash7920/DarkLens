@@ -17,7 +17,7 @@ from darklens.evaluation.annotation import make_sample  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--pred", default="data/predictions/segments.jsonl")
-ap.add_argument("--flagged", type=int, default=200)
+ap.add_argument("--flagged", type=int, default=200, help="-1 = every distinct flagged element")
 ap.add_argument("--cleared", type=int, default=200)
 ap.add_argument("--filtered", type=int, default=100)
 a = ap.parse_args()

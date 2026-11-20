@@ -55,7 +55,7 @@ def load_aidui(root: Path = EXTERNAL, split: str = "web") -> pd.DataFrame:
     """One row per *image*, with the set of dark-pattern labels it contains
     and the boxes (for drawing / localisation checks)."""
     base = root / "AidUI/evaluation/evaluation_dataset" / split
-    coco = json.loads((base / "result.json").read_text())
+    coco = json.loads((base / "result.json").read_text(encoding="utf-8"))
     cats = {c["id"]: c["name"] for c in coco["categories"]}
     anns: dict[int, list] = {}
     for a in coco["annotations"]:

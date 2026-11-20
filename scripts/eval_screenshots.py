@@ -85,7 +85,7 @@ def main():
               "llm_usage": det.llm.usage if det.llm else None})
     tag = f"{a.split}_{det.engine}_{a.mode if det.llm else 'rules+tfidf'}"
     (ROOT / "results").mkdir(exist_ok=True)
-    (ROOT / f"results/screenshots_{tag}.json").write_text(json.dumps(m, indent=2, default=float))
+    (ROOT / f"results/screenshots_{tag}.json").write_text(json.dumps(m, indent=2, default=float), encoding="utf-8")
     with open(ROOT / f"results/screenshots_{tag}_predictions.jsonl", "w", encoding="utf-8") as f:
         for row in rows:
             f.write(json.dumps(row, ensure_ascii=False) + "\n")

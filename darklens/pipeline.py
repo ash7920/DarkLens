@@ -149,7 +149,7 @@ def run(crawl_dir: str | Path, out_path: str | Path, engine: str = "auto", mode:
         summary["note"] = (f"needs about {stats['infer_calls']} detection calls plus verification calls for "
                            f"flagged elements (typically a further 30-60%); already-answered calls are free")
     else:
-        Path(str(out_path) + ".summary.json").write_text(json.dumps(summary, indent=2))
+        Path(str(out_path) + ".summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     return summary
 
 

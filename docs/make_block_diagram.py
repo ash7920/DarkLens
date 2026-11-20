@@ -61,7 +61,7 @@ import json  # noqa: E402
 
 _cov = ROOT / "results/crawl_coverage.json"
 if _cov.exists():
-    _c = json.loads(_cov.read_text())
+    _c = json.loads(_cov.read_text(encoding="utf-8"))
     SITES_TEXT = f"{_c['attempted']} attempted<br>{_c['crawled']} crawled &amp; analysed"
 else:
     SITES_TEXT = "EU retailers<br>crawlable ones analysed"

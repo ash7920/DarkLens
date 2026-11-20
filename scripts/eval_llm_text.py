@@ -58,7 +58,7 @@ def main():
         }
     tag = re.sub(r"[^a-zA-Z0-9.-]+", "-", f"{det.llm.provider}_{det.llm.model}_{a.mode}")
     (ROOT / "results").mkdir(exist_ok=True)
-    (ROOT / f"results/llm_text_{tag}.json").write_text(json.dumps(res, indent=2, default=float))
+    (ROOT / f"results/llm_text_{tag}.json").write_text(json.dumps(res, indent=2, default=float), encoding="utf-8")
     out = df.assign(pred=y_pred, confidence=[p["confidence"] for p in preds],
                     explanation=[p["explanation"] for p in preds])
     out.to_csv(ROOT / f"results/llm_text_{tag}_predictions.csv", index=False)

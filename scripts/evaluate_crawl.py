@@ -121,7 +121,7 @@ def main():
                 by_lang[p.get("language") or "unknown"][1].append(int(p["label"] != NOT_DARK))
             res["by_language"] = {l: binary_metrics(t, q, n_boot=0) for l, (t, q) in by_lang.items() if len(t) >= 20}
     (ROOT / "results").mkdir(exist_ok=True)
-    (ROOT / "results/crawl_evaluation.json").write_text(json.dumps(res, indent=2, default=float, ensure_ascii=False))
+    (ROOT / "results/crawl_evaluation.json").write_text(json.dumps(res, indent=2, default=float, ensure_ascii=False), encoding="utf-8")
     c = res["coverage"]
     print(f"coverage: {c['attempted']} attempted, {c['crawled']} crawlable, {c['blocked']} blocked by bot protection")
     pv = res["prevalence"]

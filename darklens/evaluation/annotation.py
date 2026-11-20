@@ -62,7 +62,7 @@ def make_sample(predictions: str | Path, n_flagged: int = 200, n_cleared: int = 
     for stratum, pool in sorted(by_stratum.items()):
         pool.sort(key=lambda u: u["rep"]["segment_id"])  # deterministic before shuffling
         rng.shuffle(pool)
-        take = pool[: wanted[stratum]]
+        take = pool if wanted[stratum] < 0 else pool[: wanted[stratum]]  # -1 = every unit
         weight = len(pool) / max(1, len(take))
         report[stratum] = {"units": len(pool), "sampled": len(take), "weight": round(weight, 3)}
         for u in take:

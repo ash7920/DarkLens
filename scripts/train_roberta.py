@@ -105,7 +105,7 @@ def main():
     m.update({"model": a.model, "epochs": a.epochs, "lr": a.lr, "max_len": a.max_len, "seed": a.seed,
               "train_seconds": round(train_s, 1), "inference_seconds": round(infer_s, 2), "device": dev})
     (ROOT / "results").mkdir(exist_ok=True)
-    (ROOT / f"results/roberta_{a.task}.json").write_text(json.dumps(m, indent=2, default=float))
+    (ROOT / f"results/roberta_{a.task}.json").write_text(json.dumps(m, indent=2, default=float), encoding="utf-8")
     key = "f1" if a.task == "binary" else "macro_f1"
     print(f"RoBERTa {a.task}: {key}={m[key]:.3f} -> results/roberta_{a.task}.json")
 

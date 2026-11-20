@@ -221,7 +221,7 @@ def test_block_detection_and_site_status(tmp_path):
     for name, pages, title in [("ok_shop", 9, "Shop"), ("cf_shop", 1, "Just a moment...")]:
         d = tmp_path / name
         d.mkdir()
-        (d / "summary.json").write_text(json.dumps({"start_url": f"https://{name}/", "pages": pages}))
-        (d / "pages.jsonl").write_text(json.dumps({"title": title, "text": "", "site": name}) + "\n")
+        (d / "summary.json").write_text(json.dumps({"start_url": f"https://{name}/", "pages": pages}), encoding="utf-8")
+        (d / "pages.jsonl").write_text(json.dumps({"title": title, "text": "", "site": name}) + "\n", encoding="utf-8")
     cov = coverage(tmp_path)
     assert (cov["attempted"], cov["crawled"], cov["blocked"]) == (2, 1, 1)

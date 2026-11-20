@@ -94,7 +94,7 @@ def main():
     joblib.dump(make_model("tfidf_lr").fit(X, yb), "models/tfidf_lr_binary.joblib")
     joblib.dump(make_model("tfidf_lr", True).fit(X, ym), "models/tfidf_lr_multiclass.joblib")
     Path("results").mkdir(exist_ok=True)
-    Path("results/baselines.json").write_text(json.dumps(results, indent=2, default=float))
+    Path("results/baselines.json").write_text(json.dumps(results, indent=2, default=float), encoding="utf-8")
     print("saved models/ and results/baselines.json")
 
 
