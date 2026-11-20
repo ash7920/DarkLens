@@ -24,7 +24,7 @@ import threading
 import time
 from pathlib import Path
 
-from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.responses import FileResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -57,6 +57,27 @@ def get_detector(engine: str, mode: str) -> DarkPatternDetector:
         return _detectors[key]
 
 
+_LOCAL = {"127.0.0.1", "::1", "localhost"}
+
+
+def _remote(request: Request) -> bool:
+    """True for visitors who reach the app through a tunnel or the network rather than from the
+    laptop itself. They get the offline engine only, so a shared labelling link can never spend
+    the owner's language-model quota or make the laptop open arbitrary web pages."""
+    h = request.headers
+    if any(k in h for k in ("cf-connecting-ip", "cf-ray", "x-forwarded-for", "x-real-ip")):
+        return True
+    return (request.client.host if request.client else "") not in _LOCAL
+
+
+def _read_json(f: Path):
+    raw = f.read_bytes()
+    try:
+        return json.loads(raw.decode("utf-8"))
+    except UnicodeDecodeError:  # reports saved by an older version on Windows
+        return json.loads(raw.decode("cp1252", errors="replace"))
+
+
 def _save(result: dict, image_bytes: bytes, source: str) -> dict:
     h = hashlib.sha1(image_bytes).hexdigest()[:12]
     img_path = UPLOADS / f"{h}.png"
@@ -68,7 +89,10 @@ def _save(result: dict, image_bytes: bytes, source: str) -> dict:
 
 
 @app.get("/api/status")
-def status():
+def status(request: Request):
+    if _remote(request):
+        return {"detector": {"engine": "offline", "note": "shared link: offline engine only"},
+                "providers": {}, "offline_model": (ROOT / "models/tfidf_lr_binary.joblib").exists()}
     try:
         det = get_detector("auto", "multistage")
         info = det.info()
@@ -84,9 +108,12 @@ def taxonomy():
 
 
 @app.post("/api/analyze")
-def analyze(file: UploadFile = File(...), engine: str = Form("auto"), mode: str = Form("multistage")):
+def analyze(request: Request, file: UploadFile = File(...), engine: str = Form("auto"),
+            mode: str = Form("multistage")):
     if engine not in ("auto", "llm", "offline") or mode not in ("multistage", "single"):
         raise HTTPException(400, "engine must be auto|llm|offline and mode multistage|single")
+    if _remote(request):
+        engine = "offline"
     data = file.file.read(MAX_BYTES + 1)
     if len(data) > MAX_BYTES:
         raise HTTPException(413, "Image is larger than 15 MB. Crop it or save it as JPEG and try again.")
@@ -109,7 +136,7 @@ class UrlIn(BaseModel):
 
 
 @app.post("/api/analyze-url")
-def analyze_url(body: UrlIn):
+def analyze_url(body: UrlIn, request: Request):
     """Render a page with Playwright and combine DOM-level detection (exact element
     boxes, checkbox state) with screenshot detection."""
     from playwright.sync_api import sync_playwright
@@ -120,6 +147,8 @@ def analyze_url(body: UrlIn):
     from darklens.pipeline import prefilter
     from darklens.preprocessing.segments import page_segments
 
+    if _remote(request):
+        raise HTTPException(403, "Inspecting a live URL only works on the laptop running DarkLens. Upload a screenshot instead.")
     if not body.url.startswith(("http://", "https://")):
         raise HTTPException(400, "Enter a full URL starting with http:// or https://")
     det = get_detector(body.engine, body.mode)
@@ -177,7 +206,10 @@ def history(limit: int = 12):
     files = sorted(UPLOADS.glob("*_*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:limit]
     out = []
     for f in files:
-        r = json.loads(f.read_text(encoding="utf-8"))
+        try:
+            r = _read_json(f)
+        except (ValueError, OSError):
+            continue
         out.append({"id": r["id"], "verdict": r["verdict"], "is_dark": r["is_dark"], "image_url": r["image_url"],
                     "source": r.get("source"), "created": r.get("created"),
                     "categories": [c["name"] for c in r.get("categories", [])]})
@@ -189,7 +221,7 @@ def history_item(rid: str):
     f = UPLOADS / f"{Path(rid).name}.json"
     if not f.exists():
         raise HTTPException(404, "Analysis not found")
-    return json.loads(f.read_text(encoding="utf-8"))
+    return _read_json(f)
 
 
 @app.get("/api/file")
