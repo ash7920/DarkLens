@@ -1,0 +1,974 @@
+{
+  "coverage": {
+    "attempted": 195,
+    "crawled": 108,
+    "blocked": 67,
+    "unavailable": 4,
+    "robots": 1,
+    "unreachable": 5,
+    "empty": 10,
+    "crawled_reached_cart": 62,
+    "crawled_pages": 1583,
+    "crawled_countries": 16,
+    "block_reasons": {
+      "bot protection (Vercel checkpoint)": 4,
+      "bot protection (access denied)": 17,
+      "bot protection (Cloudflare challenge)": 34,
+      "bot protection (captcha)": 2,
+      "bot protection (403 forbidden)": 4,
+      "bot protection (Akamai reference error)": 1,
+      "bot protection (Cloudflare)": 1,
+      "bot protection (human check)": 2,
+      "bot protection (blocked)": 1,
+      "bot protection (bot detected)": 1
+    }
+  },
+  "prevalence": {
+    "n_sites": 108,
+    "n_states": 1833,
+    "sites_with_any_pattern": 78,
+    "share_sites_with_any_pattern": 0.7222222222222222,
+    "by_category": {
+      "urgency": 0.17592592592592593,
+      "scarcity": 0.1388888888888889,
+      "social_proof": 0.10185185185185185,
+      "confirmshaming": 0.0,
+      "preselection": 0.26851851851851855,
+      "obstruction": 0.0,
+      "interface_interference": 0.4444444444444444,
+      "forced_action": 0.09259259259259259
+    },
+    "instances_by_category": {
+      "forced_action": 107,
+      "social_proof": 131,
+      "preselection": 306,
+      "scarcity": 162,
+      "interface_interference": 664,
+      "urgency": 194
+    },
+    "mean_categories_per_site": 1.2222222222222223,
+    "by_page_type": {
+      "homepage": {
+        "any": 0.44919786096256686,
+        "scarcity": 0.016042780748663103,
+        "interface_interference": 0.3048128342245989,
+        "preselection": 0.0855614973262032,
+        "forced_action": 0.0213903743315508,
+        "urgency": 0.08021390374331551,
+        "social_proof": 0.0106951871657754,
+        "n": 187
+      },
+      "category": {
+        "any": 0.451063829787234,
+        "forced_action": 0.04893617021276596,
+        "social_proof": 0.026595744680851064,
+        "preselection": 0.15319148936170213,
+        "scarcity": 0.07234042553191489,
+        "interface_interference": 0.18829787234042553,
+        "urgency": 0.1074468085106383,
+        "n": 940
+      },
+      "cart": {
+        "any": 0.35858585858585856,
+        "interface_interference": 0.21212121212121213,
+        "preselection": 0.09090909090909091,
+        "social_proof": 0.05555555555555555,
+        "scarcity": 0.025252525252525252,
+        "urgency": 0.020202020202020204,
+        "forced_action": 0.020202020202020204,
+        "n": 198
+      },
+      "product": {
+        "any": 0.3031674208144796,
+        "interface_interference": 0.248868778280543,
+        "scarcity": 0.04072398190045249,
+        "preselection": 0.06787330316742081,
+        "forced_action": 0.01809954751131222,
+        "n": 221
+      },
+      "checkout": {
+        "any": 0.6111111111111112,
+        "interface_interference": 0.48148148148148145,
+        "forced_action": 0.07407407407407407,
+        "scarcity": 0.07407407407407407,
+        "preselection": 0.05555555555555555,
+        "n": 54
+      },
+      "pagination": {
+        "any": 0.5,
+        "scarcity": 0.5,
+        "interface_interference": 0.5,
+        "n": 2
+      },
+      "other": {
+        "any": 0.4797687861271676,
+        "forced_action": 0.023121387283236993,
+        "social_proof": 0.16184971098265896,
+        "interface_interference": 0.24277456647398843,
+        "urgency": 0.011560693641618497,
+        "preselection": 0.10404624277456648,
+        "n": 173
+      },
+      "account": {
+        "any": 0.5,
+        "interface_interference": 0.46875,
+        "urgency": 0.03125,
+        "preselection": 0.25,
+        "forced_action": 0.21875,
+        "n": 32
+      },
+      "info": {
+        "any": 0.4,
+        "interface_interference": 0.4,
+        "n": 5
+      },
+      "subscription": {
+        "any": 0.2857142857142857,
+        "preselection": 0.09523809523809523,
+        "forced_action": 0.09523809523809523,
+        "interface_interference": 0.19047619047619047,
+        "n": 21
+      }
+    },
+    "by_country": {
+      "DE": {
+        "n_sites": 23,
+        "any": 0.6086956521739131,
+        "urgency": 0.17391304347826086,
+        "scarcity": 0.043478260869565216,
+        "social_proof": 0.17391304347826086,
+        "confirmshaming": 0.0,
+        "preselection": 0.2608695652173913,
+        "obstruction": 0.0,
+        "interface_interference": 0.391304347826087,
+        "forced_action": 0.08695652173913043
+      },
+      "IT": {
+        "n_sites": 14,
+        "any": 0.7857142857142857,
+        "urgency": 0.14285714285714285,
+        "scarcity": 0.21428571428571427,
+        "social_proof": 0.07142857142857142,
+        "confirmshaming": 0.0,
+        "preselection": 0.35714285714285715,
+        "obstruction": 0.0,
+        "interface_interference": 0.6428571428571429,
+        "forced_action": 0.0
+      },
+      "PT": {
+        "n_sites": 4,
+        "any": 0.75,
+        "urgency": 0.5,
+        "scarcity": 0.25,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.25,
+        "obstruction": 0.0,
+        "interface_interference": 0.25,
+        "forced_action": 0.25
+      },
+      "NL": {
+        "n_sites": 9,
+        "any": 0.6666666666666666,
+        "urgency": 0.1111111111111111,
+        "scarcity": 0.2222222222222222,
+        "social_proof": 0.1111111111111111,
+        "confirmshaming": 0.0,
+        "preselection": 0.4444444444444444,
+        "obstruction": 0.0,
+        "interface_interference": 0.2222222222222222,
+        "forced_action": 0.2222222222222222
+      },
+      "AT": {
+        "n_sites": 5,
+        "any": 1.0,
+        "urgency": 0.0,
+        "scarcity": 0.2,
+        "social_proof": 0.2,
+        "confirmshaming": 0.0,
+        "preselection": 0.2,
+        "obstruction": 0.0,
+        "interface_interference": 0.4,
+        "forced_action": 0.2
+      },
+      "BE": {
+        "n_sites": 4,
+        "any": 0.25,
+        "urgency": 0.0,
+        "scarcity": 0.0,
+        "social_proof": 0.25,
+        "confirmshaming": 0.0,
+        "preselection": 0.0,
+        "obstruction": 0.0,
+        "interface_interference": 0.0,
+        "forced_action": 0.0
+      },
+      "ES": {
+        "n_sites": 9,
+        "any": 0.8888888888888888,
+        "urgency": 0.3333333333333333,
+        "scarcity": 0.2222222222222222,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.2222222222222222,
+        "obstruction": 0.0,
+        "interface_interference": 0.5555555555555556,
+        "forced_action": 0.1111111111111111
+      },
+      "PL": {
+        "n_sites": 7,
+        "any": 0.42857142857142855,
+        "urgency": 0.2857142857142857,
+        "scarcity": 0.0,
+        "social_proof": 0.14285714285714285,
+        "confirmshaming": 0.0,
+        "preselection": 0.0,
+        "obstruction": 0.0,
+        "interface_interference": 0.2857142857142857,
+        "forced_action": 0.0
+      },
+      "FR": {
+        "n_sites": 9,
+        "any": 0.7777777777777778,
+        "urgency": 0.2222222222222222,
+        "scarcity": 0.3333333333333333,
+        "social_proof": 0.1111111111111111,
+        "confirmshaming": 0.0,
+        "preselection": 0.3333333333333333,
+        "obstruction": 0.0,
+        "interface_interference": 0.3333333333333333,
+        "forced_action": 0.0
+      },
+      "SE": {
+        "n_sites": 7,
+        "any": 0.8571428571428571,
+        "urgency": 0.14285714285714285,
+        "scarcity": 0.2857142857142857,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.2857142857142857,
+        "obstruction": 0.0,
+        "interface_interference": 0.5714285714285714,
+        "forced_action": 0.2857142857142857
+      },
+      "IE": {
+        "n_sites": 6,
+        "any": 0.8333333333333334,
+        "urgency": 0.0,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.3333333333333333,
+        "obstruction": 0.0,
+        "interface_interference": 0.6666666666666666,
+        "forced_action": 0.0
+      },
+      "CZ": {
+        "n_sites": 2,
+        "any": 0.5,
+        "urgency": 0.0,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.0,
+        "obstruction": 0.0,
+        "interface_interference": 0.5,
+        "forced_action": 0.0
+      },
+      "RO": {
+        "n_sites": 2,
+        "any": 1.0,
+        "urgency": 0.0,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.0,
+        "obstruction": 0.0,
+        "interface_interference": 1.0,
+        "forced_action": 0.0
+      },
+      "GR": {
+        "n_sites": 2,
+        "any": 1.0,
+        "urgency": 0.0,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.5,
+        "obstruction": 0.0,
+        "interface_interference": 1.0,
+        "forced_action": 0.0
+      },
+      "DK": {
+        "n_sites": 2,
+        "any": 0.5,
+        "urgency": 0.5,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.5,
+        "obstruction": 0.0,
+        "interface_interference": 0.5,
+        "forced_action": 0.0
+      },
+      "FI": {
+        "n_sites": 3,
+        "any": 1.0,
+        "urgency": 0.3333333333333333,
+        "scarcity": 0.0,
+        "social_proof": 0.3333333333333333,
+        "confirmshaming": 0.0,
+        "preselection": 0.3333333333333333,
+        "obstruction": 0.0,
+        "interface_interference": 0.3333333333333333,
+        "forced_action": 0.3333333333333333
+      }
+    },
+    "by_sector": {
+      "fashion": {
+        "n_sites": 26,
+        "any": 0.6153846153846154,
+        "urgency": 0.07692307692307693,
+        "scarcity": 0.11538461538461539,
+        "social_proof": 0.19230769230769232,
+        "confirmshaming": 0.0,
+        "preselection": 0.23076923076923078,
+        "obstruction": 0.0,
+        "interface_interference": 0.34615384615384615,
+        "forced_action": 0.07692307692307693
+      },
+      "electronics": {
+        "n_sites": 20,
+        "any": 0.75,
+        "urgency": 0.15,
+        "scarcity": 0.15,
+        "social_proof": 0.1,
+        "confirmshaming": 0.0,
+        "preselection": 0.25,
+        "obstruction": 0.0,
+        "interface_interference": 0.45,
+        "forced_action": 0.0
+      },
+      "general": {
+        "n_sites": 16,
+        "any": 0.9375,
+        "urgency": 0.1875,
+        "scarcity": 0.125,
+        "social_proof": 0.0625,
+        "confirmshaming": 0.0,
+        "preselection": 0.5625,
+        "obstruction": 0.0,
+        "interface_interference": 0.5625,
+        "forced_action": 0.125
+      },
+      "books": {
+        "n_sites": 13,
+        "any": 0.7692307692307693,
+        "urgency": 0.23076923076923078,
+        "scarcity": 0.0,
+        "social_proof": 0.15384615384615385,
+        "confirmshaming": 0.0,
+        "preselection": 0.15384615384615385,
+        "obstruction": 0.0,
+        "interface_interference": 0.6923076923076923,
+        "forced_action": 0.0
+      },
+      "sports": {
+        "n_sites": 2,
+        "any": 1.0,
+        "urgency": 0.5,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.5,
+        "obstruction": 0.0,
+        "interface_interference": 0.0,
+        "forced_action": 0.5
+      },
+      "beauty": {
+        "n_sites": 12,
+        "any": 0.4166666666666667,
+        "urgency": 0.25,
+        "scarcity": 0.25,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.08333333333333333,
+        "obstruction": 0.0,
+        "interface_interference": 0.08333333333333333,
+        "forced_action": 0.25
+      },
+      "marketplace": {
+        "n_sites": 5,
+        "any": 0.8,
+        "urgency": 0.2,
+        "scarcity": 0.2,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.0,
+        "obstruction": 0.0,
+        "interface_interference": 0.8,
+        "forced_action": 0.0
+      },
+      "travel": {
+        "n_sites": 3,
+        "any": 1.0,
+        "urgency": 0.0,
+        "scarcity": 0.3333333333333333,
+        "social_proof": 0.3333333333333333,
+        "confirmshaming": 0.0,
+        "preselection": 0.6666666666666666,
+        "obstruction": 0.0,
+        "interface_interference": 0.6666666666666666,
+        "forced_action": 0.3333333333333333
+      },
+      "home_diy": {
+        "n_sites": 10,
+        "any": 0.8,
+        "urgency": 0.3,
+        "scarcity": 0.2,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.3,
+        "obstruction": 0.0,
+        "interface_interference": 0.5,
+        "forced_action": 0.1
+      },
+      "grocery": {
+        "n_sites": 1,
+        "any": 0.0,
+        "urgency": 0.0,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.0,
+        "obstruction": 0.0,
+        "interface_interference": 0.0,
+        "forced_action": 0.0
+      }
+    },
+    "by_language": {
+      "de": {
+        "n_sites": 27,
+        "any": 0.7037037037037037,
+        "urgency": 0.14814814814814814,
+        "scarcity": 0.07407407407407407,
+        "social_proof": 0.18518518518518517,
+        "confirmshaming": 0.0,
+        "preselection": 0.25925925925925924,
+        "obstruction": 0.0,
+        "interface_interference": 0.4074074074074074,
+        "forced_action": 0.1111111111111111
+      },
+      "it": {
+        "n_sites": 14,
+        "any": 0.7857142857142857,
+        "urgency": 0.14285714285714285,
+        "scarcity": 0.21428571428571427,
+        "social_proof": 0.07142857142857142,
+        "confirmshaming": 0.0,
+        "preselection": 0.35714285714285715,
+        "obstruction": 0.0,
+        "interface_interference": 0.6428571428571429,
+        "forced_action": 0.0
+      },
+      "pt": {
+        "n_sites": 4,
+        "any": 0.75,
+        "urgency": 0.5,
+        "scarcity": 0.25,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.25,
+        "obstruction": 0.0,
+        "interface_interference": 0.25,
+        "forced_action": 0.25
+      },
+      "nl": {
+        "n_sites": 12,
+        "any": 0.5,
+        "urgency": 0.08333333333333333,
+        "scarcity": 0.08333333333333333,
+        "social_proof": 0.08333333333333333,
+        "confirmshaming": 0.0,
+        "preselection": 0.3333333333333333,
+        "obstruction": 0.0,
+        "interface_interference": 0.08333333333333333,
+        "forced_action": 0.08333333333333333
+      },
+      "en": {
+        "n_sites": 8,
+        "any": 0.75,
+        "urgency": 0.0,
+        "scarcity": 0.125,
+        "social_proof": 0.125,
+        "confirmshaming": 0.0,
+        "preselection": 0.25,
+        "obstruction": 0.0,
+        "interface_interference": 0.625,
+        "forced_action": 0.125
+      },
+      "es": {
+        "n_sites": 9,
+        "any": 0.8888888888888888,
+        "urgency": 0.3333333333333333,
+        "scarcity": 0.2222222222222222,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.2222222222222222,
+        "obstruction": 0.0,
+        "interface_interference": 0.5555555555555556,
+        "forced_action": 0.1111111111111111
+      },
+      "pl": {
+        "n_sites": 7,
+        "any": 0.42857142857142855,
+        "urgency": 0.2857142857142857,
+        "scarcity": 0.0,
+        "social_proof": 0.14285714285714285,
+        "confirmshaming": 0.0,
+        "preselection": 0.0,
+        "obstruction": 0.0,
+        "interface_interference": 0.2857142857142857,
+        "forced_action": 0.0
+      },
+      "fr": {
+        "n_sites": 9,
+        "any": 0.7777777777777778,
+        "urgency": 0.2222222222222222,
+        "scarcity": 0.3333333333333333,
+        "social_proof": 0.1111111111111111,
+        "confirmshaming": 0.0,
+        "preselection": 0.3333333333333333,
+        "obstruction": 0.0,
+        "interface_interference": 0.3333333333333333,
+        "forced_action": 0.0
+      },
+      "sv": {
+        "n_sites": 7,
+        "any": 0.8571428571428571,
+        "urgency": 0.14285714285714285,
+        "scarcity": 0.2857142857142857,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.2857142857142857,
+        "obstruction": 0.0,
+        "interface_interference": 0.5714285714285714,
+        "forced_action": 0.2857142857142857
+      },
+      "cs": {
+        "n_sites": 2,
+        "any": 0.5,
+        "urgency": 0.0,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.0,
+        "obstruction": 0.0,
+        "interface_interference": 0.5,
+        "forced_action": 0.0
+      },
+      "ro": {
+        "n_sites": 2,
+        "any": 1.0,
+        "urgency": 0.0,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.0,
+        "obstruction": 0.0,
+        "interface_interference": 1.0,
+        "forced_action": 0.0
+      },
+      "el": {
+        "n_sites": 2,
+        "any": 1.0,
+        "urgency": 0.0,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.5,
+        "obstruction": 0.0,
+        "interface_interference": 1.0,
+        "forced_action": 0.0
+      },
+      "da": {
+        "n_sites": 2,
+        "any": 0.5,
+        "urgency": 0.5,
+        "scarcity": 0.0,
+        "social_proof": 0.0,
+        "confirmshaming": 0.0,
+        "preselection": 0.5,
+        "obstruction": 0.0,
+        "interface_interference": 0.5,
+        "forced_action": 0.0
+      },
+      "fi": {
+        "n_sites": 3,
+        "any": 1.0,
+        "urgency": 0.3333333333333333,
+        "scarcity": 0.0,
+        "social_proof": 0.3333333333333333,
+        "confirmshaming": 0.0,
+        "preselection": 0.3333333333333333,
+        "obstruction": 0.0,
+        "interface_interference": 0.3333333333333333,
+        "forced_action": 0.3333333333333333
+      }
+    },
+    "examples": {
+      "preselection": [
+        {
+          "site": "casadellibro_com",
+          "page_type": "cart",
+          "text": "(no label)",
+          "confidence": 1.0,
+          "explanation": "A pre-ticked checkbox in the cart represents sneaking options or preselection."
+        },
+        {
+          "site": "gamma_nl",
+          "page_type": "category",
+          "text": "Voeg product toe aan set Firstfloor Goldline laminaat/parket 10DB 10m2 + 5.29 euro",
+          "confidence": 1.0,
+          "explanation": "Paid add-on option pre-ticked by default."
+        },
+        {
+          "site": "gamma_nl",
+          "page_type": "category",
+          "text": "Voeg product toe aan set Vloeren legset + 9.99 euro",
+          "confidence": 1.0,
+          "explanation": "Paid add-on option pre-ticked by default."
+        },
+        {
+          "site": "gamma_nl",
+          "page_type": "category",
+          "text": "Voeg product toe aan set Plint Model MDF Wit 1,2 x 5,5 x 240 cm + 6.99 euro",
+          "confidence": 1.0,
+          "explanation": "Paid add-on option pre-ticked by default."
+        },
+        {
+          "site": "bonprix_de",
+          "page_type": "homepage",
+          "text": "In alle einwilligen?",
+          "confidence": 0.95,
+          "explanation": "A consent checkbox that is pre-ticked by default on a hidden layer constitutes preselection."
+        },
+        {
+          "site": "bonprix_de",
+          "page_type": "homepage",
+          "text": "Einwilligen?",
+          "confidence": 0.95,
+          "explanation": "A consent checkbox pre-ticked by default represents preselection of tracking or marketing options."
+        },
+        {
+          "site": "debijenkorf_nl",
+          "page_type": "homepage",
+          "text": "Hierbij trek ik mijn toestemming in voor het plaatsen van tracking cookies.",
+          "confidence": 0.95,
+          "explanation": "A pre-ticked checkbox in a hidden layer automatically opts the user in by default."
+        },
+        {
+          "site": "druni_es",
+          "page_type": "category",
+          "text": "Tengo cuenta en druni.es",
+          "confidence": 0.95,
+          "explanation": "Account type or login state pre-selected via pre-ticked radio element."
+        }
+      ],
+      "urgency": [
+        {
+          "site": "komputronik_pl",
+          "page_type": "homepage",
+          "text": "Promocja RTV - Telewizory SAMSUNG QE75QN80HAUXXH 75'' NeoQLED 144Hz 4K UHD Tizen VisionAI 2026 5 699 zł Cena bez promocji: 6 490 zł Najniższa cena z ostatnich 30 dni: 6 490 zł Do końca promocji został",
+          "confidence": 0.99,
+          "explanation": "Puts time pressure on the user with a live countdown timer."
+        },
+        {
+          "site": "bonprix_de",
+          "page_type": "category",
+          "text": "Pumps mit Knöchelriemen Aktueller Preis 19,99 Euro, nur bis 02.12. Ab 03.12. gilt der Preis 29,99 Euro, 50 Prozent höher. 19,99 € nur bis 02.12. 29,99 € ab 03.12. +50% Top Deal Neu",
+          "confidence": 0.95,
+          "explanation": "Creates time-pressure and artificial urgency by emphasizing a price increase deadline."
+        },
+        {
+          "site": "bonprix_de",
+          "page_type": "category",
+          "text": "nur bis 07.12.",
+          "confidence": 0.95,
+          "explanation": "Applies a time-limited deadline to pressure quick action."
+        },
+        {
+          "site": "bonprix_de",
+          "page_type": "category",
+          "text": "ab 08.12. +78%",
+          "confidence": 0.95,
+          "explanation": "Threatens a steep price increase to create urgency."
+        },
+        {
+          "site": "cdiscount_com",
+          "page_type": "category",
+          "text": "7h 19min",
+          "confidence": 0.95,
+          "explanation": "Puts real or fake time pressure on the user to decide quickly via a countdown timer."
+        },
+        {
+          "site": "cdiscount_com",
+          "page_type": "category",
+          "text": "7h 18min",
+          "confidence": 0.95,
+          "explanation": "Puts real or fake time pressure on the user to decide quickly via a countdown timer."
+        },
+        {
+          "site": "home24_de",
+          "page_type": "homepage",
+          "text": "01:04:21:46",
+          "confidence": 0.95,
+          "explanation": "A ticking countdown timer creates artificial time pressure for a sale or deal."
+        },
+        {
+          "site": "komputronik_pl",
+          "page_type": "homepage",
+          "text": "Do końca promocji zostało",
+          "confidence": 0.95,
+          "explanation": "Introductory phrase for a time-limited promotion countdown."
+        }
+      ],
+      "scarcity": [
+        {
+          "site": "rueducommerce_fr",
+          "page_type": "category",
+          "text": "1 seul(e) en stock !",
+          "confidence": 0.98,
+          "explanation": "Explicitly highlights extremely limited stock to induce urgency and immediate purchase."
+        },
+        {
+          "site": "cdon_se",
+          "page_type": "product",
+          "text": "2 SÅLDA IDAG",
+          "confidence": 0.95,
+          "explanation": "Highlights recent sales volume to create perceived demand and pressure."
+        },
+        {
+          "site": "cdon_se",
+          "page_type": "product",
+          "text": "16 SÅLDA IDAG",
+          "confidence": 0.95,
+          "explanation": "Creates high demand pressure by highlighting how many items were sold today."
+        },
+        {
+          "site": "cdon_se",
+          "page_type": "product",
+          "text": "3 SÅLDA IDAG",
+          "confidence": 0.95,
+          "explanation": "Highlights sales volume to create demand and urgency."
+        },
+        {
+          "site": "cdon_se",
+          "page_type": "product",
+          "text": "5 SÅLDA IDAG",
+          "confidence": 0.95,
+          "explanation": "Uses sales activity metrics to induce FOMO."
+        },
+        {
+          "site": "cdon_se",
+          "page_type": "product",
+          "text": "1 SÅLD IDAG",
+          "confidence": 0.95,
+          "explanation": "Uses recent sales volume to pressure the user."
+        },
+        {
+          "site": "ldlc_com",
+          "page_type": "cart",
+          "text": "1 SEUL(E) EN STOCK !",
+          "confidence": 0.95,
+          "explanation": "Uses low stock framing with exclamation to pressure immediate purchase."
+        },
+        {
+          "site": "obi_de",
+          "page_type": "category",
+          "text": "Nur noch wenige lieferbar REV Sprechanlage Quattroline Video Colour Silber 4.7 (3) Online verfügbar Abholung: Markt auswählen UVP 299,00 € 219,99 € *",
+          "confidence": 0.95,
+          "explanation": "Claims limited stock remaining to create a sense of urgency and push an immediate purchase."
+        }
+      ],
+      "social_proof": [
+        {
+          "site": "aboutyou_de",
+          "page_type": "category",
+          "text": "Bought 122x on the previous day",
+          "confidence": 0.95,
+          "explanation": "Uses past purchase activity of other shoppers to influence user demand perception."
+        },
+        {
+          "site": "aboutyou_de",
+          "page_type": "category",
+          "text": "Bought 413x on the previous day",
+          "confidence": 0.95,
+          "explanation": "Uses past purchase statistics of other shoppers to influence user behavior."
+        },
+        {
+          "site": "snocks_com",
+          "page_type": "category",
+          "text": "Bestseller! 5677 Aufrufe in den letzten 24 Stunden",
+          "confidence": 0.95,
+          "explanation": "Uses specific viewer activity statistics to drive purchase urgency."
+        },
+        {
+          "site": "snocks_com",
+          "page_type": "category",
+          "text": "Bestseller! 1037 Aufrufe in den letzten 24 Stunden",
+          "confidence": 0.95,
+          "explanation": "Uses specific viewer traffic statistics to create social proof."
+        },
+        {
+          "site": "snocks_com",
+          "page_type": "category",
+          "text": "Mehr als 48.132 Mal gekauft.",
+          "confidence": 0.95,
+          "explanation": "High sales volume claim used as social proof."
+        },
+        {
+          "site": "stockmann_com",
+          "page_type": "cart",
+          "text": "10 asiakasta lisäsi tämän juuri ostoskoriin.",
+          "confidence": 0.95,
+          "explanation": "Real-time activity claim about other shoppers to influence purchase decisions."
+        },
+        {
+          "site": "thomann_de",
+          "page_type": "cart",
+          "text": "9% KAUFTEN Gator Cymbal Bag 22\" Backpack 109 €",
+          "confidence": 0.95,
+          "explanation": "Uses aggregate purchasing behavior of other shoppers to influence current buyer choices."
+        },
+        {
+          "site": "thomann_de",
+          "page_type": "cart",
+          "text": "8% KAUFTEN Gewa SPS Cymbal Bag 22\" 135 €",
+          "confidence": 0.95,
+          "explanation": "Uses aggregate purchasing behavior of other shoppers to influence current buyer choices."
+        }
+      ],
+      "interface_interference": [
+        {
+          "site": "arcaplanet_it",
+          "page_type": "pagination",
+          "text": "'Accetta tutti i cookie' (large, 286x51px) vs 'Mostra dettagli' (small, 132x30px)",
+          "confidence": 0.95,
+          "explanation": "Asymmetric styling strongly highlights acceptance over detail configuration."
+        },
+        {
+          "site": "baur_de",
+          "page_type": "homepage",
+          "text": "'Psst, 20% Rabatt* warten auf dich!' (large, 448x44px) vs 'Einwilligung ablehnen' (small, 160x24px)",
+          "confidence": 0.95,
+          "explanation": "Visual asymmetry with a prominently highlighted primary action and a significantly downplayed decline option."
+        },
+        {
+          "site": "baur_de",
+          "page_type": "cart",
+          "text": "'OK' (large, 400x44px) vs 'Einwilligung ablehnen' (small, 160x24px)",
+          "confidence": 0.95,
+          "explanation": "Asymmetric sizing making acceptance prominent and rejection less visible."
+        },
+        {
+          "site": "bonprix_de",
+          "page_type": "homepage",
+          "text": "'OK' (large, 134x36px) vs 'hier' (small, 22x20px)",
+          "confidence": 0.95,
+          "explanation": "Visual asymmetry between choices steers the user toward the preferred action by making the alternative extremely small."
+        },
+        {
+          "site": "booking_com",
+          "page_type": "other",
+          "text": "'Sign in or register' (large, 544x48px) vs 'Dismiss sign in information.' (small, 36x36px)",
+          "confidence": 0.95,
+          "explanation": "Asymmetric styling strongly pushes the sign-in option over the dismissal option."
+        },
+        {
+          "site": "casadellibro_com",
+          "page_type": "homepage",
+          "text": "'Configurar cookies' (large, 207x46px) vs 'Más información' (small, 105x16px)",
+          "confidence": 0.95,
+          "explanation": "Asymmetry in size ratio steers users toward one choice by making alternative options significantly smaller and less prominent."
+        },
+        {
+          "site": "cdiscount_com",
+          "page_type": "homepage",
+          "text": "'Accepter' (large, 1064x40px) vs 'Continuer sans accepter' (small, 144x21px)",
+          "confidence": 0.95,
+          "explanation": "Visual design strongly favors acceptance by making the primary choice massive and the alternative tiny."
+        },
+        {
+          "site": "cdiscount_com",
+          "page_type": "cart",
+          "text": "'Accepter' (large, 1064x40px) vs 'notre politique vie privée et cookies (ouvre une nouvelle fe' (small, 216x21px)",
+          "confidence": 0.95,
+          "explanation": "Visual design disproportionately emphasizes the acceptance button over the privacy policy link."
+        }
+      ],
+      "forced_action": [
+        {
+          "site": "lidl_de",
+          "page_type": "homepage",
+          "text": "Win 1 BMW X3 20 xDrive in Dune Grey metallic (collection required). Participants must be 18 years or older and reside in Germany. To participate during the promotional period, enter your email address",
+          "confidence": 0.9,
+          "explanation": "Users are required to submit their email address to enter a promotional prize draw."
+        },
+        {
+          "site": "aboutyou_de",
+          "page_type": "category",
+          "text": "Don't miss out on what you ... Create an account & collect Coins",
+          "confidence": 0.85,
+          "explanation": "Encourages or forces account creation by tying benefits to registration."
+        },
+        {
+          "site": "bipa_at",
+          "page_type": "homepage",
+          "text": "Mit WhatsApp -10% sparen",
+          "confidence": 0.85,
+          "explanation": "Promotes a discount conditionally tied to joining a messaging channel/subscribing."
+        },
+        {
+          "site": "bipa_at",
+          "page_type": "homepage",
+          "text": "Abonniere jetzt die BIPA Updates auf WhatsApp und spare 10% im BIPA Online Shop!",
+          "confidence": 0.85,
+          "explanation": "Requires subscribing to updates on WhatsApp in order to get a discount."
+        },
+        {
+          "site": "nelly_com",
+          "page_type": "other",
+          "text": "BECOME A MEMBER - GET 15% ON YOUR NEXT PURCHASE ONLINE*",
+          "confidence": 0.85,
+          "explanation": "Promotional incentive forcing membership signup to receive the discount."
+        },
+        {
+          "site": "nelly_com",
+          "page_type": "account",
+          "text": "Black Week starts soon – become a member & get 15% off your next online purchase*",
+          "confidence": 0.85,
+          "explanation": "Promotional incentive forcing membership signup."
+        },
+        {
+          "site": "perfumesecompanhia_pt",
+          "page_type": "cart",
+          "text": "Faz login para ver",
+          "confidence": 0.85,
+          "explanation": "Forces the user to log in simply to view cart contents or prices."
+        },
+        {
+          "site": "praxis_nl",
+          "page_type": "other",
+          "text": "Alleen met de Praxis Plus app heb je toegang tot alle voordelen, ook in de winkel. Al jouw speciale Praxis Plus kortingsbonnen vind je in de app en scan je in de winkel.",
+          "confidence": 0.85,
+          "explanation": "Requires downloading an app and joining a loyalty program to access standard advertised discounts."
+        }
+      ]
+    }
+  },
+  "human_agreement": {
+    "error": "need labels from two annotators",
+    "annotators": []
+  }
+}
