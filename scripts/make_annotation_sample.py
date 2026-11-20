@@ -1,10 +1,11 @@
 """
-Create the human-annotation sample from pipeline predictions.
+Create the human-annotation sample from the crawl predictions.
 
-    python scripts/make_annotation_sample.py --pred data/predictions/segments.jsonl --states 150
+    python scripts/make_annotation_sample.py
 
-Then each annotator opens the web app → Annotate tab, enters their name, and labels.
-Afterwards:  python scripts/agreement.py --adjudicator <third person>
+About 500 distinct elements: up to 200 the LLM flagged, 200 it cleared and 100 the pre-filter
+skipped (see darklens/evaluation/annotation.py).  Then two people label them independently in the
+web app (Annotate tab), and:  python scripts/agreement.py --adjudicator <third person>
 """
 import argparse
 import json
@@ -16,7 +17,8 @@ from darklens.evaluation.annotation import make_sample  # noqa: E402
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--pred", default="data/predictions/segments.jsonl")
-ap.add_argument("--states", type=int, default=150)
-ap.add_argument("--neg-share", type=float, default=0.15)
+ap.add_argument("--flagged", type=int, default=200)
+ap.add_argument("--cleared", type=int, default=200)
+ap.add_argument("--filtered", type=int, default=100)
 a = ap.parse_args()
-print(json.dumps(make_sample(a.pred, a.states, a.neg_share), indent=2))
+print(json.dumps(make_sample(a.pred, a.flagged, a.cleared, a.filtered), indent=2))

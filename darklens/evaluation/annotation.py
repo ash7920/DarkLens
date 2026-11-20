@@ -31,44 +31,51 @@ from .metrics import fleiss_kappa
 ANN_DIR = Path("data/annotation")
 
 
-def make_sample(predictions: str | Path, n_states: int = 150, neg_share: float = 0.15, seed: int = 13,
-                max_per_site: int = 4) -> dict:
-    rows = [json.loads(l) for l in open(predictions, encoding="utf-8")]
-    by_state = defaultdict(list)
-    for r in rows:
-        by_state[r["state_id"]].append(r)
+def make_sample(predictions: str | Path, n_flagged: int = 200, n_cleared: int = 200, n_filtered: int = 100,
+                seed: int = 13) -> dict:
+    """Stratified sample of DISTINCT elements for human labelling.
+
+    The unit is a distinct element of a shop (same text, kind and checkbox state), because the
+    detector also classifies each distinct element once per site.  Three strata:
+      flagged  - the LLM labelled it a dark pattern   (measures precision)
+      cleared  - sent to the LLM, labelled not dark    (measures LLM misses)
+      filtered - never sent: dropped by the pre-filter (measures pre-filter misses)
+    Each sampled unit carries weight = units in its stratum / units sampled from it, so the
+    evaluation can estimate precision and recall for the whole crawl.  The stratum is stored for
+    the evaluation only; the annotation tool never shows it or the model's answer."""
+    units: dict[tuple, dict] = {}
+    for line in open(predictions, encoding="utf-8"):
+        r = json.loads(line)
+        key = (r["site"], r["kind"], (r["text"] or "").strip().lower(), r.get("checked"))
+        u = units.get(key)
+        if u is None:
+            stratum = "filtered" if not r.get("sent") else ("cleared" if r["label"] == "not_dark" else "flagged")
+            units[key] = {"rep": r, "stratum": stratum, "occurrences": 1}
+        else:
+            u["occurrences"] += 1
     rng = random.Random(seed)
-    # stratify by page type, cap per site so a few big sites don't dominate
-    strata = defaultdict(list)
-    for sid, segs in by_state.items():
-        strata[segs[0].get("page_type") or "other"].append(sid)
-    for v in strata.values():
-        rng.shuffle(v)
-    picked, per_site = [], defaultdict(int)
-    while len(picked) < n_states and any(strata.values()):
-        for pt in list(strata):
-            if not strata[pt]:
-                continue
-            sid = strata[pt].pop()
-            site = by_state[sid][0].get("site")
-            if per_site[site] >= max_per_site:
-                continue
-            per_site[site] += 1
-            picked.append(sid)
-            if len(picked) >= n_states:
-                break
-    items = []
-    for sid in picked:
-        for r in by_state[sid]:
-            if r.get("sent") or rng.random() < neg_share:
-                items.append({k: r.get(k) for k in ("segment_id", "state_id", "site", "url", "page_type", "kind",
-                                                    "ui", "text", "checked", "bbox", "screenshot", "language")})
-    rng.shuffle(items)
+    by_stratum = defaultdict(list)
+    for u in units.values():
+        by_stratum[u["stratum"]].append(u)
+    wanted = {"flagged": n_flagged, "cleared": n_cleared, "filtered": n_filtered}
+    items, report = [], {}
+    for stratum, pool in sorted(by_stratum.items()):
+        pool.sort(key=lambda u: u["rep"]["segment_id"])  # deterministic before shuffling
+        rng.shuffle(pool)
+        take = pool[: wanted[stratum]]
+        weight = len(pool) / max(1, len(take))
+        report[stratum] = {"units": len(pool), "sampled": len(take), "weight": round(weight, 3)}
+        for u in take:
+            r = u["rep"]
+            items.append({**{k: r.get(k) for k in ("segment_id", "state_id", "site", "url", "page_type", "kind",
+                                                    "ui", "text", "checked", "bbox", "screenshot", "language")},
+                          "stratum": stratum, "weight": weight, "occurrences": u["occurrences"]})
+    rng.shuffle(items)  # annotators see the strata mixed together
     ANN_DIR.mkdir(parents=True, exist_ok=True)
     with open(ANN_DIR / "sample.jsonl", "w", encoding="utf-8") as f:
         for it in items:
             f.write(json.dumps(it, ensure_ascii=False) + "\n")
-    return {"states": len(picked), "items": len(items), "sites": len(per_site)}
+    return {"items": len(items), "sites": len({i["site"] for i in items}), "strata": report}
 
 
 def load_sample() -> list[dict]:

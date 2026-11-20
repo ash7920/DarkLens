@@ -20,7 +20,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from darklens.evaluation.annotation import agreement  # noqa: E402
+from darklens.evaluation.annotation import agreement, load_sample  # noqa: E402
 from darklens.evaluation.metrics import binary_metrics, multiclass_metrics  # noqa: E402
 from darklens.taxonomy import CATEGORY_KEYS, NOT_DARK  # noqa: E402
 
@@ -91,9 +91,20 @@ def main():
         if pairs:
             yt = [g for g, _ in pairs]
             yp = [p["label"] for _, p in pairs]
+            sample = {it["segment_id"]: it for it in load_sample()}
+            w = [sample.get(p["segment_id"], {}).get("weight", 1.0) for _, p in pairs]
+            ytb, ypb = [int(x != NOT_DARK) for x in yt], [int(x != NOT_DARK) for x in yp]
             res["evaluation"] = {
-                "binary": binary_metrics([int(x != NOT_DARK) for x in yt], [int(x != NOT_DARK) for x in yp]),
-                "multiclass": multiclass_metrics(yt, yp),
+                # population estimates: each labelled unit stands for `weight` units of its stratum
+                "binary": binary_metrics(ytb, ypb, sample_weight=w),
+                "multiclass": multiclass_metrics(yt, yp, sample_weight=w),
+                # plain agreement on the labelled sample itself (used for kappa reporting)
+                "binary_sample": binary_metrics(ytb, ypb),
+                "multiclass_sample": multiclass_metrics(yt, yp),
+                "by_stratum": {st: {"n": sum(1 for _, p in pairs if sample.get(p["segment_id"], {}).get("stratum") == st),
+                                    "gold_dark": sum(1 for g, p in pairs if sample.get(p["segment_id"], {}).get("stratum") == st
+                                                     and g != NOT_DARK)}
+                               for st in ("flagged", "cleared", "filtered")},
                 "prefilter_misses": sum(1 for g, p in pairs if not p.get("sent") and g != NOT_DARK),
             }
             errors = []

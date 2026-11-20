@@ -12,17 +12,19 @@ from sklearn.metrics import (accuracy_score, cohen_kappa_score, confusion_matrix
                              precision_recall_fscore_support)
 
 
-def binary_metrics(y_true, y_pred, n_boot: int = 1000, seed: int = 0) -> dict:
+def binary_metrics(y_true, y_pred, n_boot: int = 1000, seed: int = 0, sample_weight=None) -> dict:
     y_true = np.asarray(y_true).astype(int)
     y_pred = np.asarray(y_pred).astype(int)
-    p, r, f, _ = precision_recall_fscore_support(y_true, y_pred, average="binary", zero_division=0)
+    w = None if sample_weight is None else np.asarray(sample_weight, dtype=float)
+    p, r, f, _ = precision_recall_fscore_support(y_true, y_pred, average="binary", zero_division=0, sample_weight=w)
     out = {
         "n": int(len(y_true)), "precision": float(p), "recall": float(r), "f1": float(f),
-        "accuracy": float(accuracy_score(y_true, y_pred)),
-        "kappa": float(cohen_kappa_score(y_true, y_pred)) if len(set(y_true) | set(y_pred)) > 1 else 1.0,
-        "confusion": confusion_matrix(y_true, y_pred, labels=[0, 1]).tolist(),
+        "accuracy": float(accuracy_score(y_true, y_pred, sample_weight=w)),
+        "kappa": float(cohen_kappa_score(y_true, y_pred, sample_weight=w)) if len(set(y_true) | set(y_pred)) > 1 else 1.0,
+        "confusion": confusion_matrix(y_true, y_pred, labels=[0, 1], sample_weight=w).tolist(),
+        "weighted": w is not None,
     }
-    if n_boot:
+    if n_boot and w is None:
         rng = np.random.default_rng(seed)
         f1s = []
         for _ in range(n_boot):
@@ -33,22 +35,24 @@ def binary_metrics(y_true, y_pred, n_boot: int = 1000, seed: int = 0) -> dict:
     return out
 
 
-def multiclass_metrics(y_true: list[str], y_pred: list[str], labels: list[str] | None = None) -> dict:
+def multiclass_metrics(y_true: list[str], y_pred: list[str], labels: list[str] | None = None,
+                       sample_weight=None) -> dict:
     labels = labels or sorted(set(y_true) | set(y_pred))
+    w = sample_weight
     p, r, f, s = precision_recall_fscore_support(y_true, y_pred, labels=labels, zero_division=0)
     per = {lab: {"precision": float(p[i]), "recall": float(r[i]), "f1": float(f[i]), "support": int(s[i])}
            for i, lab in enumerate(labels)}
     dark_labels = [l for l in labels if l != "not_dark" and per[l]["support"] > 0]
     mp, mr, mf, _ = precision_recall_fscore_support(y_true, y_pred, labels=dark_labels, average="macro",
-                                                    zero_division=0)
+                                                    zero_division=0, sample_weight=w)
     up, ur, uf, _ = precision_recall_fscore_support(y_true, y_pred, labels=dark_labels, average="micro",
-                                                    zero_division=0)
+                                                    zero_division=0, sample_weight=w)
     return {
         "n": len(y_true),
-        "accuracy": float(accuracy_score(y_true, y_pred)),
+        "accuracy": float(accuracy_score(y_true, y_pred, sample_weight=w)),
         "macro_precision": float(mp), "macro_recall": float(mr), "macro_f1": float(mf),
         "micro_precision": float(up), "micro_recall": float(ur), "micro_f1": float(uf),
-        "kappa": float(cohen_kappa_score(y_true, y_pred)),
+        "kappa": float(cohen_kappa_score(y_true, y_pred, sample_weight=w)),
         "per_class": per,
         "labels": labels,
         "confusion": confusion_matrix(y_true, y_pred, labels=labels).tolist(),

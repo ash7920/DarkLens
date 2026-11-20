@@ -229,6 +229,8 @@ def annotate_next(annotator: str, skip: str = ""):
         return {"done": True, "total": len(sample), "labelled": len(mine)}
     skipped = set(skip.split(",")) if skip else set()
     item = dict(next((s for s in todo if s["segment_id"] not in skipped), todo[0]))
+    for hidden in ("stratum", "weight", "occurrences"):  # annotators stay blind to the model's answer
+        item.pop(hidden, None)
     if item.get("screenshot"):
         item["screenshot_url"] = f"/api/file?path={Path(item['screenshot']).as_posix()}"
     return {"done": False, "total": len(sample), "labelled": len(mine), "item": item}
