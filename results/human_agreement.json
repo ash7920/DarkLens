@@ -18,7 +18,36 @@
   },
   "expert": {
     "name": "ashka",
-    "n_labelled": 0,
-    "dark_share": 0.0
-  }
+    "n_labelled": 200,
+    "dark_share": 0.42
+  },
+  "second_annotator": {
+    "n": 50,
+    "raw_agreement": 0.82,
+    "raw_agreement_binary": 0.84,
+    "kappa_category": 0.6928327645051194,
+    "kappa_binary": 0.6694214876033058,
+    "dark_share": [
+      0.46,
+      0.3
+    ],
+    "annotator": "devanshi"
+  },
+  "model_second_opinion": {
+    "n": 200,
+    "raw_agreement": 0.905,
+    "raw_agreement_binary": 0.92,
+    "kappa_category": 0.8421795830218457,
+    "kappa_binary": 0.8330550918196995,
+    "dark_share": [
+      0.42,
+      0.37
+    ],
+    "models": [
+      "gemini-3.1-flash-lite",
+      "gemini-3.5-flash",
+      "gemma-4-31b-it"
+    ]
+  },
+  "gold_items": 200
 }

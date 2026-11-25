@@ -96,15 +96,15 @@
       },
       "pagination": {
         "any": 0.5,
-        "scarcity": 0.5,
         "interface_interference": 0.5,
+        "scarcity": 0.5,
         "n": 2
       },
       "other": {
         "any": 0.4797687861271676,
-        "forced_action": 0.023121387283236993,
         "social_proof": 0.16184971098265896,
         "interface_interference": 0.24277456647398843,
+        "forced_action": 0.023121387283236993,
         "urgency": 0.011560693641618497,
         "preselection": 0.10404624277456648,
         "n": 173
@@ -124,8 +124,8 @@
       },
       "subscription": {
         "any": 0.2857142857142857,
-        "preselection": 0.09523809523809523,
         "forced_action": 0.09523809523809523,
+        "preselection": 0.09523809523809523,
         "interface_interference": 0.19047619047619047,
         "n": 21
       }
@@ -968,7 +968,656 @@
     }
   },
   "human_agreement": {
-    "error": "need labels from two annotators",
-    "annotators": []
+    "design": "single trained annotator + blind intra-rater re-check + LLM second opinion",
+    "n_sample": 200,
+    "pilot": {
+      "n": 400,
+      "raw_agreement": 0.42,
+      "raw_agreement_binary": 0.605,
+      "kappa_category": 0.2977411177116047,
+      "kappa_binary": 0.2362537764350453,
+      "dark_share": [
+        0.8125,
+        0.4725
+      ],
+      "annotators": [
+        "devanshi",
+        "aarya"
+      ]
+    },
+    "expert": {
+      "name": "ashka",
+      "n_labelled": 200,
+      "dark_share": 0.42
+    },
+    "second_annotator": {
+      "n": 50,
+      "raw_agreement": 0.82,
+      "raw_agreement_binary": 0.84,
+      "kappa_category": 0.6928327645051194,
+      "kappa_binary": 0.6694214876033058,
+      "dark_share": [
+        0.46,
+        0.3
+      ],
+      "annotator": "devanshi"
+    },
+    "model_second_opinion": {
+      "n": 200,
+      "raw_agreement": 0.905,
+      "raw_agreement_binary": 0.92,
+      "kappa_category": 0.8421795830218457,
+      "kappa_binary": 0.8330550918196995,
+      "dark_share": [
+        0.42,
+        0.37
+      ],
+      "models": [
+        "gemini-3.1-flash-lite",
+        "gemini-3.5-flash",
+        "gemma-4-31b-it"
+      ]
+    },
+    "gold_items": 200
+  },
+  "evaluation": {
+    "binary": {
+      "n": 200,
+      "precision": 0.8780487804878053,
+      "recall": 0.029684880541211264,
+      "f1": 0.05742823975171181,
+      "accuracy": 0.9048156712702334,
+      "kappa": 0.051367634052990385,
+      "confusion": [
+        [
+          101323.9508599508,
+          45.24390243902439
+        ],
+        [
+          10648.04914004914,
+          325.7560975609755
+        ]
+      ],
+      "weighted": true
+    },
+    "multiclass": {
+      "n": 200,
+      "accuracy": 0.9046545792486957,
+      "macro_precision": 0.7694444444444444,
+      "macro_recall": 0.4834280032262975,
+      "macro_f1": 0.4460894286890231,
+      "micro_precision": 0.8292682926829266,
+      "micro_recall": 0.028035720511144047,
+      "micro_f1": 0.05423778198772796,
+      "kappa": 0.05235457235183305,
+      "per_class": {
+        "forced_action": {
+          "precision": 0.5,
+          "recall": 0.25,
+          "f1": 0.3333333333333333,
+          "support": 4
+        },
+        "interface_interference": {
+          "precision": 0.95,
+          "recall": 0.9047619047619048,
+          "f1": 0.926829268292683,
+          "support": 21
+        },
+        "not_dark": {
+          "precision": 0.8983050847457628,
+          "recall": 0.9137931034482759,
+          "f1": 0.905982905982906,
+          "support": 116
+        },
+        "preselection": {
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "support": 8
+        },
+        "scarcity": {
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1": 0.9090909090909091,
+          "support": 15
+        },
+        "social_proof": {
+          "precision": 0.9333333333333333,
+          "recall": 0.6363636363636364,
+          "f1": 0.7567567567567568,
+          "support": 22
+        },
+        "urgency": {
+          "precision": 0.7333333333333333,
+          "recall": 0.7857142857142857,
+          "f1": 0.7586206896551724,
+          "support": 14
+        }
+      },
+      "labels": [
+        "forced_action",
+        "interface_interference",
+        "not_dark",
+        "preselection",
+        "scarcity",
+        "social_proof",
+        "urgency"
+      ],
+      "confusion": [
+        [
+          1,
+          0,
+          3,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          19,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          106,
+          4,
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          8,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          7,
+          0,
+          1,
+          14,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          1,
+          11
+        ]
+      ],
+      "note": "macro/micro averages over dark-pattern classes present in the gold labels"
+    },
+    "binary_sample": {
+      "n": 200,
+      "precision": 0.8780487804878049,
+      "recall": 0.8571428571428571,
+      "f1": 0.8674698795180723,
+      "accuracy": 0.89,
+      "kappa": 0.7734761120263591,
+      "confusion": [
+        [
+          106,
+          10
+        ],
+        [
+          12,
+          72
+        ]
+      ],
+      "weighted": false,
+      "f1_ci95": [
+        0.8095238095238095,
+        0.919802807486631
+      ]
+    },
+    "multiclass_sample": {
+      "n": 200,
+      "accuracy": 0.87,
+      "macro_precision": 0.7694444444444445,
+      "macro_recall": 0.7628066378066377,
+      "macro_f1": 0.7474384928548092,
+      "micro_precision": 0.8292682926829268,
+      "micro_recall": 0.8095238095238095,
+      "micro_f1": 0.8192771084337349,
+      "kappa": 0.791816798782929,
+      "per_class": {
+        "forced_action": {
+          "precision": 0.5,
+          "recall": 0.25,
+          "f1": 0.3333333333333333,
+          "support": 4
+        },
+        "interface_interference": {
+          "precision": 0.95,
+          "recall": 0.9047619047619048,
+          "f1": 0.926829268292683,
+          "support": 21
+        },
+        "not_dark": {
+          "precision": 0.8983050847457628,
+          "recall": 0.9137931034482759,
+          "f1": 0.905982905982906,
+          "support": 116
+        },
+        "preselection": {
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "support": 8
+        },
+        "scarcity": {
+          "precision": 0.8333333333333334,
+          "recall": 1.0,
+          "f1": 0.9090909090909091,
+          "support": 15
+        },
+        "social_proof": {
+          "precision": 0.9333333333333333,
+          "recall": 0.6363636363636364,
+          "f1": 0.7567567567567568,
+          "support": 22
+        },
+        "urgency": {
+          "precision": 0.7333333333333333,
+          "recall": 0.7857142857142857,
+          "f1": 0.7586206896551724,
+          "support": 14
+        }
+      },
+      "labels": [
+        "forced_action",
+        "interface_interference",
+        "not_dark",
+        "preselection",
+        "scarcity",
+        "social_proof",
+        "urgency"
+      ],
+      "confusion": [
+        [
+          1,
+          0,
+          3,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          19,
+          2,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          106,
+          4,
+          0,
+          0,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          8,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          15,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          7,
+          0,
+          1,
+          14,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          1,
+          11
+        ]
+      ],
+      "note": "macro/micro averages over dark-pattern classes present in the gold labels"
+    },
+    "by_stratum": {
+      "flagged": {
+        "n": 82,
+        "gold_dark": 72
+      },
+      "cleared": {
+        "n": 74,
+        "gold_dark": 8
+      },
+      "filtered": {
+        "n": 44,
+        "gold_dark": 4
+      }
+    },
+    "prefilter_misses": 4
+  },
+  "errors": [
+    {
+      "type": "FN",
+      "gold": "forced_action",
+      "pred": "not_dark",
+      "text": "For example, if you wish to add a card game, provide the following value:",
+      "site": "bol_com",
+      "page_type": "product",
+      "explanation": "This is standard API documentation providing an example value."
+    },
+    {
+      "type": "FN",
+      "gold": "forced_action",
+      "pred": "not_dark",
+      "text": "Wir denken nicht nur an Deinen Style, sondern auch an Deinen Komfort. Freu Dich über unseren zuverlässigen Versand- und Rückversandservice. Für ein rundum gelungenes Einkaufserlebnis mit unkompliziert",
+      "site": "bonprix_de",
+      "page_type": "homepage",
+      "explanation": "Ordinary marketing and informational copy about shipping and services."
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "interface_interference",
+      "text": "'Weitere Informationen' (large, 148x20px) vs 'Hinweis schließen' (small, 16x16px)",
+      "site": "bonprix_de",
+      "page_type": "category",
+      "explanation": "Visual asymmetry between the popup choices steers attention to the informative link over the close action."
+    },
+    {
+      "type": "FN",
+      "gold": "social_proof",
+      "pred": "not_dark",
+      "text": "Most popular choices for travellers from India",
+      "site": "booking_com",
+      "page_type": "other",
+      "explanation": "Ordinary recommendation category."
+    },
+    {
+      "type": "FN",
+      "gold": "social_proof",
+      "pred": "not_dark",
+      "text": "Most booked hotels in Gurgaon and surroundings in the past month",
+      "site": "booking_com",
+      "page_type": "other",
+      "explanation": "Standard descriptive header/label."
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "urgency",
+      "text": "7h 18min",
+      "site": "cdiscount_com",
+      "page_type": "category",
+      "explanation": "Puts real or fake time pressure on the user to decide quickly via a countdown timer."
+    },
+    {
+      "type": "wrong category",
+      "gold": "social_proof",
+      "pred": "scarcity",
+      "text": "16 SÅLDA IDAG",
+      "site": "cdon_se",
+      "page_type": "product",
+      "explanation": "Creates high demand pressure by highlighting how many items were sold today."
+    },
+    {
+      "type": "FN",
+      "gold": "social_proof",
+      "pred": "not_dark",
+      "text": "Litet och lättanvänt kopplingsur – säljs i 1-...",
+      "site": "clasohlson_com",
+      "page_type": "category",
+      "explanation": "Standard product description."
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "preselection",
+      "text": "Επέκταση Εγγύησης 13,00€",
+      "site": "germanos_gr",
+      "page_type": "category",
+      "explanation": "Optional add-on service presented, but without pre-ticked checkbox evidence it is borderline; classified cautiously as preselection/add-on reference."
+    },
+    {
+      "type": "FN",
+      "gold": "interface_interference",
+      "pred": "not_dark",
+      "text": "'SÌ Vai al sito web per United Kingdom' (large, 328x44px) vs 'Continua senza accettare' (small, 120x36px)",
+      "site": "kikocosmetics_com",
+      "page_type": "homepage",
+      "explanation": "Visual asymmetry between primary accept and secondary decline options, but within normal cookie banner parameters."
+    },
+    {
+      "type": "FN",
+      "gold": "interface_interference",
+      "pred": "not_dark",
+      "text": "You reached this page when trying to access https://www.kikocosmetics.com/it-it/p/unlimited-blush-05-42793/ from 103.169.77.169 on November 18 2026, 18:56:47 UTC",
+      "site": "kikocosmetics_com",
+      "page_type": "homepage",
+      "explanation": "Standard security block log details."
+    },
+    {
+      "type": "FN",
+      "gold": "social_proof",
+      "pred": "not_dark",
+      "text": "Mest sålda",
+      "site": "lyko_com",
+      "page_type": "category",
+      "explanation": "Standard sorting dropdown option without manipulative elements."
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "urgency",
+      "text": "Black Days 33%",
+      "site": "magasin_dk",
+      "page_type": "account",
+      "explanation": "Event-based promotional sales label creating seasonal shopping urgency."
+    },
+    {
+      "type": "FN",
+      "gold": "forced_action",
+      "pred": "not_dark",
+      "text": "Click & collect Prêt en 1h",
+      "site": "natureetdecouvertes_com",
+      "page_type": "homepage",
+      "explanation": "filtered out by pre-filter"
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "preselection",
+      "text": "J'adhère ! (+6,00€)",
+      "site": "natureetdecouvertes_com",
+      "page_type": "cart",
+      "explanation": "Optional club membership fee presented as an add-on choice."
+    },
+    {
+      "type": "FN",
+      "gold": "social_proof",
+      "pred": "not_dark",
+      "text": "Snapchat",
+      "site": "nelly_com",
+      "page_type": "homepage",
+      "explanation": "filtered out by pre-filter"
+    },
+    {
+      "type": "FN",
+      "gold": "social_proof",
+      "pred": "not_dark",
+      "text": "beste Produktqualität",
+      "site": "obi_de",
+      "page_type": "homepage",
+      "explanation": "filtered out by pre-filter"
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "urgency",
+      "text": "Deal ausverkauft",
+      "site": "obi_de",
+      "page_type": "category",
+      "explanation": "States that a deal is sold out, which can be used to pressure users regarding limited-time offers, though here it simply indicates status; however, combined with deal context, urgency patterns often apply. Wait, 'Deal ausverkauft' means deal sold out. Let's judge mechanism: it's factual status of a past deal, but can create FOMO. Let's classify as urgency or not_dark? Factual statement of sold out"
+    },
+    {
+      "type": "wrong category",
+      "gold": "urgency",
+      "pred": "scarcity",
+      "text": "Nur noch wenige lieferbar Kühlbox Icetime Plus 26 l 4.0 (1) Online verfügbar Abholung: Markt auswählen UVP 42,99 € 29,99 € *",
+      "site": "obi_de",
+      "page_type": "category",
+      "explanation": "Claims limited stock availability ('Only a few left deliverable') to create urgency."
+    },
+    {
+      "type": "wrong category",
+      "gold": "urgency",
+      "pred": "scarcity",
+      "text": "Nur noch wenige lieferbar Bosch Meißel und Bohrer-Set SDS Plus-4C Ø 6-10 mm Online verfügbar Abholung: Markt auswählen UVP 46,47 € 38,99 € *",
+      "site": "obi_de",
+      "page_type": "category",
+      "explanation": "Stock pressure claim on product item."
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "preselection",
+      "text": "12-18 + € 0,95 Lunga distanza",
+      "site": "ovs_it",
+      "page_type": "category",
+      "explanation": "Sneaking a fee or additional cost ('Lunga distanza') directly tied to a selection option."
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "preselection",
+      "text": "24-30 + € 0,95 Lunga distanza",
+      "site": "ovs_it",
+      "page_type": "category",
+      "explanation": "Sneaking a fee or additional cost ('Lunga distanza') directly tied to a selection option."
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "urgency",
+      "text": "Secs",
+      "site": "perfumesecompanhia_pt",
+      "page_type": "homepage",
+      "explanation": "Time unit indicator part of a countdown timer creating urgency."
+    },
+    {
+      "type": "FP",
+      "gold": "not_dark",
+      "pred": "forced_action",
+      "text": "Alleen met de Praxis Plus app heb je toegang tot alle voordelen, ook in de winkel. Al jouw speciale Praxis Plus kortingsbonnen vind je in de app en scan je in de winkel.",
+      "site": "praxis_nl",
+      "page_type": "other",
+      "explanation": "Requires downloading an app and joining a loyalty program to access standard advertised discounts."
+    },
+    {
+      "type": "wrong category",
+      "gold": "urgency",
+      "pred": "social_proof",
+      "text": "Wees snel! 6 mensen bekeken dit artikel in de voorbije dag.",
+      "site": "torfs_be",
+      "page_type": "category",
+      "explanation": "Uses viewer metrics of other shoppers to pressure the user."
+    },
+    {
+      "type": "FN",
+      "gold": "social_proof",
+      "pred": "not_dark",
+      "text": "Sehr beliebt",
+      "site": "universal_at",
+      "page_type": "category",
+      "explanation": "filtered out by pre-filter"
+    }
+  ],
+  "error_counts": {
+    "FN": 12,
+    "FP": 10,
+    "wrong category": 4
+  },
+  "by_language": {
+    "de": {
+      "n": 53,
+      "precision": 0.9259259259259259,
+      "recall": 0.8928571428571429,
+      "f1": 0.9090909090909091,
+      "accuracy": 0.9056603773584906,
+      "kappa": 0.8111190306486101,
+      "confusion": [
+        [
+          23,
+          2
+        ],
+        [
+          3,
+          25
+        ]
+      ],
+      "weighted": false
+    },
+    "it": {
+      "n": 28,
+      "precision": 0.7777777777777778,
+      "recall": 0.7777777777777778,
+      "f1": 0.7777777777777778,
+      "accuracy": 0.8571428571428571,
+      "kappa": 0.672514619883041,
+      "confusion": [
+        [
+          17,
+          2
+        ],
+        [
+          2,
+          7
+        ]
+      ],
+      "weighted": false
+    }
   }
 }
