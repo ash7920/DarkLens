@@ -118,7 +118,7 @@ button, input, select { font: inherit; color: inherit; }
   max-height: 220px; overflow: auto; }
 .report-foot { display: flex; align-items: center; gap: 10px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--rule);
   font-size: .8125rem; color: var(--slate); }
-.report-foot .btn { margin-left: auto; }
+.report-foot .btn:first-of-type { margin-left: auto; }
 
 .history { margin-top: 36px; }
 .history h3 { font-size: 1rem; margin: 0 0 10px; }
@@ -215,3 +215,26 @@ td.num, th.num { text-align: right; }
 
 .annot-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .annot-yours { font-size: .9rem; margin: 0 0 8px; padding: 6px 10px; background: #fff3c4; color: #3b3000; border-radius: var(--radius-s); }
+
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 6px 0 16px; }
+.stat { border: 1px solid var(--rule); border-radius: var(--radius-s); padding: 12px 14px; background: var(--paper); }
+.stat b { display: block; font-size: 1.6rem; font-weight: 800; line-height: 1.1; }
+.stat span { display: block; font-size: .82rem; color: var(--slate); margin-top: 4px; }
+.res-block .note { color: var(--slate); font-size: .88rem; margin: 12px 0 0; max-width: 80ch; }
+
+.print-head { display: none; }
+@media print {
+  @page { margin: 14mm; }
+  body { background: #fff; color: #000; }
+  .bar, .source, .controls, .history, .rail-empty, .rail-busy, .report-foot .btn, #resetBtn, .toast,
+  #view-annotate, #view-results, #view-taxonomy, details.more:not(#lowConf) { display: none !important; }
+  .print-head { display: block; margin: 0 0 10px; }
+  .print-head h1 { font-size: 20pt; margin: 0; }
+  .print-head p { margin: 2px 0 0; color: #444; font-size: 10pt; }
+  .inspect { display: block; }
+  .stage { background: none; padding: 0; max-height: none; overflow: visible; break-inside: avoid; }
+  .stage-img img { border: 1px solid #ccc; }
+  .box, .box b, .cat, .finding, .hbar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .rail { position: static; border: none; padding: 0; margin-top: 16px; background: none; }
+  .finding { break-inside: avoid; }
+}

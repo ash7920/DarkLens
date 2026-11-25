@@ -18,6 +18,7 @@ function toast(msg, ms = 4200) {
 function esc(s) { return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 function pct(x) { return x == null ? "–" : `${Math.round(x * 100)}%`; }
 function f3(x) { return x == null || isNaN(x) ? "–" : Number(x).toFixed(3); }
+function f2(x) { return x == null || isNaN(x) ? "–" : Number(x).toFixed(2); }
 function catColor(key) { return (TAXO.find(c => c.key === key) || {}).color || "#888"; }
 function catName(key) { return key === "not_dark" ? "Not a dark pattern" : (TAXO.find(c => c.key === key) || {}).name || key; }
 
@@ -178,17 +179,38 @@ function setupInspect() {
   });
   $("#urlForm").addEventListener("submit", e => { e.preventDefault(); const u = $("#urlInput").value.trim(); if (u) analyzeUrl(u); });
   $("#resetBtn").addEventListener("click", () => { file.value = ""; showEmpty(); });
+  $("#pdfBtn").addEventListener("click", () => {
+    // the browser's own "Save as PDF" print dialog, with a print-only layout (style.css @media print)
+    if (!current) return;
+    const when = new Date().toLocaleString();
+    const src = current.page ? (current.page.url || current.page.title || "") : "uploaded screenshot";
+    $("#printHead").innerHTML = `<h1>DarkLens report</h1><p>${esc(src)} · ${esc(when)}</p>`;
+    const old = document.title;
+    document.title = `darklens-report-${current.id || "page"}`;  // becomes the PDF's file name
+    window.addEventListener("afterprint", () => { document.title = old; }, { once: true });
+    $("#lowConf").open = true;
+    window.print();
+  });
   $("#downloadBtn").addEventListener("click", () => {
     if (!current) return;
     const blob = new Blob([JSON.stringify(current, null, 2)], { type: "application/json" });
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = `darklens-report-${current.id}.json`; a.click();
   });
-  $("#samples").innerHTML = SAMPLES.map((s, i) => `<button type="button" data-i="${i}">${s.label}</button>`).join("");
+  drawSamples();
+  // real EU shop samples, if scripts/make_eu_samples.py has made them
+  fetch("samples/samples.json").then(r => r.ok ? r.json() : []).then(extra => {
+    if (Array.isArray(extra) && extra.length) { SAMPLES.push(...extra.filter(x => x && x.url && x.label)); drawSamples(); }
+  }).catch(() => {});
+}
+function drawSamples() {
+  $("#samples").innerHTML = SAMPLES.map((s, i) => `<button type="button" data-i="${i}">${esc(s.label)}</button>`).join("");
   $$("#samples button").forEach(b => b.addEventListener("click", async e => {
     e.stopPropagation();
     const s = SAMPLES[b.dataset.i];
     try {
-      const blob = await (await fetch(s.url)).blob();
+      const r = await fetch(s.url);
+      if (!r.ok) throw new Error(r.status);
+      const blob = await r.blob();
       analyzeFile(new File([blob], s.url.split("/").pop(), { type: "image/png" }));
     } catch (err) { toast("Sample image not found. Run scripts/make_samples.py."); }
   }));
@@ -347,17 +369,59 @@ async function loadResults() {
     html += `<div class="res-block"><h2>Screenshot detection on AidUI / ContextDP</h2>
       <p>Image-level scoring: does the screenshot contain a dark pattern, and which categories.</p>
       <table><tr><th>Split and engine</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th><th class="num">Category macro-F1</th></tr>
-      ${ss.map(([k, v]) => row([`${v.split}: ${v.engine.model}${v.engine.engine === "llm" ? ` (${v.mode})` : ""}`, v.binary.precision, v.binary.recall, v.binary.f1, v.macro_f1])).join("")}</table></div>`;
+      ${ss.map(([k, v]) => row([`${v.split}: ${v.engine.model}${v.engine.engine === "llm" ? ` (${v.mode}${v.engine.ocr === false ? ", image only, no OCR" : ", with OCR"})` : ""}`, v.binary.precision, v.binary.recall, v.binary.f1, v.macro_f1])).join("")}</table></div>`;
   }
   const ce = R.crawl_evaluation;
   if (ce) {
-    const p = ce.prevalence;
+    const p = ce.prevalence, cov = ce.coverage || {};
+    const ci = v => v ? `${Number(v[0]).toFixed(2)} to ${Number(v[1]).toFixed(2)}` : "–";
+    html += `<div class="res-block"><h2>EU crawl: coverage</h2>
+      <p>Shops that block automated browsers (Cloudflare, captchas) are recorded, never bypassed, and left out of the figures below.</p>
+      <div class="stat-row">
+        <div class="stat"><b>${cov.attempted ?? "–"}</b><span>shops attempted</span></div>
+        <div class="stat"><b>${cov.crawled ?? "–"}</b><span>crawled (${cov.crawled_countries ?? "–"} countries)</span></div>
+        <div class="stat"><b>${cov.blocked ?? "–"}</b><span>blocked by bot protection (${cov.attempted ? pct(cov.blocked / cov.attempted) : "–"})</span></div>
+        <div class="stat"><b>${cov.crawled_pages ?? "–"}</b><span>pages captured</span></div>
+      </div></div>`;
     html += `<div class="res-block"><h2>EU crawl: how common is each pattern?</h2>
-      <p>${p.n_sites} sites, ${p.n_states} page states. Share of sites with at least one instance. These are lower bounds.</p>
+      <p>${p.n_sites} sites, ${p.n_states} page states. ${p.sites_with_any_pattern} sites (${pct(p.share_sites_with_any_pattern)}) show at least one pattern.
+        Share of sites with at least one instance of each class. These are lower bounds, because detection is conservative (see below).</p>
       <table>${Object.entries(p.by_category).sort((a, b) => b[1] - a[1]).map(([c, v]) =>
         `<tr><td>${esc(catName(c))}</td><td class="bar-cell"><div class="hbar" style="width:${v * 100}%;background:${catColor(c)}"></div></td><td class="num">${pct(v)}</td></tr>`).join("")}</table>
-      ${ce.evaluation ? `<p style="margin-top:14px">Against human ground truth (${ce.evaluation.binary.n} items): precision ${f3(ce.evaluation.binary.precision)}, recall ${f3(ce.evaluation.binary.recall)}, F1 ${f3(ce.evaluation.binary.f1)}, Cohen's κ ${f3(ce.evaluation.binary.kappa)}.</p>` : `<p class="pending">Human ground truth not labelled yet.</p>`}
       </div>`;
+    const ev = ce.evaluation, pop = ev && ev.population, smp = ev && ev.binary_sample;
+    if (pop) {
+      const st = pop.strata || {}, names = { flagged: "Flagged by the LLM", cleared: "Cleared by the LLM", filtered: "Filtered out before the LLM" };
+      html += `<div class="res-block"><h2>EU crawl: accuracy against human labels</h2>
+        <p>${smp ? smp.n : "–"} distinct elements labelled by a trained annotator, sampled at random from three groups and weighted by group size,
+          so the numbers describe the whole crawl, not just the sample.</p>
+        <div class="stat-row">
+          <div class="stat"><b>${f2(pop.precision)}</b><span>precision (95% CI ${ci(pop.precision_ci95)}): when DarkLens flags something, it is almost always a real pattern</span></div>
+          <div class="stat"><b>${f2(pop.recall)}</b><span>estimated recall (95% CI ${ci(pop.recall_ci95)}): it finds only a small share of all dark elements</span></div>
+          ${smp ? `<div class="stat"><b>${f2(smp.f1)}</b><span>F1 on the labelled sample itself (κ ${f2(smp.kappa)}), which over-represents flagged elements</span></div>` : ""}
+        </div>
+        <table><tr><th>Group</th><th class="num">Labelled</th><th class="num">Dark (human)</th><th class="num">Dark share</th><th class="num">Elements in crawl</th></tr>
+        ${["flagged", "cleared", "filtered"].filter(k => st[k]).map(k => `<tr><td>${names[k]}</td><td class="num">${st[k].n}</td><td class="num">${st[k].gold_dark}</td><td class="num">${pct(st[k].dark_rate)}</td><td class="num">${Math.round(st[k].units).toLocaleString()}</td></tr>`).join("")}
+        </table>
+        <p class="note">Why recall is low: about one in ten cleared or filtered elements is dark, and those groups are huge, so small misses add up.
+          ${pct(pop.share_of_misses_from_prefilter)} of the estimated misses never reached the LLM; they were dropped by the cheap pre-filter, mostly short social-proof badges such as "Very popular".</p>
+        </div>`;
+    } else if (ev) {
+      html += `<div class="res-block"><h2>EU crawl: accuracy against human labels</h2><p>Against human ground truth (${ev.binary.n} items): precision ${f3(ev.binary.precision)}, recall ${f3(ev.binary.recall)}. Re-run <code>python scripts/evaluate_crawl.py</code> for the weighted estimates.</p></div>`;
+    } else {
+      html += `<div class="res-block"><h2>EU crawl: accuracy</h2><p class="pending">Human ground truth not labelled yet.</p></div>`;
+    }
+    const ha = R.human_agreement;
+    if (ha && (ha.pilot || ha.second_annotator || ha.model_second_opinion)) {
+      const r = (label, d, note) => d && d.n ? `<tr><td>${label}</td><td class="num">${d.n}</td><td class="num">${pct(d.raw_agreement)}</td><td class="num">${f2(d.kappa_category)}</td><td class="num">${f2(d.kappa_binary)}</td><td>${note}</td></tr>` : "";
+      html += `<div class="res-block"><h2>Quality of the human labels</h2>
+        <p>Cohen's κ: 0.21 to 0.40 is fair, 0.61 to 0.80 substantial, above 0.80 almost perfect (Landis and Koch).</p>
+        <table><tr><th>Comparison</th><th class="num">Items</th><th class="num">Agreement</th><th class="num">κ category</th><th class="num">κ dark or not</th><th></th></tr>
+        ${r("Pilot: two annotators, no written guide", ha.pilot, "led us to write a labelling guide")}
+        ${r("With the guide: second annotator vs ground truth", ha.second_annotator, "independent, same 50 items")}
+        ${r("Independent LLM vs ground truth", ha.model_second_opinion, esc((ha.model_second_opinion?.models || []).join(", ")))}
+        </table></div>`;
+    }
   } else {
     html += `<div class="res-block"><h2>EU crawl</h2><p class="pending">Not run yet. See the README section "Run the EU study".</p></div>`;
   }
