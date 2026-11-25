@@ -72,6 +72,63 @@ def prevalence(preds: list[dict]) -> dict:
     return out
 
 
+def wilson(k: int, n: int, z: float = 1.96) -> list[float]:
+    if not n:
+        return [0.0, 1.0]
+    import math
+    p = k / n
+    d = 1 + z * z / n
+    c = p + z * z / (2 * n)
+    h = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+    return [max(0.0, (c - h) / d), min(1.0, (c + h) / d)]
+
+
+def stratified_estimates(rows: list[tuple[str, int, int]], units: dict[str, float], n_boot: int = 5000,
+                         seed: int = 13) -> dict:
+    """Population precision/recall from a stratified sample.
+
+    rows: (stratum, gold_dark, predicted_dark) per labelled element; units: elements per stratum in the
+    crawl.  Within a stratum the prediction is constant (flagged = dark, cleared/filtered = not dark),
+    so the estimate is driven by each stratum's share of truly dark elements.  Intervals come from a
+    bootstrap that resamples inside each stratum."""
+    import random
+    by = defaultdict(list)
+    for st, g, p in rows:
+        by[st].append((g, p))
+
+    def est(b):
+        tp = fp = fn = 0.0
+        for st, v in b.items():
+            if not v:
+                continue
+            w = units[st] / len(v)
+            tp += w * sum(1 for g, p in v if g and p)
+            fp += w * sum(1 for g, p in v if not g and p)
+            fn += w * sum(1 for g, p in v if g and not p)
+        prec = tp / (tp + fp) if tp + fp else 0.0
+        rec = tp / (tp + fn) if tp + fn else 0.0
+        return prec, rec, tp, fn
+    prec, rec, tp, fn = est(by)
+    rng = random.Random(seed)
+    P, R = [], []
+    for _ in range(n_boot):
+        b = {st: [rng.choice(v) for _ in v] for st, v in by.items()}
+        p_, r_, _, _ = est(b)
+        P.append(p_)
+        R.append(r_)
+    P.sort()
+    R.sort()
+    lo, hi = int(0.025 * n_boot), int(0.975 * n_boot) - 1
+    strata = {st: {"n": len(v), "units": units[st], "gold_dark": sum(g for g, _ in v),
+                   "dark_rate": sum(g for g, _ in v) / len(v), "dark_rate_ci95": wilson(sum(g for g, _ in v), len(v)),
+                   "est_dark_units": units[st] * sum(g for g, _ in v) / len(v)} for st, v in by.items()}
+    missed = fn or 1.0
+    return {"precision": prec, "precision_ci95": [P[lo], P[hi]], "recall": rec, "recall_ci95": [R[lo], R[hi]],
+            "est_found_units": tp, "est_missed_units": fn,
+            "share_of_misses_from_prefilter": strata.get("filtered", {}).get("est_dark_units", 0.0) / missed,
+            "strata": strata}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--pred", default="data/predictions/segments.jsonl")
@@ -109,6 +166,16 @@ def main():
                                for st in ("flagged", "cleared", "filtered")},
                 "prefilter_misses": sum(1 for g, p in pairs if not p.get("sent") and g != NOT_DARK),
             }
+            # stratum sizes in the crawl (weight x labelled items of that stratum, as set by the sample)
+            st_of = {p["segment_id"]: sample.get(p["segment_id"], {}).get("stratum") for _, p in pairs}
+            units = {}
+            for st in ("flagged", "cleared", "filtered"):
+                ws = [sample[i]["weight"] for i in st_of if st_of[i] == st and i in sample]
+                if ws:
+                    units[st] = ws[0] * sum(1 for it in sample.values() if it.get("stratum") == st)
+            rows = [(st_of[p["segment_id"]], int(g != NOT_DARK), int(p["label"] != NOT_DARK))
+                    for g, p in pairs if st_of.get(p["segment_id"]) in units]
+            res["evaluation"]["population"] = stratified_estimates(rows, units)
             errors = []
             for g, p in pairs:
                 if g != p["label"]:
@@ -132,7 +199,14 @@ def main():
         print(f"  {c:24s} {v:.1%}")
     if "evaluation" in res:
         b = res["evaluation"]["binary"]
-        print(f"vs gold ({b['n']} items): P={b['precision']:.3f} R={b['recall']:.3f} F1={b['f1']:.3f} kappa={b['kappa']:.3f}")
+        s = res["evaluation"]["binary_sample"]
+        print(f"on the labelled sample ({s['n']} items): P={s['precision']:.3f} R={s['recall']:.3f} F1={s['f1']:.3f} kappa={s['kappa']:.3f}")
+        pop = res["evaluation"].get("population")
+        if pop:
+            print(f"whole crawl (weighted): precision {pop['precision']:.3f} [{pop['precision_ci95'][0]:.2f}-{pop['precision_ci95'][1]:.2f}], "
+                  f"recall {pop['recall']:.3f} [{pop['recall_ci95'][0]:.2f}-{pop['recall_ci95'][1]:.2f}]")
+            for st, d in pop["strata"].items():
+                print(f"  {st:9s} {d['gold_dark']:3d}/{d['n']:3d} dark ({d['dark_rate']:.1%}), ~{d['est_dark_units']:.0f} of {d['units']:.0f} elements")
     print("-> results/crawl_evaluation.json")
 
 

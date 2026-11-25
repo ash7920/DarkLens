@@ -1337,7 +1337,57 @@
         "gold_dark": 4
       }
     },
-    "prefilter_misses": 4
+    "prefilter_misses": 4,
+    "population": {
+      "precision": 0.8780487804878049,
+      "precision_ci95": [
+        0.8048780487804879,
+        0.9390243902439024
+      ],
+      "recall": 0.02968488054121134,
+      "recall_ci95": [
+        0.017065366219413115,
+        0.07489850226831544
+      ],
+      "est_found_units": 325.7560975609756,
+      "est_missed_units": 10648.04914004914,
+      "share_of_misses_from_prefilter": 0.7232737606824197,
+      "strata": {
+        "cleared": {
+          "n": 74,
+          "units": 27256.0,
+          "gold_dark": 8,
+          "dark_rate": 0.10810810810810811,
+          "dark_rate_ci95": [
+            0.055806661696501225,
+            0.1990904627202631
+          ],
+          "est_dark_units": 2946.5945945945946
+        },
+        "filtered": {
+          "n": 44,
+          "units": 84716.0,
+          "gold_dark": 4,
+          "dark_rate": 0.09090909090909091,
+          "dark_rate_ci95": [
+            0.035921611478836546,
+            0.21159519397917487
+          ],
+          "est_dark_units": 7701.454545454545
+        },
+        "flagged": {
+          "n": 82,
+          "units": 371.0,
+          "gold_dark": 72,
+          "dark_rate": 0.8780487804878049,
+          "dark_rate_ci95": [
+            0.7898683447569094,
+            0.9323921909274209
+          ],
+          "est_dark_units": 325.7560975609756
+        }
+      }
+    }
   },
   "errors": [
     {

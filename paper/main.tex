@@ -70,8 +70,10 @@ crawl was labelled by a trained annotator, with a blind re-check and an independ
 detection but only \CVlrMacro{} macro-F1 across categories, and it raises false alarms on neutral text
 such as ``In stock'' when the page context is missing. On the test-bed the LLM pipeline finds \TbLLMFound{} of
 \TbN{} injected patterns and raises \TbLLMFP{} false alarm on the clean twin, against \TbOffFP{} for the lexical engine. It reaches \LLMtextMacro{} macro-F1
-on held-out text, \WebLLMF{} F1 on AidUI web screenshots, and F1~=~\CrawlF{} (Cohen's $\kappa$~=~\CrawlKappa{})
-against human ground truth on the live crawl, where \CrawlAny{} of sites show at least one pattern. We
+on held-out text and \WebLLMF{} F1 on AidUI web screenshots. On the live crawl its findings are precise
+(\PopP{} against human labels), but weighting the labelled sample to the whole crawl shows that it finds only a
+small share of all dark elements, mostly short social-proof badges, most of which never pass the cheap pre-filter; the
+\CrawlAny{} of sites with at least one detected pattern is therefore a lower bound. We
 release the crawler, the test-bed, the annotation tool and a web interface that marks dark patterns on an
 uploaded screenshot.
 \end{abstract}
@@ -430,9 +432,17 @@ Engine & Recall & Precision & Clean-shop FPs \\
 
 \subsection{EU crawl: reliability and prevalence}
 With guidelines, two annotators agreed at $\kappa$~=~\SecondKappa{} on categories (\SecondN{} elements),
-against \PilotKappa{} in the pilot without them. Against the \CrawlNGold{} labelled elements, weighted to the whole
-crawl, DarkLens achieves precision \CrawlP{}, recall \CrawlR{} and F1 \CrawlF{}
-(Cohen's $\kappa$~=~\CrawlKappa{}). Across \CrawlSites{} sites and \CrawlStates{} page states, \CrawlAnyN{}
+against \PilotKappa{} in the pilot without them, and the independent model agreed with the ground truth at
+$\kappa$~=~\ModelOpKappa{}. On the \CrawlNGold{} labelled elements themselves DarkLens reaches precision
+\CrawlSP{}, recall \CrawlSR{} and F1 \CrawlSF{} ($\kappa$~=~\CrawlSKappa{}), but this sample deliberately
+over-represents flagged elements. Table~\ref{tab:strata} weights it back to the crawl. Precision holds at
+\PopP{} (95\% CI \PopPlo{}--\PopPhi{}): what DarkLens reports is almost always a real pattern. Recall does
+not: about one in ten cleared and filtered elements is dark, and those strata are two to three orders of
+magnitude larger than the flagged one, so the estimated element-level recall is only \PopR{}
+(\PopRlo{}--\PopRhi{}). The estimate rests on \StClearDark{}~+~\StFiltDark{} elements and is uncertain, but its
+direction is clear: \PopMissPrefilter{} of the estimated misses are elements the lexical pre-filter never sent to
+the LLM. Most misses in both strata are short social-proof badges (``Very popular'' was filtered out;
+``Best sellers'' and ``Most booked in the past month'' reached the LLM and were cleared). Across \CrawlSites{} sites and \CrawlStates{} page states, \CrawlAnyN{}
 sites (\CrawlAny{}) show at least one pattern, \CrawlMeanCats{} classes per site on average; Table~\ref{tab:prev}
 breaks this down by class. Interface interference dominates, mostly cookie banners whose ``accept'' option is far
 more prominent than the alternative, in line with Nouwens et al.~\cite{nouwens2020}; pre-ticked add-ons and
@@ -440,8 +450,25 @@ sneaking follow. Patterns concentrate where money changes hands: \PTCheckout{} o
 (n~=~\PTCheckoutN{}) carry at least one, against \PTProduct{} of product pages. No confirmshaming or difficult
 cancellation was found, which reflects the crawl rather than the market: cancellation flows sit behind log-ins,
 and newsletter pop-ups with shaming opt-outs often appear only after longer visits or on exit intent. Because LLMs
-under-recall relative to people~\cite{nwokeji2026} and the crawler cannot reach log-in-gated flows, these
-are lower bounds.
+under-recall relative to people~\cite{nwokeji2026}, as our own recall estimate confirms, and the crawler cannot
+reach log-in-gated flows, these are lower bounds.
+
+\begin{table}[t]
+\centering
+\caption{Crawl sample by stratum: labelled elements, how many the annotator marked dark, and the size of
+the stratum in the crawl. Weighting by stratum size gives population estimates.}
+\label{tab:strata}
+\footnotesize
+\begin{tabular}{lrrrr}
+\toprule
+Stratum & Labelled & Dark & Dark share & In crawl \\
+\midrule
+Flagged by LLM & \StFlagN{} & \StFlagDark{} & \StFlagRate{} & \StFlagUnits{} \\
+Cleared by LLM & \StClearN{} & \StClearDark{} & \StClearRate{} & \StClearUnits{} \\
+Filtered before LLM & \StFiltN{} & \StFiltDark{} & \StFiltRate{} & \StFiltUnits{} \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \begin{table}[t]
 \centering
@@ -464,6 +491,12 @@ snippets, yet on a realistic page it flags ``In stock'' and ``Cancel membership'
 legally clear-cut pattern in our taxonomy---a pre-ticked paid add-on, prohibited by Article~22 of the
 Consumer Rights Directive~\cite{crd2011}---is invisible in text and trivial once the checkbox state is part
 of the input. Encoding UI state is cheap and should be standard for detectors that work on crawled pages.
+
+\textbf{Precision is cheap; recall at crawl scale is not.} Benchmark scores suggest a solved problem, yet on
+the live crawl DarkLens finds only a small share of dark elements while staying precise. The loss sits in front
+of the LLM: a lexical pre-filter keeps API cost manageable but drops social-proof badges whose wording it has
+never seen. Evaluating crawl detectors on benchmarks alone, or on samples drawn only from what the detector
+flagged, would hide this. A learned pre-filter or a cheaper model screening every element is the obvious next step.
 
 \textbf{Reaching the pattern is half the problem.} Cookie layers, basket add-ons and cancellation flows only
 exist after interaction. A priority-guided crawler with an explicit safe-interaction policy gets there
