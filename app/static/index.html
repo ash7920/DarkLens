@@ -106,7 +106,7 @@
     <div class="annot-head">
       <h1>Label the ground truth</h1>
       <p>Each item comes from a crawled page. Judge it on its own merits; the model's answer is hidden on purpose.
-        Keys 1–8 pick a category, 0 marks it fair, S skips.</p>
+        Keys 1–8 pick a category, 0 marks it fair, S skips, U undoes the last one.</p>
       <details class="guide" id="guide" open>
         <summary>How to label (read this first)</summary>
         <div class="guide-body">
@@ -169,9 +169,13 @@
           <p class="annot-en" id="aEn" hidden></p>
           <a class="annot-tr" id="aTr" target="_blank" rel="noopener noreferrer" hidden>Translate this text to English</a>
           <p class="annot-earlier" id="aEarlier" hidden></p>
+          <p class="annot-yours" id="aYours" hidden></p>
           <p class="annot-meta" id="aMeta"></p>
           <div class="label-grid" id="labelGrid"></div>
-          <button class="btn ghost" id="skipBtn" type="button">Skip for now</button>
+          <div class="annot-actions">
+            <button class="btn ghost" id="undoBtn" type="button" disabled>&larr; Undo last</button>
+            <button class="btn ghost" id="skipBtn" type="button">Skip for now</button>
+          </div>
         </div>
       </div>
     </div>

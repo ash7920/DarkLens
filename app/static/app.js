@@ -210,11 +210,13 @@ function setupAnnotate() {
     `<button type="button" class="fair-btn" data-label="not_dark" style="--c:var(--fair)"><kbd>0</kbd>Not a dark pattern</button>`;
   $$("#labelGrid button").forEach(b => b.addEventListener("click", () => saveLabel(b.dataset.label)));
   $("#skipBtn").addEventListener("click", () => skip());
+  $("#undoBtn").addEventListener("click", () => undo());
   document.addEventListener("keydown", e => {
     if (location.hash !== "#annotate" || !annItem || e.target.tagName === "INPUT") return;
     if (e.key === "0") saveLabel("not_dark");
     else if (/^[1-8]$/.test(e.key)) saveLabel(KEYS[+e.key - 1]);
     else if (e.key.toLowerCase() === "s") skip();
+    else if (e.key.toLowerCase() === "u") undo();
   });
   $("#agreeBox").addEventListener("toggle", async () => {
     if ($("#agreeBox").open) $("#agreeText").textContent = JSON.stringify(await api("/api/annotate/agreement"), null, 2);
@@ -223,10 +225,13 @@ function setupAnnotate() {
 let skipped = new Set();
 // a blind re-check is stored under "<name>-recheck" so it never overwrites the first pass
 const who = () => $("#recheckMode").checked ? `${annotator}-recheck` : annotator;
-async function nextItem() {
+const history = [];  // items labelled in this session, newest last (for "Undo last")
+async function nextItem(again = "") {
   const adj = $("#adjMode").checked ? 1 : 0;
   const rc = $("#recheckMode").checked ? 1 : 0;
-  const r = await api(`/api/annotate/next?annotator=${encodeURIComponent(who())}&skip=${[...skipped].join(",")}&adjudicate=${adj}&recheck=${rc}`);
+  const r = await api(`/api/annotate/next?annotator=${encodeURIComponent(who())}&skip=${[...skipped].join(",")}&adjudicate=${adj}&recheck=${rc}` +
+    (again ? `&segment_id=${encodeURIComponent(again)}` : ""));
+  $("#undoBtn").disabled = !history.length;
   $("#annotBody").hidden = r.done; $("#annotDone").hidden = !r.done;
   if (r.done) {
     $("#annotDone").innerHTML = (r.total && rc) ? `<h2>Re-check done: ${r.total} items.</h2><p>Now run <code>python scripts/annotation_results.py</code>.</p>`
@@ -236,6 +241,9 @@ async function nextItem() {
     annItem = null; return;
   }
   annItem = r.item;
+  const yours = annItem.your_label;
+  $("#aYours").hidden = !yours;
+  $("#aYours").textContent = yours ? `You labelled this "${yours === "not_dark" ? "Not a dark pattern" : catName(yours)}". Pick the right label to replace it.` : "";
   $("#progBar").style.width = `${(100 * r.labelled) / r.total}%`;
   $("#progText").textContent = rc ? `${r.labelled} of ${r.total} re-checked` : adj ? `${r.labelled} of ${r.total} disagreements settled` : `${r.labelled} of ${r.total} labelled`;
   const earlier = Object.entries(annItem.earlier || {});
@@ -294,8 +302,15 @@ async function saveLabel(label) {
   try {
     await api("/api/annotate", { method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ annotator: who(), segment_id: annItem.segment_id, label }) });
+    if (history[history.length - 1] !== annItem.segment_id) history.push(annItem.segment_id);
     nextItem();
   } catch (e) { toast(e.message); }
+}
+function undo() {
+  const id = history.pop();
+  if (!id) return toast("Nothing to undo yet.");
+  $("#annotBody").hidden = false; $("#annotDone").hidden = true;
+  nextItem(id);
 }
 function skip() { if (!annItem) return; skipped.add(annItem.segment_id); toast("Skipped. It comes back once everything else is labelled."); nextItem(); }
 

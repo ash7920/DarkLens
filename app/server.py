@@ -267,7 +267,9 @@ def recheck_items(sample: list[dict]) -> list[dict]:
 
 
 @app.get("/api/annotate/next")
-def annotate_next(annotator: str, skip: str = "", adjudicate: int = 0, recheck: int = 0):
+def annotate_next(annotator: str, skip: str = "", adjudicate: int = 0, recheck: int = 0, segment_id: str = ""):
+    """The next unlabelled item, or with segment_id the given item again (to correct a label:
+    the newest label for an item is the one that counts)."""
     sample = annotation.load_sample()
     if not sample:
         return {"done": True, "total": 0, "message": "No annotation sample yet. Run "
@@ -284,10 +286,17 @@ def annotate_next(annotator: str, skip: str = "", adjudicate: int = 0, recheck: 
         sample = recheck_items(sample)
     mine = {k: v for k, v in labels.get(safe, {}).items() if any(s["segment_id"] == k for s in sample)}
     todo = [s for s in sample if s["segment_id"] not in mine]
-    if not todo:
+    if segment_id:
+        found = next((s for s in sample if s["segment_id"] == segment_id), None)
+        if found is None:
+            raise HTTPException(404, "Item not found")
+        item = dict(found)
+        item["your_label"] = mine.get(segment_id)
+    elif not todo:
         return {"done": True, "total": len(sample), "labelled": len(mine)}
-    skipped = set(skip.split(",")) if skip else set()
-    item = dict(next((s for s in todo if s["segment_id"] not in skipped), todo[0]))
+    else:
+        skipped = set(skip.split(",")) if skip else set()
+        item = dict(next((s for s in todo if s["segment_id"] not in skipped), todo[0]))
     for hidden in ("stratum", "weight", "occurrences"):  # annotators stay blind to the model's answer
         item.pop(hidden, None)
     if adjudicate:  # the adjudicator sees what the two annotators said (never the model)

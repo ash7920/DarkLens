@@ -212,3 +212,6 @@ td.num, th.num { text-align: right; }
 .guide-body dd { margin: 2px 0 0 0; color: var(--slate); }
 .guide-warn { background: #fff3c4; color: #3b3000; padding: 8px 10px; border-radius: var(--radius-s); }
 .guide kbd { font-size: .8em; }
+
+.annot-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.annot-yours { font-size: .9rem; margin: 0 0 8px; padding: 6px 10px; background: #fff3c4; color: #3b3000; border-radius: var(--radius-s); }
