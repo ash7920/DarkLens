@@ -135,7 +135,7 @@ button, input, select { font: inherit; color: inherit; }
 .annot { max-width: 1100px; }
 .annot-head h1, .taxo h1, .results h1 { font-size: 2.2rem; margin: 0 0 8px; font-weight: 800; font-variation-settings: "wdth" 70; }
 .annot-head p, .lede { color: var(--slate); max-width: 70ch; }
-.annot-name { display: flex; gap: 8px; margin: 18px 0; }
+.annot-name { display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }
 .annot-name input { padding: 10px 14px; border: 1px solid var(--rule); border-radius: var(--radius-s); background: var(--sheet); }
 .progress { height: 6px; background: var(--rule); border-radius: 3px; overflow: hidden; }
 .progress div { height: 100%; background: var(--teal); width: 0; transition: width .2s; }
@@ -200,3 +200,6 @@ td.num, th.num { text-align: right; }
   .drop { min-height: 300px; }
   .hero { font-size: 2rem; }
 }
+
+.adj-toggle { display: flex; align-items: center; gap: 6px; font-size: .9rem; flex-basis: 100%; }
+.annot-earlier { font-size: .9rem; margin: 0 0 8px; padding: 6px 10px; border-left: 3px solid var(--accent, #0d8c8c); }

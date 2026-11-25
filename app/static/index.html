@@ -110,6 +110,7 @@
       <form id="annotForm" class="annot-name">
         <input id="annotator" placeholder="Your name" required aria-label="Annotator name">
         <button class="btn" type="submit">Start labelling</button>
+        <label class="adj-toggle"><input type="checkbox" id="adjMode"> Only settle disagreements</label>
       </form>
     </div>
     <div id="annotBody" hidden>
@@ -128,6 +129,7 @@
           <blockquote id="aText"></blockquote>
           <p class="annot-en" id="aEn" hidden></p>
           <a class="annot-tr" id="aTr" target="_blank" rel="noopener noreferrer" hidden>Translate this text to English</a>
+          <p class="annot-earlier" id="aEarlier" hidden></p>
           <p class="annot-meta" id="aMeta"></p>
           <div class="label-grid" id="labelGrid"></div>
           <button class="btn ghost" id="skipBtn" type="button">Skip for now</button>

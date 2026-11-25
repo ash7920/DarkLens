@@ -247,15 +247,31 @@ def results():
 
 
 # ---------------------------------------------------------------- annotation
+def _adjudication_ids() -> list[str]:
+    """Items the two annotators disagreed on (written by scripts/agreement.py)."""
+    import csv
+    p = annotation.ANN_DIR / "adjudication.csv"
+    if not p.exists():
+        return []
+    with open(p, encoding="utf-8", newline="") as f:
+        return [row["segment_id"] for row in csv.DictReader(f)]
+
+
 @app.get("/api/annotate/next")
-def annotate_next(annotator: str, skip: str = ""):
+def annotate_next(annotator: str, skip: str = "", adjudicate: int = 0):
     sample = annotation.load_sample()
     if not sample:
         return {"done": True, "total": 0, "message": "No annotation sample yet. Run "
                 "scripts/make_annotation_sample.py after the crawl and detection steps."}
     labels = annotation.load_labels()
     safe = "".join(c for c in annotator.lower() if c.isalnum() or c in "-_")[:40]
-    mine = labels.get(safe, {})
+    if adjudicate:
+        ids = set(_adjudication_ids())
+        if not ids:
+            return {"done": True, "total": 0, "message": "No disagreements to settle. Run "
+                    "python scripts/agreement.py first (it lists them)."}
+        sample = [s for s in sample if s["segment_id"] in ids]
+    mine = {k: v for k, v in labels.get(safe, {}).items() if any(s["segment_id"] == k for s in sample)}
     todo = [s for s in sample if s["segment_id"] not in mine]
     if not todo:
         return {"done": True, "total": len(sample), "labelled": len(mine)}
@@ -263,6 +279,9 @@ def annotate_next(annotator: str, skip: str = ""):
     item = dict(next((s for s in todo if s["segment_id"] not in skipped), todo[0]))
     for hidden in ("stratum", "weight", "occurrences"):  # annotators stay blind to the model's answer
         item.pop(hidden, None)
+    if adjudicate:  # the adjudicator sees what the two annotators said (never the model)
+        item["earlier"] = {n: l[item["segment_id"]] for n, l in sorted(labels.items())
+                           if n != safe and item["segment_id"] in l}
     if item.get("screenshot"):
         item["screenshot_url"] = f"/api/file?path={Path(item['screenshot']).as_posix()}"
     return {"done": False, "total": len(sample), "labelled": len(mine), "item": item}

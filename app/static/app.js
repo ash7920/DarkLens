@@ -222,16 +222,22 @@ function setupAnnotate() {
 }
 let skipped = new Set();
 async function nextItem() {
-  const r = await api(`/api/annotate/next?annotator=${encodeURIComponent(annotator)}&skip=${[...skipped].join(",")}`);
+  const adj = $("#adjMode").checked ? 1 : 0;
+  const r = await api(`/api/annotate/next?annotator=${encodeURIComponent(annotator)}&skip=${[...skipped].join(",")}&adjudicate=${adj}`);
   $("#annotBody").hidden = r.done; $("#annotDone").hidden = !r.done;
   if (r.done) {
-    $("#annotDone").innerHTML = r.total ? `<h2>All ${r.total} items labelled.</h2><p>Thank you, ${esc(annotator)}. Run <code>python scripts/agreement.py</code> once your partner is done.</p>`
+    $("#annotDone").innerHTML = (r.total && adj) ? `<h2>All ${r.total} disagreements settled.</h2><p>Now run <code>python scripts/agreement.py --annotators devanshi aarya --adjudicator ${esc(annotator.toLowerCase())}</code>.</p>`
+      : r.total ? `<h2>All ${r.total} items labelled.</h2><p>Thank you, ${esc(annotator)}. Run <code>python scripts/agreement.py</code> once your partner is done.</p>`
       : `<h2>Nothing to label yet</h2><p>${esc(r.message)}</p>`;
     annItem = null; return;
   }
   annItem = r.item;
   $("#progBar").style.width = `${(100 * r.labelled) / r.total}%`;
-  $("#progText").textContent = `${r.labelled} of ${r.total} labelled`;
+  $("#progText").textContent = adj ? `${r.labelled} of ${r.total} disagreements settled` : `${r.labelled} of ${r.total} labelled`;
+  const earlier = Object.entries(annItem.earlier || {});
+  $("#aEarlier").hidden = !earlier.length;
+  $("#aEarlier").textContent = earlier.length ? "Earlier labels: " + earlier.map(([n, l]) =>
+    `${n} said ${l === "not_dark" ? "not a dark pattern" : catName(l)}`).join(", ") : "";
   $("#aUi").textContent = `${annItem.kind} on a ${annItem.page_type || "unknown"} page ${annItem.ui || ""}`;
   $("#aText").textContent = annItem.text;
   const en = (annItem.text_en || "").trim();
