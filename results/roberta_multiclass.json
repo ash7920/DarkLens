@@ -1,0 +1,188 @@
+{
+  "n": 471,
+  "accuracy": 0.9469214437367304,
+  "macro_precision": 0.618727093880056,
+  "macro_recall": 0.639745670995671,
+  "macro_f1": 0.6238652797993576,
+  "micro_precision": 0.9385964912280702,
+  "micro_recall": 0.9067796610169492,
+  "micro_f1": 0.9224137931034483,
+  "kappa": 0.9222048242919152,
+  "per_class": {
+    "confirmshaming": {
+      "precision": 0.9285714285714286,
+      "recall": 1.0,
+      "f1": 0.9629629629629629,
+      "support": 26
+    },
+    "forced_action": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 1
+    },
+    "interface_interference": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 4
+    },
+    "not_dark": {
+      "precision": 0.9547325102880658,
+      "recall": 0.9872340425531915,
+      "f1": 0.9707112970711297,
+      "support": 235
+    },
+    "obstruction": {
+      "precision": 0.7142857142857143,
+      "recall": 1.0,
+      "f1": 0.8333333333333334,
+      "support": 5
+    },
+    "preselection": {
+      "precision": 0.42857142857142855,
+      "recall": 0.2727272727272727,
+      "f1": 0.3333333333333333,
+      "support": 11
+    },
+    "scarcity": {
+      "precision": 0.9878048780487805,
+      "recall": 0.9642857142857143,
+      "f1": 0.9759036144578314,
+      "support": 84
+    },
+    "social_proof": {
+      "precision": 0.9836065573770492,
+      "recall": 0.9523809523809523,
+      "f1": 0.967741935483871,
+      "support": 63
+    },
+    "urgency": {
+      "precision": 0.9069767441860465,
+      "recall": 0.9285714285714286,
+      "f1": 0.9176470588235294,
+      "support": 42
+    }
+  },
+  "labels": [
+    "confirmshaming",
+    "forced_action",
+    "interface_interference",
+    "not_dark",
+    "obstruction",
+    "preselection",
+    "scarcity",
+    "social_proof",
+    "urgency"
+  ],
+  "confusion": [
+    [
+      26,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      0,
+      2,
+      0,
+      0,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      232,
+      1,
+      2,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      0,
+      5,
+      0,
+      0,
+      0,
+      0
+    ],
+    [
+      1,
+      0,
+      0,
+      6,
+      0,
+      3,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      81,
+      0,
+      2
+    ],
+    [
+      0,
+      0,
+      0,
+      3,
+      0,
+      0,
+      0,
+      60,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      1,
+      1,
+      39
+    ]
+  ],
+  "note": "macro/micro averages over dark-pattern classes present in the gold labels",
+  "model": "roberta-base",
+  "epochs": 4,
+  "lr": 2e-05,
+  "max_len": 64,
+  "seed": 42,
+  "train_seconds": 62.6,
+  "inference_seconds": 1.26,
+  "device": "cuda"
+}

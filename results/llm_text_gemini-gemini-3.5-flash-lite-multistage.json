@@ -1,0 +1,423 @@
+{
+  "n": 471,
+  "mode": "multistage",
+  "engine": {
+    "engine": "llm",
+    "mode": "multistage",
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "ocr": true
+  },
+  "seconds": 116.7,
+  "llm_calls": 7,
+  "llm_usage": {
+    "input_tokens": 18474,
+    "output_tokens": 12142
+  },
+  "binary": {
+    "n": 471,
+    "precision": 0.9819819819819819,
+    "recall": 0.923728813559322,
+    "f1": 0.9519650655021834,
+    "accuracy": 0.9532908704883227,
+    "kappa": 0.9065931094164098,
+    "confusion": [
+      [
+        231,
+        4
+      ],
+      [
+        18,
+        218
+      ]
+    ],
+    "f1_ci95": [
+      0.9304271881526486,
+      0.9700605199856697
+    ]
+  },
+  "multiclass": {
+    "n": 471,
+    "accuracy": 0.940552016985138,
+    "macro_precision": 0.7746031746031745,
+    "macro_recall": 0.7194985569985569,
+    "macro_f1": 0.6772097947903488,
+    "micro_precision": 0.954954954954955,
+    "micro_recall": 0.8983050847457628,
+    "micro_f1": 0.925764192139738,
+    "kappa": 0.9120524430988377,
+    "per_class": {
+      "confirmshaming": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 26
+      },
+      "forced_action": {
+        "precision": 0.3333333333333333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "support": 1
+      },
+      "interface_interference": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 4
+      },
+      "not_dark": {
+        "precision": 0.927710843373494,
+        "recall": 0.9829787234042553,
+        "f1": 0.9545454545454546,
+        "support": 235
+      },
+      "obstruction": {
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8888888888888888,
+        "support": 5
+      },
+      "preselection": {
+        "precision": 1.0,
+        "recall": 0.09090909090909091,
+        "f1": 0.16666666666666666,
+        "support": 11
+      },
+      "scarcity": {
+        "precision": 0.9523809523809523,
+        "recall": 0.9523809523809523,
+        "f1": 0.9523809523809523,
+        "support": 84
+      },
+      "social_proof": {
+        "precision": 1.0,
+        "recall": 0.9365079365079365,
+        "f1": 0.9672131147540983,
+        "support": 63
+      },
+      "urgency": {
+        "precision": 0.9111111111111111,
+        "recall": 0.9761904761904762,
+        "f1": 0.9425287356321839,
+        "support": 42
+      }
+    },
+    "labels": [
+      "confirmshaming",
+      "forced_action",
+      "interface_interference",
+      "not_dark",
+      "obstruction",
+      "preselection",
+      "scarcity",
+      "social_proof",
+      "urgency"
+    ],
+    "confusion": [
+      [
+        26,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        4,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        2,
+        0,
+        231,
+        0,
+        0,
+        1,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        4,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        9,
+        0,
+        1,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        80,
+        0,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        3,
+        59,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        41
+      ]
+    ],
+    "note": "macro/micro averages over dark-pattern classes present in the gold labels"
+  },
+  "stage1_only": {
+    "binary": {
+      "n": 471,
+      "precision": 0.9777777777777777,
+      "recall": 0.9322033898305084,
+      "f1": 0.9544468546637744,
+      "accuracy": 0.9554140127388535,
+      "kappa": 0.9108364659112421,
+      "confusion": [
+        [
+          230,
+          5
+        ],
+        [
+          16,
+          220
+        ]
+      ],
+      "f1_ci95": [
+        0.9336117059243398,
+        0.9713055818353831
+      ]
+    },
+    "multiclass": {
+      "n": 471,
+      "accuracy": 0.940552016985138,
+      "macro_precision": 0.7642565359477124,
+      "macro_recall": 0.7209866522366521,
+      "macro_f1": 0.6654846609498303,
+      "micro_precision": 0.9466666666666667,
+      "micro_recall": 0.902542372881356,
+      "micro_f1": 0.9240780911062907,
+      "kappa": 0.9124122495334365,
+      "per_class": {
+        "confirmshaming": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 26
+        },
+        "forced_action": {
+          "precision": 0.25,
+          "recall": 1.0,
+          "f1": 0.4,
+          "support": 1
+        },
+        "interface_interference": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 4
+        },
+        "not_dark": {
+          "precision": 0.9349593495934959,
+          "recall": 0.9787234042553191,
+          "f1": 0.9563409563409564,
+          "support": 235
+        },
+        "obstruction": {
+          "precision": 1.0,
+          "recall": 0.8,
+          "f1": 0.8888888888888888,
+          "support": 5
+        },
+        "preselection": {
+          "precision": 1.0,
+          "recall": 0.09090909090909091,
+          "f1": 0.16666666666666666,
+          "support": 11
+        },
+        "scarcity": {
+          "precision": 0.9529411764705882,
+          "recall": 0.9642857142857143,
+          "f1": 0.9585798816568047,
+          "support": 84
+        },
+        "social_proof": {
+          "precision": 1.0,
+          "recall": 0.9365079365079365,
+          "f1": 0.9672131147540983,
+          "support": 63
+        },
+        "urgency": {
+          "precision": 0.9111111111111111,
+          "recall": 0.9761904761904762,
+          "f1": 0.9425287356321839,
+          "support": 42
+        }
+      },
+      "labels": [
+        "confirmshaming",
+        "forced_action",
+        "interface_interference",
+        "not_dark",
+        "obstruction",
+        "preselection",
+        "scarcity",
+        "social_proof",
+        "urgency"
+      ],
+      "confusion": [
+        [
+          26,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          4,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          0,
+          230,
+          0,
+          0,
+          1,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          4,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          8,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          81,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          3,
+          59,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          41
+        ]
+      ],
+      "note": "macro/micro averages over dark-pattern classes present in the gold labels"
+    }
+  }
+}

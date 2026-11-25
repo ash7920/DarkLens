@@ -1,1 +1,19 @@
-playwright
+# DarkLens — Python 3.10+
+playwright>=1.44          # then run:  python -m playwright install chromium
+pandas>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+joblib>=1.3
+requests>=2.31
+pillow>=10.0
+opencv-python-headless>=4.8
+pytesseract>=0.3.10       # also install the Tesseract binary (see README)
+langdetect>=1.0.9
+fastapi>=0.110
+uvicorn>=0.29
+python-multipart>=0.0.9
+pydantic>=2.5
+matplotlib>=3.8
+pytest>=8.0
+# Only for the RoBERTa baseline (run on Google Colab GPU):
+# torch transformers

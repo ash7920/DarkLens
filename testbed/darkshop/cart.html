@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Basket | DarkMart</title>
+<link rel="stylesheet" href="../shop.css"></head><body>
+<header><a class="logo" href="index.html">DarkMart</a><a href="category-sale.html">Sale</a>
+<a href="account.html">My account</a><a href="cart.html">Basket</a></header>
+<main><h1>Your basket</h1><p class="stock">Items in your basket are reserved for 10:00 minutes</p><table><tr><td>Your item</td><td>€89.00</td></tr>
+<tr><td><label><input type="checkbox" checked> Add 2-year protection plan (+€19.99)</label></td><td>€19.99</td></tr>
+<tr><td><label><input type="checkbox" checked> Donate €2 to our tree-planting partner</label></td><td>€2.00</td></tr></table><br>
+<a class="btn" href="checkout.html" style="text-decoration:none">Go to checkout</a></main>
+<div class="banner" id="cookie-banner" role="dialog">
+  <div style="flex:1">We use cookies to give you the best experience. By continuing you agree to our use of cookies.</div>
+  <a href="#" class="muted" id="cookie-settings-link" onclick="document.getElementById('cookie-layer').style.display='flex';return false;">settings</a>
+  <button class="btn" style="font-size:20px;padding:16px 48px" onclick="this.closest('.banner').remove()">ACCEPT ALL</button>
+</div>
+<div class="modal-bg" id="cookie-layer" role="dialog"><div class="modal">
+  <h3>Cookie preferences</h3>
+  <label><input type="checkbox" checked disabled> Necessary</label><br>
+  <label><input type="checkbox" checked> Personalised advertising</label><br>
+  <label><input type="checkbox" checked> Share data with partners</label><br><br>
+  <button class="btn" onclick="this.closest('.modal-bg').remove()">Save</button>
+</div></div></body></html>

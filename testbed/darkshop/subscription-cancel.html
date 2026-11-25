@@ -1,0 +1,21 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Membership | DarkMart</title>
+<link rel="stylesheet" href="../shop.css"></head><body>
+<header><a class="logo" href="index.html">DarkMart</a><a href="category-sale.html">Sale</a>
+<a href="account.html">My account</a><a href="cart.html">Basket</a></header>
+<main><h1>Manage membership</h1>
+<p>We're sad to see you go! If you cancel you will lose ALL your benefits forever.</p>
+<p>To cancel your membership please call our customer service line (Mon–Fri, 9:00–11:00).</p>
+<button class="btn" style="font-size:20px">Keep my benefits</button>
+<p><a href="#" class="muted">No, I don't care about saving money</a></p></main>
+<div class="banner" id="cookie-banner" role="dialog">
+  <div style="flex:1">We use cookies to give you the best experience. By continuing you agree to our use of cookies.</div>
+  <a href="#" class="muted" id="cookie-settings-link" onclick="document.getElementById('cookie-layer').style.display='flex';return false;">settings</a>
+  <button class="btn" style="font-size:20px;padding:16px 48px" onclick="this.closest('.banner').remove()">ACCEPT ALL</button>
+</div>
+<div class="modal-bg" id="cookie-layer" role="dialog"><div class="modal">
+  <h3>Cookie preferences</h3>
+  <label><input type="checkbox" checked disabled> Necessary</label><br>
+  <label><input type="checkbox" checked> Personalised advertising</label><br>
+  <label><input type="checkbox" checked> Share data with partners</label><br><br>
+  <button class="btn" onclick="this.closest('.modal-bg').remove()">Save</button>
+</div></div></body></html>

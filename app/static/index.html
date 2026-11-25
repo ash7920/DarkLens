@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DarkLens</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="bar">
+  <a class="brand" href="#inspect" aria-label="DarkLens home">
+    <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M17 17l6.5 6.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><rect x="6.5" y="9" width="9" height="4" rx="1" fill="currentColor" opacity=".35"/></svg>
+    DarkLens
+  </a>
+  <nav class="tabs" role="tablist">
+    <a href="#inspect" role="tab" data-view="inspect">Inspect</a>
+    <a href="#annotate" role="tab" data-view="annotate">Annotate</a>
+    <a href="#results" role="tab" data-view="results">Results</a>
+    <a href="#taxonomy" role="tab" data-view="taxonomy">Taxonomy</a>
+  </nav>
+  <div class="engine" id="engineStatus" title="Detection engine">checking engine…</div>
+</header>
+
+<!-- =============================================================== INSPECT -->
+<main id="view-inspect" class="view">
+  <section class="inspect">
+    <div class="canvas-col">
+      <form class="source" id="urlForm">
+        <input id="urlInput" type="url" placeholder="Paste a shop URL to render and inspect it" aria-label="Page URL">
+        <button class="btn ghost" type="submit">Inspect page</button>
+      </form>
+
+      <div id="drop" class="drop" tabindex="0" role="button" aria-label="Upload a screenshot">
+        <input id="file" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+        <div class="drop-inner">
+          <p class="drop-title">Drop a screenshot of a shop page</p>
+          <p class="drop-sub">or click to choose a file, or paste with Ctrl+V. PNG, JPEG or WebP up to 15 MB.</p>
+          <div class="samples" id="samples"></div>
+        </div>
+      </div>
+
+      <div class="print-head" id="printHead"></div>
+      <div id="stage" class="stage" hidden>
+        <div class="stage-img" id="stageImg">
+          <img id="shot" alt="Screenshot under inspection">
+          <div id="boxes" class="boxes"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <label>Engine
+          <select id="engine">
+            <option value="auto">Automatic</option>
+            <option value="llm">Language model</option>
+            <option value="offline">Offline (rules + classifier)</option>
+          </select>
+        </label>
+        <label>Reasoning
+          <select id="mode">
+            <option value="multistage">Detect, then verify</option>
+            <option value="single">Single pass</option>
+          </select>
+        </label>
+        <button class="btn ghost" id="resetBtn" type="button" hidden>Inspect another</button>
+      </div>
+    </div>
+
+    <aside class="rail" id="rail" aria-live="polite">
+      <div class="rail-empty" id="railEmpty">
+        <h1 class="hero">Is this interface<br>playing fair?</h1>
+        <p>DarkLens reads a page the way an auditor would: it finds pressure tactics, shaming opt-outs,
+          pre-ticked extras and hard exits, marks where they are, and explains why each one counts.</p>
+        <ul class="legend" id="legend"></ul>
+      </div>
+
+      <div class="rail-busy" id="railBusy" hidden>
+        <div class="scan"><span></span></div>
+        <p id="busyText">Reading the screenshot…</p>
+      </div>
+
+      <div id="report" hidden>
+        <p class="verdict-kicker" id="verdictKicker"></p>
+        <h2 class="verdict" id="verdict"></h2>
+        <div class="cats" id="cats"></div>
+        <ol class="findings" id="findings"></ol>
+        <details class="more" id="lowConf"><summary>Weak signals</summary><ol class="findings small" id="lowList"></ol></details>
+        <details class="more"><summary>Text read from the image</summary><pre id="ocrText"></pre></details>
+        <div class="report-foot">
+          <span id="engineUsed"></span>
+          <button class="btn ghost" id="pdfBtn" type="button">Save as PDF</button>
+          <button class="btn ghost" id="downloadBtn" type="button">Download JSON</button>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="history" id="historyWrap" hidden>
+    <h3>Recent inspections</h3>
+    <div class="history-row" id="history"></div>
+  </section>
+</main>
+
+<!-- ============================================================== ANNOTATE -->
+<main id="view-annotate" class="view" hidden>
+  <section class="annot">
+    <div class="annot-head">
+      <h1>Label the ground truth</h1>
+      <p>Each item comes from a crawled page. Judge it on its own merits; the model's answer is hidden on purpose.
+        Keys 1–8 pick a category, 0 marks it fair, S skips, U undoes the last one.</p>
+      <details class="guide" id="guide" open>
+        <summary>How to label (read this first)</summary>
+        <div class="guide-body">
+          <p>Ask one question: <strong>is this element trying to push the shopper into something they might not
+            choose if it were presented neutrally?</strong> Judge the element shown, using the screenshot only for
+            context. When in doubt, it is <em>not</em> a dark pattern.</p>
+          <p class="guide-warn">Most items are ordinary shop content and get <kbd>0</kbd> Not a dark pattern:
+            product names, prices, sizes, weights, colours, ratings counts like "(31)", menu links ("Home",
+            "Facial care"), plain discounts ("-14%"), delivery costs, legal or error text.</p>
+          <dl>
+            <dt><kbd>1</kbd> Urgency</dt>
+            <dd>A deadline or timer that pressures a quick decision. "Offer ends in 02:14:55", "Order in the next 3 hours
+              for delivery tomorrow", "Today only". <em>Not:</em> a plain date or time, a price, a sale with no deadline.</dd>
+            <dt><kbd>2</kbd> Scarcity</dt>
+            <dd>Claims that stock or availability is limited. "Only 2 left", "Only a few left in stock", "Almost sold out",
+              "High demand". <em>Not:</em> "In stock", "Available online".</dd>
+            <dt><kbd>3</kbd> Social proof</dt>
+            <dd>Pressure from what other people are doing. "13 people viewed this item in the past day", "Bought 500 times
+              this week", "4% bought", "Most booked hotels". <em>Not:</em> a star rating or review count on its own.</dd>
+            <dt><kbd>4</kbd> Confirmshaming</dt>
+            <dd>The "no" option makes you feel guilty or stupid. "No thanks, I don't like saving money".</dd>
+            <dt><kbd>5</kbd> Pre-ticked add-ons / sneaking</dt>
+            <dd>Something extra is already selected or added for you: a box marked [checkbox, PRE-TICKED] for insurance,
+              a newsletter or a donation; an add-on or fee slipped into the basket. <em>Not:</em> a size or delivery
+              option you have to choose anyway.</dd>
+            <dt><kbd>6</kbd> Difficult cancellation</dt>
+            <dd>Leaving, cancelling or unsubscribing is made hard: "call us to cancel", long detours, hidden cancel links.</dd>
+            <dt><kbd>7</kbd> Interface interference</dt>
+            <dd>The layout steers your choice. Lines like "'Accept all' (large) vs 'Reject' (small)" mean the option good
+              for the shop is much bigger or brighter than its alternative in the <em>same</em> choice (cookies, consent,
+              add-on yes/no). <em>Not:</em> two unrelated links (e.g. "Home" vs "Cart") or a privacy-policy link.</dd>
+            <dt><kbd>8</kbd> Forced action</dt>
+            <dd>You must do something unrelated to continue: create an account to check out, accept marketing to see
+              prices, install an app to buy.</dd>
+          </dl>
+          <p>Take your time: 5 to 15 seconds per item is normal. Use <kbd>S</kbd> to skip if you need to come back.</p>
+        </div>
+      </details>
+      <form id="annotForm" class="annot-name">
+        <input id="annotator" placeholder="Your name" required aria-label="Annotator name">
+        <button class="btn" type="submit">Start labelling</button>
+        <label class="adj-toggle"><input type="checkbox" id="adjMode"> Only settle disagreements</label>
+        <label class="adj-toggle"><input type="checkbox" id="recheckMode"> Blind re-check (50 items, earlier answers hidden)</label>
+      </form>
+    </div>
+    <div id="annotBody" hidden>
+      <div class="progress"><div id="progBar"></div></div>
+      <p class="prog-text" id="progText"></p>
+      <div class="annot-item">
+        <div class="crop-wrap">
+          <div class="crop" id="crop"></div>
+          <div class="crop-links">
+            <a id="fullLink" class="full-link" target="_blank" rel="noopener" hidden>View full screenshot</a>
+            <a id="liveLink" class="full-link" target="_blank" rel="noopener noreferrer" hidden>Open the live page</a>
+          </div>
+        </div>
+        <div class="annot-text">
+          <p class="annot-ui" id="aUi"></p>
+          <blockquote id="aText"></blockquote>
+          <p class="annot-en" id="aEn" hidden></p>
+          <a class="annot-tr" id="aTr" target="_blank" rel="noopener noreferrer" hidden>Translate this text to English</a>
+          <p class="annot-earlier" id="aEarlier" hidden></p>
+          <p class="annot-yours" id="aYours" hidden></p>
+          <p class="annot-meta" id="aMeta"></p>
+          <div class="label-grid" id="labelGrid"></div>
+          <div class="annot-actions">
+            <button class="btn ghost" id="undoBtn" type="button" disabled>&larr; Undo last</button>
+            <button class="btn ghost" id="skipBtn" type="button">Skip for now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="annotDone" class="annot-done" hidden></div>
+    <details class="more" id="agreeBox"><summary>Agreement between annotators</summary><pre id="agreeText"></pre></details>
+  </section>
+</main>
+
+<!-- =============================================================== RESULTS -->
+<main id="view-results" class="view" hidden>
+  <section class="results" id="resultsBody"><p>Loading results…</p></section>
+</main>
+
+<!-- ============================================================== TAXONOMY -->
+<main id="view-taxonomy" class="view" hidden>
+  <section class="taxo">
+    <h1>What DarkLens looks for</h1>
+    <p class="lede">Eight categories, built from Mathur et al.'s 2019 taxonomy and the five classes in our block diagram.
+      The legal pointers show where an EU auditor would start; they are not legal conclusions.</p>
+    <div id="taxoList"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" hidden></div>
+<script src="app.js"></script>
+</body>
+</html>

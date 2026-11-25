@@ -1,0 +1,260 @@
+[
+  {
+    "page": "index",
+    "category": "urgency",
+    "text": "FLASH SALE | LIMITED TIME ONLY – ends in 00:14:59",
+    "element": "text"
+  },
+  {
+    "page": "*",
+    "category": "interface_interference",
+    "text": "ACCEPT ALL (large) vs settings (small grey link)",
+    "element": "cookie_banner"
+  },
+  {
+    "page": "*",
+    "category": "preselection",
+    "text": "Personalised advertising (pre-ticked)",
+    "element": "cookie_layer_checkbox"
+  },
+  {
+    "page": "*",
+    "category": "preselection",
+    "text": "Share data with partners (pre-ticked)",
+    "element": "cookie_layer_checkbox"
+  },
+  {
+    "page": "category-sale",
+    "category": "scarcity",
+    "text": "Selling fast!",
+    "element": "text"
+  },
+  {
+    "page": "product-trail-runner-shoes",
+    "category": "scarcity",
+    "text": "Only 2 left in stock – order soon!",
+    "element": "text"
+  },
+  {
+    "page": "product-trail-runner-shoes",
+    "category": "urgency",
+    "text": "Deal ends in 01:59:12",
+    "element": "text"
+  },
+  {
+    "page": "product-trail-runner-shoes",
+    "category": "social_proof",
+    "text": "14 people are viewing this right now",
+    "element": "text"
+  },
+  {
+    "page": "product-trail-runner-shoes",
+    "category": "social_proof",
+    "text": "Anna from Munich just bought this 4 minutes ago",
+    "element": "text"
+  },
+  {
+    "page": "product-trail-runner-shoes",
+    "category": "confirmshaming",
+    "text": "No thanks, I prefer paying full price",
+    "element": "text"
+  },
+  {
+    "page": "product-trail-runner-shoes",
+    "category": "preselection",
+    "text": "Premium bundle (+€25.00) pre-selected",
+    "element": "text"
+  },
+  {
+    "page": "product-wool-winter-jacket",
+    "category": "social_proof",
+    "text": "17 people are viewing this right now",
+    "element": "text"
+  },
+  {
+    "page": "product-wool-winter-jacket",
+    "category": "social_proof",
+    "text": "Anna from Munich just bought this 4 minutes ago",
+    "element": "text"
+  },
+  {
+    "page": "product-wool-winter-jacket",
+    "category": "confirmshaming",
+    "text": "No thanks, I prefer paying full price",
+    "element": "text"
+  },
+  {
+    "page": "product-wool-winter-jacket",
+    "category": "preselection",
+    "text": "Premium bundle (+€25.00) pre-selected",
+    "element": "text"
+  },
+  {
+    "page": "product-ceramic-coffee-mug",
+    "category": "scarcity",
+    "text": "Only 2 left in stock – order soon!",
+    "element": "text"
+  },
+  {
+    "page": "product-ceramic-coffee-mug",
+    "category": "social_proof",
+    "text": "20 people are viewing this right now",
+    "element": "text"
+  },
+  {
+    "page": "product-ceramic-coffee-mug",
+    "category": "social_proof",
+    "text": "Anna from Munich just bought this 4 minutes ago",
+    "element": "text"
+  },
+  {
+    "page": "product-ceramic-coffee-mug",
+    "category": "confirmshaming",
+    "text": "No thanks, I prefer paying full price",
+    "element": "text"
+  },
+  {
+    "page": "product-ceramic-coffee-mug",
+    "category": "preselection",
+    "text": "Premium bundle (+€25.00) pre-selected",
+    "element": "text"
+  },
+  {
+    "page": "product-noise-cancelling-headphones",
+    "category": "urgency",
+    "text": "Deal ends in 01:59:12",
+    "element": "text"
+  },
+  {
+    "page": "product-noise-cancelling-headphones",
+    "category": "social_proof",
+    "text": "23 people are viewing this right now",
+    "element": "text"
+  },
+  {
+    "page": "product-noise-cancelling-headphones",
+    "category": "social_proof",
+    "text": "Anna from Munich just bought this 4 minutes ago",
+    "element": "text"
+  },
+  {
+    "page": "product-noise-cancelling-headphones",
+    "category": "confirmshaming",
+    "text": "No thanks, I prefer paying full price",
+    "element": "text"
+  },
+  {
+    "page": "product-noise-cancelling-headphones",
+    "category": "preselection",
+    "text": "Premium bundle (+€25.00) pre-selected",
+    "element": "text"
+  },
+  {
+    "page": "product-leather-backpack",
+    "category": "scarcity",
+    "text": "Only 2 left in stock – order soon!",
+    "element": "text"
+  },
+  {
+    "page": "product-leather-backpack",
+    "category": "social_proof",
+    "text": "26 people are viewing this right now",
+    "element": "text"
+  },
+  {
+    "page": "product-leather-backpack",
+    "category": "social_proof",
+    "text": "Anna from Munich just bought this 4 minutes ago",
+    "element": "text"
+  },
+  {
+    "page": "product-leather-backpack",
+    "category": "confirmshaming",
+    "text": "No thanks, I prefer paying full price",
+    "element": "text"
+  },
+  {
+    "page": "product-leather-backpack",
+    "category": "preselection",
+    "text": "Premium bundle (+€25.00) pre-selected",
+    "element": "text"
+  },
+  {
+    "page": "product-smart-water-bottle",
+    "category": "social_proof",
+    "text": "29 people are viewing this right now",
+    "element": "text"
+  },
+  {
+    "page": "product-smart-water-bottle",
+    "category": "social_proof",
+    "text": "Anna from Munich just bought this 4 minutes ago",
+    "element": "text"
+  },
+  {
+    "page": "product-smart-water-bottle",
+    "category": "confirmshaming",
+    "text": "No thanks, I prefer paying full price",
+    "element": "text"
+  },
+  {
+    "page": "product-smart-water-bottle",
+    "category": "preselection",
+    "text": "Premium bundle (+€25.00) pre-selected",
+    "element": "text"
+  },
+  {
+    "page": "cart",
+    "category": "preselection",
+    "text": "Add 2-year protection plan (+€19.99) pre-ticked",
+    "element": "checkbox"
+  },
+  {
+    "page": "cart",
+    "category": "preselection",
+    "text": "Donate €2 to our tree-planting partner pre-ticked",
+    "element": "checkbox"
+  },
+  {
+    "page": "cart",
+    "category": "urgency",
+    "text": "Items in your basket are reserved for 10:00 minutes",
+    "element": "text"
+  },
+  {
+    "page": "checkout",
+    "category": "forced_action",
+    "text": "Create an account to continue. Guest checkout is not available.",
+    "element": "text"
+  },
+  {
+    "page": "checkout",
+    "category": "preselection",
+    "text": "Service & handling fee €4.95 (only shown at checkout)",
+    "element": "text"
+  },
+  {
+    "page": "checkout",
+    "category": "preselection",
+    "text": "Yes, send me offers and share my details with partners (pre-ticked)",
+    "element": "checkbox"
+  },
+  {
+    "page": "subscription-cancel",
+    "category": "obstruction",
+    "text": "To cancel your membership please call our customer service line (Mon–Fri, 9:00–11:00).",
+    "element": "text"
+  },
+  {
+    "page": "subscription-cancel",
+    "category": "confirmshaming",
+    "text": "No, I don't care about saving money",
+    "element": "text"
+  },
+  {
+    "page": "subscription-cancel",
+    "category": "interface_interference",
+    "text": "Keep my benefits (large) vs decline (small grey link)",
+    "element": "button"
+  }
+]

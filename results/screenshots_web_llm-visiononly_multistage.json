@@ -1,0 +1,78 @@
+{
+  "binary": {
+    "n": 162,
+    "precision": 0.8571428571428571,
+    "recall": 0.7951807228915663,
+    "f1": 0.825,
+    "accuracy": 0.8271604938271605,
+    "kappa": 0.6547419698584259,
+    "confusion": [
+      [
+        68,
+        11
+      ],
+      [
+        17,
+        66
+      ]
+    ],
+    "f1_ci95": [
+      0.7536182251340083,
+      0.8805112914263369
+    ]
+  },
+  "per_category": {
+    "urgency": {
+      "precision": 0.825,
+      "recall": 0.7333333333333333,
+      "f1": 0.776470588235294,
+      "support": 45
+    },
+    "scarcity": {
+      "precision": 0.875,
+      "recall": 0.9545454545454546,
+      "f1": 0.9130434782608695,
+      "support": 22
+    },
+    "social_proof": {
+      "precision": 0.5625,
+      "recall": 0.9,
+      "f1": 0.6923076923076923,
+      "support": 10
+    },
+    "preselection": {
+      "precision": 0.5,
+      "recall": 0.08333333333333333,
+      "f1": 0.14285714285714285,
+      "support": 12
+    },
+    "interface_interference": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 4
+    }
+  },
+  "micro": {
+    "precision": 0.7529411764705882,
+    "recall": 0.6881720430107527,
+    "f1": 0.7191011235955056
+  },
+  "macro_f1": 0.5049357803321997,
+  "split": "web",
+  "n_images": 162,
+  "engine": {
+    "engine": "llm",
+    "mode": "multistage",
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "ocr": false
+  },
+  "mode": "multistage",
+  "seconds_per_image": 20.0,
+  "llm_calls": 247,
+  "llm_usage": {
+    "input_tokens": 657272,
+    "output_tokens": 24247
+  }
+}

@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Checkout | FairMart</title>
+<link rel="stylesheet" href="../shop.css"></head><body>
+<header><a class="logo" href="index.html">FairMart</a><a href="category-sale.html">Sale</a>
+<a href="account.html">My account</a><a href="cart.html">Basket</a></header>
+<main><h1>Checkout</h1><p>Continue as guest or log in.</p>
+<table><tr><td>Subtotal</td><td>€89.00</td></tr><tr><td>Delivery</td><td>€0.00</td></tr>
+<tr><td>Total</td><td>€89.00</td></tr></table>
+<label><input type="checkbox"> Send me offers by email</label>
+<p><button class="btn" disabled>Place order</button></p></main>
+<div class="banner" id="cookie-banner" role="dialog">
+  <div style="flex:1">We use cookies. Necessary cookies are always on; you can choose the rest.</div>
+  <button class="btn secondary" onclick="this.closest('.banner').remove()">Reject all</button>
+  <button class="btn secondary" onclick="document.getElementById('cookie-layer').style.display='flex'">Cookie settings</button>
+  <button class="btn secondary" onclick="this.closest('.banner').remove()">Accept all</button>
+</div>
+<div class="modal-bg" id="cookie-layer" role="dialog"><div class="modal">
+  <h3>Cookie preferences</h3>
+  <label><input type="checkbox" checked disabled> Necessary</label><br>
+  <label><input type="checkbox"> Personalised advertising</label><br>
+  <label><input type="checkbox"> Share data with partners</label><br><br>
+  <button class="btn secondary" onclick="this.closest('.modal-bg').remove()">Save</button>
+</div></div></body></html>

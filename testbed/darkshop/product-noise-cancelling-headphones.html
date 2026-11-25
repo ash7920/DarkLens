@@ -1,0 +1,27 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Noise-Cancelling Headphones | DarkMart</title>
+<link rel="stylesheet" href="../shop.css"><script>setInterval(()=>document.querySelectorAll(".cd").forEach(e=>{let[h,m,s]=e.textContent.split(":").map(Number);let t=Math.max(0,h*3600+m*60+s-1);if(t==0)t=7199;e.textContent=[t/3600|0,(t%3600)/60|0,t%60].map(x=>String(x).padStart(2,"0")).join(":")}),1000)</script></head><body>
+<header><a class="logo" href="index.html">DarkMart</a><a href="category-sale.html">Sale</a>
+<a href="account.html">My account</a><a href="cart.html">Basket</a></header>
+<main><div class="card"><h1>Noise-Cancelling Headphones</h1><div class="price">€199.00</div><div class="timer">Deal ends in <span class="cd">01:59:12</span></div><p><b>23 people</b> are viewing this right now</p><div class="toast" id="toast">Anna from Munich just bought this 4 minutes ago</div>
+<p>Option: <select><option>Standard</option><option selected>Premium bundle (+€25.00)</option></select></p>
+<button class="btn" onclick="localStorage.setItem('cart','noise-cancelling-headphones');location.href='cart.html'">Add to basket</button>
+<details><summary>Delivery &amp; returns</summary><p>Standard delivery 3–5 working days. 30-day returns.</p></details>
+</div>
+<div class="modal-bg" id="newsletter" role="dialog" style="display:flex"><div class="modal">
+ <h2>Get 10% off your first order</h2><p>Join our newsletter for exclusive deals.</p>
+ <input placeholder="Email address" style="padding:10px;width:100%"><br><br>
+ <button class="btn">Get my 10% off</button><br><br>
+ <a href="#" class="muted" onclick="document.getElementById('newsletter').remove();return false;">No thanks, I prefer paying full price</a>
+</div></div></main>
+<div class="banner" id="cookie-banner" role="dialog">
+  <div style="flex:1">We use cookies to give you the best experience. By continuing you agree to our use of cookies.</div>
+  <a href="#" class="muted" id="cookie-settings-link" onclick="document.getElementById('cookie-layer').style.display='flex';return false;">settings</a>
+  <button class="btn" style="font-size:20px;padding:16px 48px" onclick="this.closest('.banner').remove()">ACCEPT ALL</button>
+</div>
+<div class="modal-bg" id="cookie-layer" role="dialog"><div class="modal">
+  <h3>Cookie preferences</h3>
+  <label><input type="checkbox" checked disabled> Necessary</label><br>
+  <label><input type="checkbox" checked> Personalised advertising</label><br>
+  <label><input type="checkbox" checked> Share data with partners</label><br><br>
+  <button class="btn" onclick="this.closest('.modal-bg').remove()">Save</button>
+</div></div></body></html>

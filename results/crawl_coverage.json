@@ -1,0 +1,24 @@
+{
+  "attempted": 195,
+  "crawled": 108,
+  "blocked": 67,
+  "unavailable": 4,
+  "robots": 1,
+  "unreachable": 5,
+  "empty": 10,
+  "crawled_reached_cart": 62,
+  "crawled_pages": 1583,
+  "crawled_countries": 16,
+  "block_reasons": {
+    "bot protection (Vercel checkpoint)": 4,
+    "bot protection (access denied)": 17,
+    "bot protection (Cloudflare challenge)": 34,
+    "bot protection (captcha)": 2,
+    "bot protection (403 forbidden)": 4,
+    "bot protection (Akamai reference error)": 1,
+    "bot protection (Cloudflare)": 1,
+    "bot protection (human check)": 2,
+    "bot protection (blocked)": 1,
+    "bot protection (bot detected)": 1
+  }
+}

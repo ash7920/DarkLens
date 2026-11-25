@@ -1,0 +1,101 @@
+name,url,country,sector,language
+Zalando DE,https://www.zalando.de/,DE,fashion,de
+OTTO,https://www.otto.de/,DE,general,de
+MediaMarkt DE,https://www.mediamarkt.de/,DE,electronics,de
+ABOUT YOU,https://www.aboutyou.de/,DE,fashion,de
+Lidl DE,https://www.lidl.de/,DE,general,de
+Kaufland,https://www.kaufland.de/,DE,marketplace,de
+Tchibo,https://www.tchibo.de/,DE,general,de
+Douglas DE,https://www.douglas.de/,DE,beauty,de
+Thalia,https://www.thalia.de/,DE,books,de
+bonprix,https://www.bonprix.de/,DE,fashion,de
+Cyberport,https://www.cyberport.de/,DE,electronics,de
+notebooksbilliger,https://www.notebooksbilliger.de/,DE,electronics,de
+HORNBACH,https://www.hornbach.de/,DE,home_diy,de
+OBI,https://www.obi.de/,DE,home_diy,de
+dm,https://www.dm.de/,DE,beauty,de
+Rossmann,https://www.rossmann.de/,DE,beauty,de
+mytheresa,https://www.mytheresa.com/,DE,fashion,en
+Flixbus,https://www.flixbus.de/,DE,travel,de
+Fnac,https://www.fnac.com/,FR,electronics,fr
+Cdiscount,https://www.cdiscount.com/,FR,marketplace,fr
+Darty,https://www.darty.com/,FR,electronics,fr
+Boulanger,https://www.boulanger.com/,FR,electronics,fr
+La Redoute,https://www.laredoute.fr/,FR,fashion,fr
+Sephora FR,https://www.sephora.fr/,FR,beauty,fr
+Decathlon FR,https://www.decathlon.fr/,FR,sports,fr
+Leroy Merlin FR,https://www.leroymerlin.fr/,FR,home_diy,fr
+Carrefour FR,https://www.carrefour.fr/,FR,grocery,fr
+Veepee,https://www.veepee.fr/,FR,fashion,fr
+Conforama,https://www.conforama.fr/,FR,home_diy,fr
+Kiabi,https://www.kiabi.com/,FR,fashion,fr
+Showroomprive,https://www.showroomprive.com/,FR,fashion,fr
+El Corte Ingles,https://www.elcorteingles.es/,ES,general,es
+PcComponentes,https://www.pccomponentes.com/,ES,electronics,es
+MediaMarkt ES,https://www.mediamarkt.es/,ES,electronics,es
+Mango,https://shop.mango.com/es,ES,fashion,es
+Decathlon ES,https://www.decathlon.es/,ES,sports,es
+Carrefour ES,https://www.carrefour.es/,ES,grocery,es
+Druni,https://www.druni.es/,ES,beauty,es
+Worten ES,https://www.worten.es/,ES,electronics,es
+Unieuro,https://www.unieuro.it/,IT,electronics,it
+MediaWorld,https://www.mediaworld.it/,IT,electronics,it
+YOOX,https://www.yoox.com/it,IT,fashion,it
+IBS,https://www.ibs.it/,IT,books,it
+laFeltrinelli,https://www.lafeltrinelli.it/,IT,books,it
+Douglas IT,https://www.douglas.it/,IT,beauty,it
+Decathlon IT,https://www.decathlon.it/,IT,sports,it
+Leroy Merlin IT,https://www.leroymerlin.it/,IT,home_diy,it
+Euronics IT,https://www.euronics.it/,IT,electronics,it
+bol.com,https://www.bol.com/nl/nl/,NL,marketplace,nl
+Coolblue NL,https://www.coolblue.nl/,NL,electronics,nl
+Wehkamp,https://www.wehkamp.nl/,NL,general,nl
+HEMA,https://www.hema.nl/,NL,general,nl
+Albert Heijn,https://www.ah.nl/,NL,grocery,nl
+de Bijenkorf,https://www.debijenkorf.nl/,NL,fashion,nl
+fonQ,https://www.fonq.nl/,NL,home_diy,nl
+Booking.com,https://www.booking.com/,NL,travel,en
+Coolblue BE,https://www.coolblue.be/nl,BE,electronics,nl
+Vanden Borre,https://www.vandenborre.be/,BE,electronics,fr
+Krefel,https://www.krefel.be/,BE,electronics,nl
+Allegro,https://allegro.pl/,PL,marketplace,pl
+x-kom,https://www.x-kom.pl/,PL,electronics,pl
+Empik,https://www.empik.com/,PL,books,pl
+Media Expert,https://www.mediaexpert.pl/,PL,electronics,pl
+RTV Euro AGD,https://www.euro.com.pl/,PL,electronics,pl
+eobuwie,https://www.eobuwie.pl/,PL,fashion,pl
+Morele,https://www.morele.net/,PL,electronics,pl
+Elgiganten SE,https://www.elgiganten.se/,SE,electronics,sv
+Apotea,https://www.apotea.se/,SE,beauty,sv
+CDON,https://cdon.se/,SE,marketplace,sv
+Ellos,https://www.ellos.se/,SE,fashion,sv
+Nelly,https://nelly.com/se/,SE,fashion,sv
+Webhallen,https://www.webhallen.com/,SE,electronics,sv
+Komplett SE,https://www.komplett.se/,SE,electronics,sv
+Elgiganten DK,https://www.elgiganten.dk/,DK,electronics,da
+Boozt,https://www.boozt.com/,DK,fashion,en
+MediaMarkt AT,https://www.mediamarkt.at/,AT,electronics,de
+Universal,https://www.universal.at/,AT,general,de
+XXXLutz,https://www.xxxlutz.at/,AT,home_diy,de
+BIPA,https://www.bipa.at/,AT,beauty,de
+Harvey Norman IE,https://www.harveynorman.ie/,IE,electronics,en
+Currys IE,https://www.currys.ie/,IE,electronics,en
+Brown Thomas,https://www.brownthomas.com/,IE,fashion,en
+Dunnes Stores,https://www.dunnesstores.com/,IE,general,en
+Eason,https://www.easons.com/,IE,books,en
+Ryanair,https://www.ryanair.com/ie/en,IE,travel,en
+Worten PT,https://www.worten.pt/,PT,electronics,pt
+Fnac PT,https://www.fnac.pt/,PT,electronics,pt
+Continente,https://www.continente.pt/,PT,grocery,pt
+Alza,https://www.alza.cz/,CZ,electronics,cs
+CZC,https://www.czc.cz/,CZ,electronics,cs
+Verkkokauppa,https://www.verkkokauppa.com/,FI,electronics,fi
+Gigantti,https://www.gigantti.fi/,FI,electronics,fi
+eMAG RO,https://www.emag.ro/,RO,marketplace,ro
+Altex,https://altex.ro/,RO,electronics,ro
+eMAG HU,https://www.emag.hu/,HU,marketplace,hu
+Public,https://www.public.gr/,GR,electronics,el
+Plaisio,https://www.plaisio.gr/,GR,electronics,el
+Skroutz,https://www.skroutz.gr/,GR,marketplace,el
+Zalando IT,https://www.zalando.it/,IT,fashion,it
+Zalando PL,https://www.zalando.pl/,PL,fashion,pl

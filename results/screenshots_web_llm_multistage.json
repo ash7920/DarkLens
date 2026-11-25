@@ -1,0 +1,85 @@
+{
+  "binary": {
+    "n": 161,
+    "precision": 0.8311688311688312,
+    "recall": 0.7804878048780488,
+    "f1": 0.8050314465408805,
+    "accuracy": 0.8074534161490683,
+    "kappa": 0.6152185644900161,
+    "confusion": [
+      [
+        66,
+        13
+      ],
+      [
+        18,
+        64
+      ]
+    ],
+    "f1_ci95": [
+      0.7333229813664596,
+      0.8701413292589762
+    ]
+  },
+  "per_category": {
+    "urgency": {
+      "precision": 0.8157894736842105,
+      "recall": 0.7045454545454546,
+      "f1": 0.7560975609756098,
+      "support": 44
+    },
+    "scarcity": {
+      "precision": 0.875,
+      "recall": 0.9545454545454546,
+      "f1": 0.9130434782608695,
+      "support": 22
+    },
+    "social_proof": {
+      "precision": 0.5263157894736842,
+      "recall": 1.0,
+      "f1": 0.6896551724137931,
+      "support": 10
+    },
+    "preselection": {
+      "precision": 0.5,
+      "recall": 0.08333333333333333,
+      "f1": 0.14285714285714285,
+      "support": 12
+    },
+    "interface_interference": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "support": 4
+    }
+  },
+  "micro": {
+    "precision": 0.7325581395348837,
+    "recall": 0.6847826086956522,
+    "f1": 0.7078651685393259
+  },
+  "macro_f1": 0.500330670901483,
+  "split": "web",
+  "n_images": 161,
+  "n_failed": 1,
+  "failed": [
+    {
+      "item_id": "aidui_web_138",
+      "error": "The gemini model 'gemini-3.5-flash-lite' returned an unusable answer: Could not parse JSON from model output: {\n  \"page_kind\": \"popup\",\n  \"detections\": [\n    {\n      \"label\": \"urgency\",\n      \"line_id"
+    }
+  ],
+  "engine": {
+    "engine": "llm",
+    "mode": "multistage",
+    "provider": "gemini",
+    "model": "gemini-3.5-flash-lite",
+    "ocr": true
+  },
+  "mode": "multistage",
+  "seconds_per_image": 8.5,
+  "llm_calls": 12,
+  "llm_usage": {
+    "input_tokens": 31864,
+    "output_tokens": 1537
+  }
+}
