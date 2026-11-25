@@ -94,7 +94,17 @@ uvicorn app.server:app --port 8000
 ```
 
 Then open http://localhost:8000. There are four tabs: Inspect (upload or paste a screenshot, or give
-a URL), Annotate (labelling), Results (all our numbers) and Taxonomy.
+a URL), Annotate (labelling), Results (all our numbers) and Taxonomy. A finished inspection can be
+saved as a PDF report (it uses the browser's own print dialog, so choose "Save as PDF" as the printer)
+or downloaded as JSON.
+
+The Inspect tab has three sample screenshots from our test shop. To add four real EU shop pages from
+the crawl (a cookie banner, a low-stock badge, an activity badge and a "today only" offer, all ones our
+annotator confirmed as dark patterns), run this once on the machine that has the crawl screenshots:
+
+```
+python scripts/make_eu_samples.py
+```
 
 To let someone outside your Wi-Fi use it (we did this so the rest of the group could label from their
 phones), run a Cloudflare quick tunnel in a second window:
@@ -139,8 +149,8 @@ python -m darklens.pipeline --engine llm
 python scripts/make_annotation_sample.py --flagged -1 --cleared 400 --filtered 200
 python scripts/translate_sample.py
 python scripts/shrink_annotation_sample.py --keep 200 --prefix-only
-#   label all 200 in the Annotate tab (read "How to label" first), then a few
-#   hours later tick "Blind re-check" and label the 50 it gives you
+#   the main annotator labels all 200 in the Annotate tab (read "How to label" first);
+#   a second annotator ticks "Blind re-check" and labels the fixed 50 it gives them
 python scripts/model_second_opinion.py
 python scripts/annotation_results.py
 python scripts/evaluate_crawl.py
@@ -161,13 +171,20 @@ shows up in red as [pending].
 | DarkMart test shop (43 planted patterns) | LLM found 41 of 43 with 1 false alarm on FairMart; offline engine found all 43 but with 9 false alarms |
 | AidUI web screenshots (161-162) | LLM F1 0.805, offline engine F1 0.673 |
 | EU crawl | 195 shops tried, 108 crawled (1,583 pages, 16 countries), 67 blocked by bot protection |
-| Prevalence | at least one dark pattern found on 78 of the 108 crawled shops (72%), before human checking |
+| Prevalence | at least one dark pattern found on 78 of the 108 crawled shops (72%); this is a lower bound |
+| Accuracy on the real crawl (200 human-labelled elements, weighted to the whole crawl) | precision 0.88 (95% CI 0.80 to 0.94), recall about 0.03 (0.02 to 0.08); on the 200 items themselves F1 0.87, kappa 0.77 |
+| Label quality (Cohen's kappa) | first round without a guide 0.30; with the guide, second annotator 0.69; an independent model 0.84 |
 
-The precision and recall on the real crawl are still waiting on the human labels. Our first labelling
-round, two of us without written guidelines, agreed badly (Cohen's kappa 0.24 on dark vs not dark), mostly
-because product names and prices got labelled as dark patterns. So we wrote a guide (it's in the Annotate
-tab), and the crawl is now labelled by one trained annotator, checked by a blind re-labelling of 50 items
-and by a separate model.
+When DarkLens flags something on a real shop it is almost always right, but it finds only a small
+share of all the dark elements. About one in ten of the elements it cleared or filtered out was
+actually dark, and those groups are huge (about 112,000 elements), so the misses add up. 72% of the
+estimated misses never reached the LLM because the cheap pre-filter dropped them, mostly short
+social-proof badges like "Very popular". That's the main thing to improve next.
+
+Our first labelling round, two of us without written guidelines, agreed badly (kappa 0.24 on dark vs
+not dark), mostly because product names and prices got labelled as dark patterns. So we wrote a guide
+(it's in the Annotate tab). The final ground truth is 200 elements labelled by one trained annotator,
+checked by a second annotator on 50 of them and by a separate model on all 200.
 
 On the binary yes/no question the fine-tuned models are about as good as the LLM, but they need a
 labelled dataset for training. Where the LLM helps is in naming the right category, reading
