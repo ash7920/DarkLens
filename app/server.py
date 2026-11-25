@@ -257,8 +257,17 @@ def _adjudication_ids() -> list[str]:
         return [row["segment_id"] for row in csv.DictReader(f)]
 
 
+RECHECK_N = 50
+
+
+def recheck_items(sample: list[dict]) -> list[dict]:
+    """A fixed random 50 of the sample, in an order unrelated to the first pass, for a blind
+    re-labelling by the same annotator (intra-rater agreement)."""
+    return sorted(sample, key=lambda s: hashlib.sha1(("recheck:" + s["segment_id"]).encode()).hexdigest())[:RECHECK_N]
+
+
 @app.get("/api/annotate/next")
-def annotate_next(annotator: str, skip: str = "", adjudicate: int = 0):
+def annotate_next(annotator: str, skip: str = "", adjudicate: int = 0, recheck: int = 0):
     sample = annotation.load_sample()
     if not sample:
         return {"done": True, "total": 0, "message": "No annotation sample yet. Run "
@@ -271,6 +280,8 @@ def annotate_next(annotator: str, skip: str = "", adjudicate: int = 0):
             return {"done": True, "total": 0, "message": "No disagreements to settle. Run "
                     "python scripts/agreement.py first (it lists them)."}
         sample = [s for s in sample if s["segment_id"] in ids]
+    elif recheck:
+        sample = recheck_items(sample)
     mine = {k: v for k, v in labels.get(safe, {}).items() if any(s["segment_id"] == k for s in sample)}
     todo = [s for s in sample if s["segment_id"] not in mine]
     if not todo:

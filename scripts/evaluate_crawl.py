@@ -84,7 +84,9 @@ def main():
     res = {"coverage": {k: v for k, v in cov.items() if k != "sites"}, "prevalence": prevalence(preds)}
 
     gold_path = ROOT / a.gold
-    res["human_agreement"] = agreement(adjudicator=a.adjudicator)
+    ha = ROOT / "results/human_agreement.json"  # written by scripts/annotation_results.py
+    res["human_agreement"] = (json.loads(ha.read_text(encoding="utf-8")) if ha.exists()
+                              else agreement(adjudicator=a.adjudicator))
     if gold_path.exists():
         gold = {json.loads(l)["segment_id"]: json.loads(l)["label"] for l in open(gold_path, encoding="utf-8")}
         pairs = [(gold[p["segment_id"]], p) for p in preds if p["segment_id"] in gold]

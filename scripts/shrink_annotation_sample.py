@@ -2,6 +2,7 @@
 
     python scripts/shrink_annotation_sample.py              # just show how far everyone has got
     python scripts/shrink_annotation_sample.py --keep 400   # keep 400 items (plus anything already labelled)
+    python scripts/shrink_annotation_sample.py --keep 200 --prefix-only   # exactly the first 200
 
 The sample file is already in random order with the three strata mixed, and the app hands items
 out in file order, so the first N items are themselves a random sample of each stratum. We keep
@@ -23,6 +24,8 @@ from darklens.evaluation import annotation  # noqa: E402
 
 ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 ap.add_argument("--keep", type=int, default=0, help="items to keep (0 = only report progress)")
+ap.add_argument("--prefix-only", action="store_true",
+                help="keep exactly the first N items, even if someone labelled items further down")
 args = ap.parse_args()
 
 sample_path = annotation.ANN_DIR / "sample.jsonl"
@@ -44,7 +47,7 @@ if args.keep >= len(items):
 count = Counter(it["stratum"] for it in items)
 units = {s: round(next(it["weight"] for it in items if it["stratum"] == s) * n) for s, n in count.items()}
 
-kept = [it for i, it in enumerate(items) if i < args.keep or it["segment_id"] in labelled_any]
+kept = [it for i, it in enumerate(items) if i < args.keep or (not args.prefix_only and it["segment_id"] in labelled_any)]
 new_count = Counter(it["stratum"] for it in kept)
 for it in kept:
     it["weight"] = units[it["stratum"]] / new_count[it["stratum"]]

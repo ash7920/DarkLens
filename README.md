@@ -138,10 +138,11 @@ python -m darklens.pipeline --engine llm
 # human labels
 python scripts/make_annotation_sample.py --flagged -1 --cleared 400 --filtered 200
 python scripts/translate_sample.py
-#   two people label in the Annotate tab, then:
-python scripts/agreement.py --annotators devanshi aarya
-#   a third person labels the disagreements, then:
-python scripts/agreement.py --annotators devanshi aarya --adjudicator ashka
+python scripts/shrink_annotation_sample.py --keep 200 --prefix-only
+#   label all 200 in the Annotate tab (read "How to label" first), then a few
+#   hours later tick "Blind re-check" and label the 50 it gives you
+python scripts/model_second_opinion.py
+python scripts/annotation_results.py
 python scripts/evaluate_crawl.py
 
 # rebuild the paper's numbers, tables and figures
@@ -162,7 +163,11 @@ shows up in red as [pending].
 | EU crawl | 195 shops tried, 108 crawled (1,583 pages, 16 countries), 67 blocked by bot protection |
 | Prevalence | at least one dark pattern found on 78 of the 108 crawled shops (72%), before human checking |
 
-The precision and recall on the real crawl are still waiting on the human labels.
+The precision and recall on the real crawl are still waiting on the human labels. Our first labelling
+round, two of us without written guidelines, agreed badly (Cohen's kappa 0.24 on dark vs not dark), mostly
+because product names and prices got labelled as dark patterns. So we wrote a guide (it's in the Annotate
+tab), and the crawl is now labelled by one trained annotator, checked by a blind re-labelling of 50 items
+and by a separate model.
 
 On the binary yes/no question the fine-tuned models are about as good as the LLM, but they need a
 labelled dataset for training. Where the LLM helps is in naming the right category, reading

@@ -203,3 +203,12 @@ td.num, th.num { text-align: right; }
 
 .adj-toggle { display: flex; align-items: center; gap: 6px; font-size: .9rem; flex-basis: 100%; }
 .annot-earlier { font-size: .9rem; margin: 0 0 8px; padding: 6px 10px; border-left: 3px solid var(--accent, #0d8c8c); }
+
+.guide { margin: 14px 0 4px; border: 1px solid var(--rule); border-radius: var(--radius-s); background: var(--sheet); max-width: 80ch; }
+.guide summary { cursor: pointer; padding: 10px 14px; font-weight: 700; }
+.guide-body { padding: 0 16px 12px; font-size: .92rem; line-height: 1.5; }
+.guide-body dl { margin: 8px 0; }
+.guide-body dt { font-weight: 700; margin-top: 10px; }
+.guide-body dd { margin: 2px 0 0 0; color: var(--slate); }
+.guide-warn { background: #fff3c4; color: #3b3000; padding: 8px 10px; border-radius: var(--radius-s); }
+.guide kbd { font-size: .8em; }

@@ -107,10 +107,49 @@
       <h1>Label the ground truth</h1>
       <p>Each item comes from a crawled page. Judge it on its own merits; the model's answer is hidden on purpose.
         Keys 1–8 pick a category, 0 marks it fair, S skips.</p>
+      <details class="guide" id="guide" open>
+        <summary>How to label (read this first)</summary>
+        <div class="guide-body">
+          <p>Ask one question: <strong>is this element trying to push the shopper into something they might not
+            choose if it were presented neutrally?</strong> Judge the element shown, using the screenshot only for
+            context. When in doubt, it is <em>not</em> a dark pattern.</p>
+          <p class="guide-warn">Most items are ordinary shop content and get <kbd>0</kbd> Not a dark pattern:
+            product names, prices, sizes, weights, colours, ratings counts like "(31)", menu links ("Home",
+            "Facial care"), plain discounts ("-14%"), delivery costs, legal or error text.</p>
+          <dl>
+            <dt><kbd>1</kbd> Urgency</dt>
+            <dd>A deadline or timer that pressures a quick decision. "Offer ends in 02:14:55", "Order in the next 3 hours
+              for delivery tomorrow", "Today only". <em>Not:</em> a plain date or time, a price, a sale with no deadline.</dd>
+            <dt><kbd>2</kbd> Scarcity</dt>
+            <dd>Claims that stock or availability is limited. "Only 2 left", "Only a few left in stock", "Almost sold out",
+              "High demand". <em>Not:</em> "In stock", "Available online".</dd>
+            <dt><kbd>3</kbd> Social proof</dt>
+            <dd>Pressure from what other people are doing. "13 people viewed this item in the past day", "Bought 500 times
+              this week", "4% bought", "Most booked hotels". <em>Not:</em> a star rating or review count on its own.</dd>
+            <dt><kbd>4</kbd> Confirmshaming</dt>
+            <dd>The "no" option makes you feel guilty or stupid. "No thanks, I don't like saving money".</dd>
+            <dt><kbd>5</kbd> Pre-ticked add-ons / sneaking</dt>
+            <dd>Something extra is already selected or added for you: a box marked [checkbox, PRE-TICKED] for insurance,
+              a newsletter or a donation; an add-on or fee slipped into the basket. <em>Not:</em> a size or delivery
+              option you have to choose anyway.</dd>
+            <dt><kbd>6</kbd> Difficult cancellation</dt>
+            <dd>Leaving, cancelling or unsubscribing is made hard: "call us to cancel", long detours, hidden cancel links.</dd>
+            <dt><kbd>7</kbd> Interface interference</dt>
+            <dd>The layout steers your choice. Lines like "'Accept all' (large) vs 'Reject' (small)" mean the option good
+              for the shop is much bigger or brighter than its alternative in the <em>same</em> choice (cookies, consent,
+              add-on yes/no). <em>Not:</em> two unrelated links (e.g. "Home" vs "Cart") or a privacy-policy link.</dd>
+            <dt><kbd>8</kbd> Forced action</dt>
+            <dd>You must do something unrelated to continue: create an account to check out, accept marketing to see
+              prices, install an app to buy.</dd>
+          </dl>
+          <p>Take your time: 5 to 15 seconds per item is normal. Use <kbd>S</kbd> to skip if you need to come back.</p>
+        </div>
+      </details>
       <form id="annotForm" class="annot-name">
         <input id="annotator" placeholder="Your name" required aria-label="Annotator name">
         <button class="btn" type="submit">Start labelling</button>
         <label class="adj-toggle"><input type="checkbox" id="adjMode"> Only settle disagreements</label>
+        <label class="adj-toggle"><input type="checkbox" id="recheckMode"> Blind re-check (50 items, earlier answers hidden)</label>
       </form>
     </div>
     <div id="annotBody" hidden>

@@ -65,8 +65,8 @@ through a safe-interaction policy, represents every visible element together wit
 classifies it with a cascade of a cheap lexical pre-filter and a large language model (LLM) that first
 infers and then verifies each finding. We evaluate on three public datasets, a controlled test-bed of 43
 injected patterns with a clean twin site, and a crawl of \CrawlAttempted{} EU retailers, of which
-\CrawlOK{} could be crawled and \CrawlBlockedPct{} refused automated browsers; a stratified sample of the crawl was
-labelled by two annotators. A grouped cross-validated TF-IDF baseline already reaches F1~=~\CVlrF{} on binary text
+\CrawlOK{} could be crawled and \CrawlBlockedPct{} refused automated browsers; a stratified, weighted sample of the
+crawl was labelled by a trained annotator, with a blind re-check and an independent model as reliability checks. A grouped cross-validated TF-IDF baseline already reaches F1~=~\CVlrF{} on binary text
 detection but only \CVlrMacro{} macro-F1 across categories, and it raises false alarms on neutral text
 such as ``In stock'' when the page context is missing. On the test-bed the LLM pipeline finds \TbLLMFound{} of
 \TbN{} injected patterns and raises \TbLLMFP{} false alarm on the clean twin, against \TbOffFP{} for the lexical engine. It reaches \LLMtextMacro{} macro-F1
@@ -112,8 +112,8 @@ UI state (e.g.\ ``[checkbox, PRE-TICKED]''), filtered by a rule lexicon and TF-I
 by an LLM in an infer stage and re-checked in a verify stage adapted from DPDGPT~\cite{lin2026dpdgpt}.
 The same detector serves screenshots through OCR-anchored prompting, so every finding has a location.
 \item \textbf{A three-level evaluation}: public datasets (text and screenshots), a controlled test-bed with
-known ground truth and a clean twin, and an EU crawl with double human annotation, including a measurement of how
-many retailers block automated auditing at all.
+known ground truth and a clean twin, and an EU crawl with a weighted human-labelled sample, including a
+measurement of how many retailers block automated auditing at all.
 \item \textbf{An open tool}: a web interface that analyses an uploaded screenshot or a live URL and shows
 the category, evidence, confidence and the EU provision an auditor would examine.
 \end{itemize}
@@ -304,13 +304,26 @@ recorded as \emph{blocked} and not crawled further. We do not attempt to circumv
 block page is never counted as a site without dark patterns.
 
 \subsection{Ground truth and metrics}\label{sec:annot}
-We sample 150 crawled page states stratified by page type (at most four per site). Two annotators label
-every segment that reached the detector plus a random 15\% of filtered-out segments (to measure pre-filter
-misses), independently and blind to model output, using the annotation tool. A third annotator
-adjudicates disagreements. We report Cohen's $\kappa$~\cite{cohen1960} between annotators and between
-the LLM and the adjudicated labels, Fleiss' $\kappa$~\cite{fleiss1971} when more annotators overlap,
-interpreted with Landis and Koch~\cite{landis1977}, and precision, recall and F1, binary and per class
-(macro-averaged over dark classes), with 95\% bootstrap intervals.
+The unit of annotation is a distinct element of a shop (same text, element type and checkbox state), the same
+unit the detector classifies. Elements fall into three strata: \emph{flagged} by the LLM, \emph{cleared} by
+the LLM, and \emph{filtered} out before the LLM by the pre-filter. We draw a random sample from each stratum
+and weight every labelled element by the size of its stratum, so precision and recall are estimates for the
+whole crawl rather than for the sample, and the filtered stratum measures what the pre-filter misses.
+Annotators work in the annotation tool, blind to the model's output. They see the element's text, a
+machine translation into English for non-English shops, the element type and state, and a crop of the page
+screenshot with the element outlined.
+
+A pilot round with two student annotators from the project team, without written guidelines, labelled
+\PilotN{} elements and agreed poorly (Cohen's $\kappa$~\cite{cohen1960} \PilotKappa{} on categories,
+\PilotKappaBin{} on dark versus not dark; ``slight'' to ``fair'' by Landis and Koch~\cite{landis1977}). Most
+disagreements were ordinary product names, prices and menu links labelled as dark patterns. We therefore wrote
+one-page labelling guidelines with examples and common traps, and the first author, trained on them, labelled
+a fresh random sample of \ExpertN{} elements; these labels are the ground truth. As reliability checks, a
+second annotator trained on the same guidelines independently labelled a fixed random \SecondN{} of them
+(Cohen's $\kappa$~=~\SecondKappa{} on categories, \SecondKappaBin{} on dark versus not dark), and an independent LLM (\ModelOpName{}, a different model and prompt from the detector,
+given the guidelines and the element's text but not the screenshot) labelled all \ExpertN{}
+($\kappa$~=~\ModelOpKappa{} and \ModelOpKappaBin{} against the ground truth). We report precision, recall
+and F1, binary and per class (macro-averaged over dark classes), with 95\% bootstrap intervals.
 
 \subsection{Models}
 The LLM is \LLMmodel{} at temperature 0. RoBERTa-base is fine-tuned for four epochs (learning rate
@@ -416,8 +429,9 @@ Engine & Recall & Precision & Clean-shop FPs \\
 \end{table}
 
 \subsection{EU crawl: reliability and prevalence}
-Annotators agreed with Cohen's $\kappa$~=~\HumanKappa{} on category labels. Against the adjudicated
-labels (\CrawlNGold{} segments), DarkLens achieves precision \CrawlP{}, recall \CrawlR{} and F1 \CrawlF{}
+With guidelines, two annotators agreed at $\kappa$~=~\SecondKappa{} on categories (\SecondN{} elements),
+against \PilotKappa{} in the pilot without them. Against the \CrawlNGold{} labelled elements, weighted to the whole
+crawl, DarkLens achieves precision \CrawlP{}, recall \CrawlR{} and F1 \CrawlF{}
 (Cohen's $\kappa$~=~\CrawlKappa{}). Across \CrawlSites{} sites and \CrawlStates{} page states, \CrawlAnyN{}
 sites (\CrawlAny{}) show at least one pattern, \CrawlMeanCats{} classes per site on average; Table~\ref{tab:prev}
 breaks this down by class. Interface interference dominates, mostly cookie banners whose ``accept'' option is far
@@ -467,8 +481,9 @@ starting point: whether a given banner violates the DSA depends on context~\cite
 \textbf{Limitations.} Results depend on the LLM version, which we log; prompts were written in English for
 multilingual pages; the site sample over-represents electronics retailers and, because of bot protection,
 under-represents the largest platforms; OCR limits the offline
-screenshot engine; and the test-bed was built by the authors. Two annotators from the project team are not
-domain experts, which we mitigate with written guidelines and adjudication.
+screenshot engine; and the test-bed was built by the authors. The crawl ground truth comes from one trained
+annotator, a team member rather than an outside expert, with a second annotator on only \SecondN{} elements,
+after a two-annotator pilot without guidelines agreed poorly; a larger, multi-annotator sample is the main next step.
 
 \textbf{Ethics.} We crawl only public pages, respect \texttt{robots.txt}, rate-limit requests, never create
 accounts, pay or submit personal data, and release no personal data.

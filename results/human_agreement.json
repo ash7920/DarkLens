@@ -1,0 +1,24 @@
+{
+  "design": "single trained annotator + blind intra-rater re-check + LLM second opinion",
+  "n_sample": 200,
+  "pilot": {
+    "n": 400,
+    "raw_agreement": 0.42,
+    "raw_agreement_binary": 0.605,
+    "kappa_category": 0.2977411177116047,
+    "kappa_binary": 0.2362537764350453,
+    "dark_share": [
+      0.8125,
+      0.4725
+    ],
+    "annotators": [
+      "devanshi",
+      "aarya"
+    ]
+  },
+  "expert": {
+    "name": "ashka",
+    "n_labelled": 0,
+    "dark_share": 0.0
+  }
+}

@@ -221,19 +221,23 @@ function setupAnnotate() {
   });
 }
 let skipped = new Set();
+// a blind re-check is stored under "<name>-recheck" so it never overwrites the first pass
+const who = () => $("#recheckMode").checked ? `${annotator}-recheck` : annotator;
 async function nextItem() {
   const adj = $("#adjMode").checked ? 1 : 0;
-  const r = await api(`/api/annotate/next?annotator=${encodeURIComponent(annotator)}&skip=${[...skipped].join(",")}&adjudicate=${adj}`);
+  const rc = $("#recheckMode").checked ? 1 : 0;
+  const r = await api(`/api/annotate/next?annotator=${encodeURIComponent(who())}&skip=${[...skipped].join(",")}&adjudicate=${adj}&recheck=${rc}`);
   $("#annotBody").hidden = r.done; $("#annotDone").hidden = !r.done;
   if (r.done) {
-    $("#annotDone").innerHTML = (r.total && adj) ? `<h2>All ${r.total} disagreements settled.</h2><p>Now run <code>python scripts/agreement.py --annotators devanshi aarya --adjudicator ${esc(annotator.toLowerCase())}</code>.</p>`
-      : r.total ? `<h2>All ${r.total} items labelled.</h2><p>Thank you, ${esc(annotator)}. Run <code>python scripts/agreement.py</code> once your partner is done.</p>`
+    $("#annotDone").innerHTML = (r.total && rc) ? `<h2>Re-check done: ${r.total} items.</h2><p>Now run <code>python scripts/annotation_results.py</code>.</p>`
+      : (r.total && adj) ? `<h2>All ${r.total} disagreements settled.</h2><p>Now run <code>python scripts/agreement.py --annotators devanshi aarya --adjudicator ${esc(annotator.toLowerCase())}</code>.</p>`
+      : r.total ? `<h2>All ${r.total} items labelled.</h2><p>Thank you, ${esc(annotator)}. After a break of a few hours, come back, tick <strong>Blind re-check</strong> and label the 50 items it gives you.</p>`
       : `<h2>Nothing to label yet</h2><p>${esc(r.message)}</p>`;
     annItem = null; return;
   }
   annItem = r.item;
   $("#progBar").style.width = `${(100 * r.labelled) / r.total}%`;
-  $("#progText").textContent = adj ? `${r.labelled} of ${r.total} disagreements settled` : `${r.labelled} of ${r.total} labelled`;
+  $("#progText").textContent = rc ? `${r.labelled} of ${r.total} re-checked` : adj ? `${r.labelled} of ${r.total} disagreements settled` : `${r.labelled} of ${r.total} labelled`;
   const earlier = Object.entries(annItem.earlier || {});
   $("#aEarlier").hidden = !earlier.length;
   $("#aEarlier").textContent = earlier.length ? "Earlier labels: " + earlier.map(([n, l]) =>
@@ -289,7 +293,7 @@ async function saveLabel(label) {
   if (!annItem) return;
   try {
     await api("/api/annotate", { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ annotator, segment_id: annItem.segment_id, label }) });
+      body: JSON.stringify({ annotator: who(), segment_id: annItem.segment_id, label }) });
     nextItem();
   } catch (e) { toast(e.message); }
 }
